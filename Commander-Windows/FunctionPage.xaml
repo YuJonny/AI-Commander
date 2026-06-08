@@ -1,0 +1,133 @@
+<UserControl
+    x:Class="Commander.FunctionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    FontFamily="Microsoft YaHei UI">
+
+    <StackPanel>
+
+        <!-- Hero title -->
+        <StackPanel Orientation="Horizontal" Margin="4,8,0,12">
+            <TextBlock x:Name="LblTitle"
+                       Text="AI接线员"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+            <TextBlock x:Name="LblSubtitle"
+                       Text="Commander"
+                       FontSize="14"
+                       VerticalAlignment="Bottom"
+                       Margin="10,0,0,6"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+        </StackPanel>
+
+        <!-- Settings card -->
+        <Border Style="{StaticResource GlassCard}" Margin="0,0,0,12">
+            <StackPanel>
+                <!-- Master switch row -->
+                <Grid Margin="0,4,0,8">
+                    <StackPanel HorizontalAlignment="Left">
+                        <TextBlock x:Name="LblToggleTitle"
+                                   Text="总开关"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <TextBlock x:Name="LblToggleDesc"
+                                   Text="开启后耳机播放键将映射为目标按键"
+                                   FontSize="11"
+                                   Margin="0,2,0,0"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <ui:ToggleSwitch x:Name="SwEnabled"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Checked="SwEnabled_Checked"
+                                     Unchecked="SwEnabled_Unchecked" />
+                </Grid>
+
+                <!-- Divider -->
+                <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
+
+                <!-- Launch at login row -->
+                <Grid Margin="0,8,0,4">
+                    <StackPanel HorizontalAlignment="Left">
+                        <TextBlock x:Name="LblLaunchTitle"
+                                   Text="开机自启动"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <TextBlock x:Name="LblLaunchDesc"
+                                   Text="登录时自动启动AI接线员"
+                                   FontSize="11"
+                                   Margin="0,2,0,0"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                    <ui:ToggleSwitch x:Name="SwLaunch"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Center"
+                                     Checked="SwLaunch_Checked"
+                                     Unchecked="SwLaunch_Unchecked" />
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Mapping card -->
+        <Border Style="{StaticResource GlassCard}">
+            <StackPanel>
+                <TextBlock x:Name="LblMappingTitle"
+                           Text="映射目标"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,12"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Style="{StaticResource TagPill}"
+                                Background="#1A0078D4">
+                            <TextBlock x:Name="LblSource"
+                                       Text="播放/暂停"
+                                       FontSize="13"
+                                       Foreground="#0078D4" />
+                        </Border>
+                        <TextBlock Text="→"
+                                   Margin="10,0"
+                                   VerticalAlignment="Center"
+                                   FontSize="14"
+                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        <Border x:Name="TargetTag"
+                                Style="{StaticResource TagPill}"
+                                Background="#1A16A248">
+                            <TextBlock x:Name="LblTarget"
+                                       Text="Right Alt"
+                                       FontSize="13"
+                                       FontWeight="SemiBold"
+                                       Foreground="#16A248" />
+                        </Border>
+                    </StackPanel>
+                    <ui:Button x:Name="BtnChangeKey"
+                               Content="更改按键"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               Click="BtnChangeKey_Click" />
+                </Grid>
+
+                <Button x:Name="BtnReset"
+                        HorizontalAlignment="Left"
+                        Margin="0,12,0,0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        Cursor="Hand"
+                        Click="BtnReset_Click">
+                    <TextBlock x:Name="LblReset"
+                               Text="↻  恢复默认 (Right Alt)"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                </Button>
+            </StackPanel>
+        </Border>
+
+    </StackPanel>
+</UserControl>

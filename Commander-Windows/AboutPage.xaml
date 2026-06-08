@@ -1,0 +1,124 @@
+<UserControl
+    x:Class="Commander.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    FontFamily="Microsoft YaHei UI">
+
+    <StackPanel>
+        <!-- Hero card -->
+        <Border Style="{StaticResource GlassCard}" Margin="0,8,0,12">
+            <StackPanel HorizontalAlignment="Center">
+                <Image Source="pack://application:,,,/Resources/app_logo.png"
+                       Width="72" Height="72"
+                       Margin="0,8,0,12"
+                       HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality" />
+                <TextBlock x:Name="LblAppName"
+                           Text="AI接线员"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                <TextBlock Text="Commander"
+                           FontSize="12"
+                           Margin="0,2,0,8"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <TextBlock x:Name="LblDesc"
+                           Text="将耳机媒体键映射为键盘按键"
+                           FontSize="11"
+                           HorizontalAlignment="Center"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </Border>
+
+        <!-- Recommended -->
+        <Border Style="{StaticResource GlassCard}" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock x:Name="LblRecHeader"
+                           Text="推荐搭配 APP"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,12"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="🎙" FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="DodgerBlue" />
+                    <ui:HyperlinkButton x:Name="LnkTypeless"
+                                        Content="Typeless"
+                                        Padding="0"
+                                        NavigateUri="https://www.typeless.com/?via=jonny" />
+                    <TextBlock x:Name="LblTypelessDesc"
+                               Text="（语音输入）"
+                               FontSize="11"
+                               VerticalAlignment="Center"
+                               Margin="6,0,0,0"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Recommended hardware -->
+        <Border Style="{StaticResource GlassCard}" Margin="0,0,0,12">
+            <StackPanel>
+                <TextBlock x:Name="LblHwHeader"
+                           Text="推荐搭配硬件"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,12"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="☎️" FontSize="13" VerticalAlignment="Top" Margin="0,2,8,0" />
+                    <StackPanel>
+                        <ui:HyperlinkButton x:Name="LnkNativeUnion"
+                                            Content="Native Union 复古电话"
+                                            Padding="0"
+                                            NavigateUri="https://s.click.taobao.com/t?e=m%3D2%26s%3DwIrhGUcHebRw4vFB6t2Z2ueEDrYVVa6424t41fwIvtDRnNAdhLhtk430ZFekjizvxL1QHRKL8qiA5rFvxyOF9bwBMngvQdOvBQ7ZDE%2F6%2BIeRXNdY%2BjBkB5eYDQwFj6yC8kftjCRdkjx9Tuff7Tu%2FYJiUD8YEbaigH9ofgWr0NEuwIB%2BqTHya4ovEYPUpsQ%2FF2%2BRbLWXc2uZ5pCmcDdfSii21iRm1aQiYoGwWYjQ2nPkzWlhic%2BUoh0NEJ7GOeqvGxg5p7bh%2BFbQ%3D" />
+                        <TextBlock x:Name="LblNativeUnionDesc"
+                                   Text="更具时代反差感 | Apple Store入驻配件"
+                                   FontSize="11"
+                                   Margin="0,1,0,0"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Developer -->
+        <Border Style="{StaticResource GlassCard}">
+            <StackPanel>
+                <TextBlock Text="DEVELOPER"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,12"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="👤" FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Text="Jonny Yu"
+                               FontSize="13"
+                               VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="✉" FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <ui:HyperlinkButton Content="yujonny@icloud.com"
+                                        Padding="0"
+                                        NavigateUri="mailto:yujonny@icloud.com" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,4">
+                    <TextBlock Text="🌐" FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <ui:HyperlinkButton Content="yujonny.com"
+                                        Padding="0"
+                                        NavigateUri="https://yujonny.com" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,81 @@
+<ui:FluentWindow
+    x:Class="Commander.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    xmlns:local="clr-namespace:Commander"
+    Title="AI接线员"
+    Width="480"
+    Height="600"
+    MinWidth="440"
+    MinHeight="500"
+    WindowStartupLocation="CenterScreen"
+    WindowBackdropType="Mica"
+    ExtendsContentIntoTitleBar="True"
+    Background="{DynamicResource ApplicationBackgroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Title bar (transparent, draggable) -->
+        <ui:TitleBar Grid.Row="0" Title="AI接线员" x:Name="TitleBar" />
+
+        <!-- Tab nav -->
+        <Border Grid.Row="1" Padding="20,12,20,0">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <RadioButton x:Name="TabFunction"
+                                 Content="功能"
+                                 GroupName="MainTabs"
+                                 Style="{StaticResource TabRadioStyle}"
+                                 IsChecked="True"
+                                 Checked="TabFunction_Checked" />
+                    <RadioButton x:Name="TabAbout"
+                                 Content="关于"
+                                 GroupName="MainTabs"
+                                 Style="{StaticResource TabRadioStyle}"
+                                 Checked="TabAbout_Checked" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <RadioButton x:Name="TabLanguage"
+                                 Content="Language"
+                                 GroupName="MainTabs"
+                                 Style="{StaticResource TabRadioStyle}"
+                                 Checked="TabLanguage_Checked" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Padding="20,12,20,20">
+            <Grid x:Name="ContentHost" />
+        </ScrollViewer>
+
+        <!-- Tray icon -->
+        <tb:TaskbarIcon x:Name="TrayIcon"
+                        IconSource="/Resources/tray.ico"
+                        ToolTipText="AI接线员 Commander"
+                        TrayMouseDoubleClick="TrayIcon_TrayMouseDoubleClick">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="TrayMenuTitle" Header="AI接线员 Commander" IsEnabled="False" FontWeight="Bold" />
+                    <Separator />
+                    <MenuItem x:Name="TrayMenuStatus" Header="状态：已停止" IsEnabled="False" />
+                    <Separator />
+                    <MenuItem x:Name="TrayMenuToggle" Header="开启映射" Click="TrayMenuToggle_Click" />
+                    <MenuItem x:Name="TrayMenuOpen" Header="打开窗口" Click="TrayMenuOpen_Click" />
+                    <Separator />
+                    <MenuItem x:Name="TrayMenuQuit" Header="退出" Click="TrayMenuQuit_Click" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
+</ui:FluentWindow>

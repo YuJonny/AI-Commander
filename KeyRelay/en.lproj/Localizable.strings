@@ -1,0 +1,55 @@
+/* Tabs */
+"tab.function" = "Function";
+"tab.about" = "About";
+
+/* Function View */
+"title.app" = "Commander";
+"title.subtitle" = "AI接线员";
+"accessibility.required" = "Accessibility Permission Required";
+"accessibility.description" = "Please grant permission in System Settings → Privacy & Security → Accessibility";
+"accessibility.open" = "Open Accessibility Settings";
+"toggle.title" = "Master Switch";
+"toggle.description" = "Map headset play button to target key when enabled";
+"mapping.title" = "Mapping Target";
+"mapping.source" = "Play/Pause";
+"mapping.recording" = "Press target key...";
+"mapping.cancel" = "Cancel";
+"mapping.change" = "Change Key";
+"mapping.reset" = "Reset Default (Right Command ⌘)";
+"launch.title" = "Launch at Login";
+"launch.description" = "Auto-start Commander at login";
+"dock.title" = "Hide Dock Icon";
+"dock.description" = "Show only in status bar";
+
+/* About View */
+"about.description" = "Map headset media keys to keyboard keys";
+"about.recommended" = "Recommended Apps";
+"about.app.shandianshuo" = "ShanDianShuo";
+"about.app.shandianshuo.desc" = "(Local Model)";
+"about.app.typeless" = "Typeless";
+"about.app.typeless.desc" = "(Voice Input)";
+"about.app.wechat.input" = "WeChat Input";
+"about.app.doubao.input" = "Doubao Input";
+"about.recommendedHardware" = "Recommended Hardware";
+"about.hw.nativeunion" = "Native Union Retro Phone";
+"about.hw.nativeunion.desc" = "Extra retro contrast — available at the Apple Store";
+
+/* Menu Bar */
+"menu.title" = "Commander AI接线员";
+"menu.status.running" = "Status: Running";
+"menu.status.stopped" = "Status: Stopped";
+"menu.disable" = "Disable Mapping";
+"menu.enable" = "Enable Mapping";
+"menu.open" = "Open Window";
+"menu.quit" = "Quit";
+
+/* Language View */
+"lang.title" = "Select Language";
+"lang.description" = "Switch the app interface language";
+
+/* Interceptor Status */
+"status.tap.failed" = "Failed to create event listener, check accessibility permission";
+"status.tap.started" = "Event listener started";
+"status.key.down" = "Play key pressed ↓";
+"status.key.up" = "Play key released ↑";
+"status.stopped" = "Stopped";

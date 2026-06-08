@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>Commander</AssemblyName>
+    <RootNamespace>Commander</RootNamespace>
+    <AssemblyTitle>AI接线员 Commander</AssemblyTitle>
+    <Company>Jonny Yu</Company>
+    <Product>AI接线员 Commander</Product>
+    <Version>1.0.0</Version>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WPF-UI" Version="3.0.5" />
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\app.ico" Condition="Exists('Resources\app.ico')" />
+    <Resource Include="Resources\tray.ico" Condition="Exists('Resources\tray.ico')" />
+    <Resource Include="Resources\app_logo.png" Condition="Exists('Resources\app_logo.png')" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="Exists('Resources\app.ico')">
+    <ApplicationIcon>Resources\app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+</Project>
