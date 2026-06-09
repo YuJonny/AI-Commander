@@ -67,8 +67,8 @@
 
 | 平台 | 文件 |
 |---|---|
-| macOS | `AI接线员.dmg` |
-| Windows | `AI接线员.exe` |
+| macOS | `AI.Commander_Mac.dmg` |
+| Windows | `AI.Commander_Win.exe` |
 
 #### 🍎 macOS 首次打开（重要）
 
@@ -181,8 +181,8 @@ Grab the latest build from [**Releases**](https://github.com/YuJonny/AI-Commande
 
 | Platform | File |
 |---|---|
-| macOS | `AI接线员.dmg` |
-| Windows | `AI接线员.exe` |
+| macOS | `AI.Commander_Mac.dmg` |
+| Windows | `AI.Commander_Win.exe` |
 
 #### 🍎 First launch on macOS (important)
 
