@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src="Commander_Logo_256.png" width="120" alt="AI 接线员 · AI Commander" />
+<img src="assets/logo.png" width="128" alt="AI 接线员 · AI Commander" />
 
 # AI 接线员 · AI Commander
 
-**用耳机的播放/暂停键，一键唤起语音输入，解放双手 vibe coding**
-*Turn your headset's play/pause button into a hotkey — fire up voice input and vibe-code hands-free.*
+**用耳机上的「播放 / 暂停」键，一键接通你的 AI，开口说话即可 vibe coding**
+*Turn the play/pause button on your earphones into a direct line to your AI — just pick up and talk.*
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)
@@ -21,23 +21,45 @@
 
 ## 中文
 
-### 这是什么
+### 缘起
 
-**AI 接线员** 把你**耳机上的「播放 / 暂停」等媒体键**，映射成键盘上的**任意一个按键**。
+很久以前，打电话是一件需要「接线员」的事。
 
-最常见的用法：把它映射成语音输入软件的"按住说话 / 触发"快捷键 —— 于是你按一下耳机线控键就能开始语音输入，双手不离键盘，专注 vibe coding。
+你拿起听筒，最先接通的不是对方，而是一位接线员 —— TA 安静地守在线路的另一端，听你说要找谁，再亲手为你把线接过去。那是一个有人情味的年代：每一次接通的背后，都站着一个「人」。
+
+后来，接线员消失了，电话变快了，人也变远了。
+
+而现在，是 AI 的时代。我常常想：要是还有这样一部电话呢？
+
+它不通向另一座城市，倒更像一台小小的**时空穿梭机** —— 线路的另一端，是我的电脑。它随时待命，随时可以接起，听我说话，替我办事。
+
+每当我戴上耳机、按下那颗最普通的按钮，我都觉得自己不是在「打开一个软件」，而是在**拨通一通电话** —— 接起的，是这个时代的接线员：一个永远在线、替我转接一切的智能。
+
+**AI 接线员**，就是那部电话。它把你耳机上那颗最不起眼的播放键，变成你与 AI 之间的「接通键」。
+
+### 两个用它的理由
+
+**理由一 · 一点浪漫 ☎️**
+在一个到处是冰冷界面的时代，它让你重新找回「拿起电话、和谁说说话」的仪式感。要是再配上一台复古电话听筒，那种**时代的反差感**会更迷人 —— 旧时代的躯壳里，住着这个时代最聪明的灵魂。
+
+**理由二 · 它是真的好用 🎯**
+1. **无感** —— 戴上耳机，按一下耳机上本来就有的那颗键，就能直接开口；不用找窗口、不打断手头的事。
+2. **免充电、免维护** —— 有线耳机不像蓝牙耳机要天天充电，没有续航焦虑，几乎零维护。
+3. **切换极简** —— 换设备只需「一拔一插」，不必反复蓝牙配对。
+
+### ✨ 功能
 
 - 🎧 监听耳机的「播放 / 暂停」媒体键
-- ⌨️ 映射成任意键 —— 默认 macOS = 右 Command，Windows = 右 Alt
+- ⌨️ 映射成任意按键 —— 默认 macOS = 右 Command，Windows = 右 Alt
 - 🪟 常驻菜单栏 / 系统托盘，一键开关
 - 🚀 支持开机自启
 - 🍎 + 🪟 macOS 与 Windows 双平台
 
 ### 截图
 
-<!-- 把截图放进 assets/ 文件夹后，取消下面的注释 -->
-<!-- ![主界面](assets/screenshot-mac.png) -->
-> 截图待补充。
+<div align="center">
+<img src="assets/screenshot-mac.png" width="340" alt="AI 接线员 主界面" />
+</div>
 
 ### 下载安装
 
@@ -70,7 +92,7 @@
 ### 使用方法
 
 1. 打开 App，确保**主开关已开启**（macOS 记得给「辅助功能」权限）。
-2. 在「按键映射」里把目标键设成你想要的键（例如你常用语音输入软件的快捷键）。
+2. 在「映射目标」里把目标键设成你想要的键（例如你常用语音输入软件的快捷键）。
 3. 按耳机的「播放 / 暂停」键 —— 即触发你设定的那个键。
 
 ### 🔒 隐私与安全
@@ -113,23 +135,45 @@ dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=
 
 ## English
 
-### What is this
+### The story
 
-**AI Commander** maps the **"play / pause" (and other media) button on your headset** to **any key** on your keyboard.
+Long ago, making a phone call meant going through an *operator*.
 
-The most common use: map it to the push-to-talk / trigger hotkey of a voice-input app — so a single press of your headset's inline button starts dictation. Hands stay on the keyboard; you stay in flow, vibe-coding.
+You'd lift the handset, and the first voice on the line wasn't the person you wanted — it was an operator, waiting quietly at the other end, listening for who you were trying to reach, then patching you through by hand. It was a more human age: behind every connection stood a person.
 
-- 🎧 Listens for your headset's play / pause media key
+Then the operators vanished. Calls got faster; people drifted further apart.
+
+And now it's the age of AI. I keep wondering — what if a phone like that still existed?
+
+Not one that reaches another city, but a little **time machine** — and at the other end of the line is my computer. Always on call, ready to pick up, to listen, to get things done for me.
+
+Every time I put on my earphones and press that one ordinary button, it doesn't feel like *opening an app*. It feels like **placing a call** — and the one who answers is the operator of this new era: an intelligence that's always on the line, patching everything through for me.
+
+**AI Commander** is that phone. It turns the most unassuming play button on your earphones into the "connect" button between you and your AI.
+
+### Two reasons to use it
+
+**Reason 1 · A little romance ☎️**
+In an age of cold interfaces, it brings back the ritual of *picking up the phone to talk to someone*. Pair it with a retro handset and the **contrast across eras** only gets sweeter — the smartest soul of this age, living inside the shell of an older one.
+
+**Reason 2 · It's genuinely better to use 🎯**
+1. **Effortless** — put on your earphones, press the button that's already there, and just talk. Nothing to launch, nothing in the way.
+2. **No charging, no upkeep** — wired earphones never need charging like Bluetooth buds; no battery anxiety, virtually zero maintenance.
+3. **Switch in a snap** — moving between devices is just unplug-and-plug, no endless Bluetooth re-pairing.
+
+### ✨ Features
+
+- 🎧 Listens for your earphones' play / pause media key
 - ⌨️ Remaps it to any key — default: **Right Command** on macOS, **Right Alt** on Windows
 - 🪟 Lives in the menu bar / system tray, toggle on/off anytime
 - 🚀 Launch at login
 - 🍎 + 🪟 Both macOS and Windows
 
-### Screenshots
+### Screenshot
 
-<!-- Drop images into assets/ then uncomment -->
-<!-- ![Main window](assets/screenshot-mac.png) -->
-> Screenshots coming soon.
+<div align="center">
+<img src="assets/screenshot-mac.png" width="340" alt="AI Commander main window" />
+</div>
 
 ### Download & Install
 
@@ -161,8 +205,8 @@ You also need to enable **AI接线员** under **System Settings → Privacy & Se
 ### Usage
 
 1. Open the app and make sure the **master switch is on** (grant Accessibility on macOS).
-2. In **Key Mapping**, set the target key to whatever you want (e.g. your voice-input app's hotkey).
-3. Press your headset's play / pause button — it fires the key you chose.
+2. Under **Mapping Target**, set the target key to whatever you want (e.g. your voice-input app's hotkey).
+3. Press your earphones' play / pause button — it fires the key you chose.
 
 ### 🔒 Privacy & Security
 
