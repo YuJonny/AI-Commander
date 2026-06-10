@@ -46,3 +46,8 @@ process_final_icon.swift
 dmg-build/genbm
 dmg-build/bg.png
 dmg-build/bg@2x.png
+
+# ───────── icon-generation leftovers ─────────
+Commander.iconset/
+Commander_Icon_1024.png
+Commander_Logo*.png
