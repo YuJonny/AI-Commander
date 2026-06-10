@@ -40,10 +40,10 @@
 ### 两个用它的理由
 
 **理由一 · 一点浪漫 ☎️**
-在一个到处是冰冷界面的时代，它让你重新找回「拿起电话、和谁说说话」的仪式感。要是再配上一台复古电话听筒，那种**时代的反差感**会更迷人 —— 旧时代的躯壳里，住着这个时代最聪明的灵魂。
+在一个到处是冰冷界面的时代，它让你重新找回「拿起电话、和谁说说话」的那点仪式感。要是再配上一台复古电话听筒，**时代的反差感**会更迷人 —— 旧时代的躯壳里，住着这个时代最聪明的灵魂。
 
-**理由二 · 它是真的好用 🎯**
-1. **无感** —— 戴上耳机，按一下耳机上本来就有的那颗键，就能直接开口；不用找窗口、不打断手头的事。
+**理由二 · 它是真的好用 —— 我称之为 Vibe Coding 的终极形态 🎯**
+1. **无感** —— 拿起电话，按一下拨号键，就能直接开口；不用找窗口，不打断手头的事。
 2. **免充电、免维护** —— 有线耳机不像蓝牙耳机要天天充电，没有续航焦虑，几乎零维护。
 3. **切换极简** —— 换设备只需「一拔一插」，不必反复蓝牙配对。
 
@@ -94,6 +94,11 @@
 1. 打开 App，确保**主开关已开启**（macOS 记得给「辅助功能」权限）。
 2. 在「映射目标」里把目标键设成你想要的键（例如你常用语音输入软件的快捷键）。
 3. 按耳机的「播放 / 暂停」键 —— 即触发你设定的那个键。
+
+### 🧩 推荐搭配使用
+
+- 🎙️ **[Typeless](https://www.typeless.com/?via=jonny)** —— 语音输入软件。不只是快速把语音转成文字，还会自动校准、去口语化，直接整理成结构化的输出。
+- ☎️ **[Native Union 复古电话听筒](https://s.click.taobao.com/t?e=m%3D2%26s%3DwIrhGUcHebRw4vFB6t2Z2ueEDrYVVa6424t41fwIvtDRnNAdhLhtk430ZFekjizvxL1QHRKL8qiA5rFvxyOF9bwBMngvQdOvBQ7ZDE%2F6%2BIeRXNdY%2BjBkB5eYDQwFj6yC8kftjCRdkjx9Tuff7Tu%2FYJiUD8YEbaigH9ofgWr0NEuwIB%2BqTHya4ovEYPUpsQ%2FF2%2BRbLWXc2uZ5pCmcDdfSii21iRm1aQiYoGwWYjQ2nPkzWlhic%2BUoh0NEJ7GOeqvGxg5p7bh%2BFbQ%3D)** —— Apple Store 入驻产品，市面上质感最好的复古听筒。我试过各种价位的，只有它的线材拉扯时几乎毫无阻力，外形也很适合桌面搭配。
 
 ### 🔒 隐私与安全
 
@@ -156,8 +161,8 @@ Every time I put on my earphones and press that one ordinary button, it doesn't 
 **Reason 1 · A little romance ☎️**
 In an age of cold interfaces, it brings back the ritual of *picking up the phone to talk to someone*. Pair it with a retro handset and the **contrast across eras** only gets sweeter — the smartest soul of this age, living inside the shell of an older one.
 
-**Reason 2 · It's genuinely better to use 🎯**
-1. **Effortless** — put on your earphones, press the button that's already there, and just talk. Nothing to launch, nothing in the way.
+**Reason 2 · It's genuinely good — the final form of vibe coding 🎯**
+1. **Frictionless** — pick up the "phone", press the dial button, and just talk. No window to find, no flow to break.
 2. **No charging, no upkeep** — wired earphones never need charging like Bluetooth buds; no battery anxiety, virtually zero maintenance.
 3. **Switch in a snap** — moving between devices is just unplug-and-plug, no endless Bluetooth re-pairing.
 
@@ -207,6 +212,11 @@ You also need to enable **AI接线员** under **System Settings → Privacy & Se
 1. Open the app and make sure the **master switch is on** (grant Accessibility on macOS).
 2. Under **Mapping Target**, set the target key to whatever you want (e.g. your voice-input app's hotkey).
 3. Press your earphones' play / pause button — it fires the key you chose.
+
+### 🧩 Recommended pairings
+
+- 🎙️ **[Typeless](https://www.typeless.com/?via=jonny)** — a voice-input app. More than fast speech-to-text: it auto-corrects, strips spoken filler, and turns your words into clean, structured output.
+- ☎️ **[Native Union retro handset](https://s.click.taobao.com/t?e=m%3D2%26s%3DwIrhGUcHebRw4vFB6t2Z2ueEDrYVVa6424t41fwIvtDRnNAdhLhtk430ZFekjizvxL1QHRKL8qiA5rFvxyOF9bwBMngvQdOvBQ7ZDE%2F6%2BIeRXNdY%2BjBkB5eYDQwFj6yC8kftjCRdkjx9Tuff7Tu%2FYJiUD8YEbaigH9ofgWr0NEuwIB%2BqTHya4ovEYPUpsQ%2FF2%2BRbLWXc2uZ5pCmcDdfSii21iRm1aQiYoGwWYjQ2nPkzWlhic%2BUoh0NEJ7GOeqvGxg5p7bh%2BFbQ%3D)** — sold in the Apple Store; the best-made retro handset I've found. After trying many at every price, only this one's cable pulls with zero resistance, and the shape sits beautifully on a desk.
 
 ### 🔒 Privacy & Security
 
