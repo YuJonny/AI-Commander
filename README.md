@@ -39,10 +39,10 @@
 
 ### 两个用它的理由
 
-**理由一 · 一点浪漫 ☎️**
+**1️⃣ 一点浪漫 ☎️**
 在一个到处是冰冷界面的时代，它让你重新找回「拿起电话、和谁说说话」的那点仪式感。要是再配上一台复古电话听筒，**时代的反差感**会更迷人 —— 旧时代的躯壳里，住着这个时代最聪明的灵魂。
 
-**理由二 · 它是真的好用 —— 我称之为 Vibe Coding 的终极形态 🎯**
+**2️⃣ 它是真的好用 —— 我称之为 Vibe Coding 的终极形态 🎯**
 1. **无感** —— 拿起电话，按一下拨号键，就能直接开口；不用找窗口，不打断手头的事。
 2. **免充电、免维护** —— 有线耳机不像蓝牙耳机要天天充电，没有续航焦虑，几乎零维护。
 3. **切换极简** —— 换设备只需「一拔一插」，不必反复蓝牙配对。
@@ -158,10 +158,10 @@ Every time I put on my earphones and press that one ordinary button, it doesn't 
 
 ### Two reasons to use it
 
-**Reason 1 · A little romance ☎️**
+**1️⃣ A little romance ☎️**
 In an age of cold interfaces, it brings back the ritual of *picking up the phone to talk to someone*. Pair it with a retro handset and the **contrast across eras** only gets sweeter — the smartest soul of this age, living inside the shell of an older one.
 
-**Reason 2 · It's genuinely good — the final form of vibe coding 🎯**
+**2️⃣ It's genuinely good — the final form of vibe coding 🎯**
 1. **Frictionless** — pick up the "phone", press the dial button, and just talk. No window to find, no flow to break.
 2. **No charging, no upkeep** — wired earphones never need charging like Bluetooth buds; no battery anxiety, virtually zero maintenance.
 3. **Switch in a snap** — moving between devices is just unplug-and-plug, no endless Bluetooth re-pairing.
