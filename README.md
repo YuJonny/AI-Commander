@@ -114,10 +114,10 @@
 
 **macOS**（需 Xcode 命令行工具）：
 ```bash
-./build.sh universal      # 生成通用二进制（Intel + Apple Silicon）AI接线员.app
+./build.sh      # 编译通用二进制（Intel + Apple Silicon）并自动签名 → AI接线员.app
 ```
 
-**Windows**（需 .NET 8 SDK）：
+**Windows**（需 .NET 8 SDK）：双击 `Commander-Windows/一键编译.bat`（自动检测 .NET 并编译），或手动：
 ```bash
 cd Commander-Windows
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
@@ -232,10 +232,10 @@ This kind of tool needs "global media-key listening + synthetic key events", whi
 
 **macOS** (Xcode command-line tools required):
 ```bash
-./build.sh universal      # builds a universal (Intel + Apple Silicon) AI接线员.app
+./build.sh      # builds a signed universal (Intel + Apple Silicon) AI接线员.app
 ```
 
-**Windows** (.NET 8 SDK required):
+**Windows** (.NET 8 SDK required): double-click `Commander-Windows/一键编译.bat` (auto-detects .NET and builds), or manually:
 ```bash
 cd Commander-Windows
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true

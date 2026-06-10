@@ -3,7 +3,7 @@
 # Run this after every rebuild so the Accessibility/辅助功能 grant survives
 # (macOS tracks the grant by code-signature hash — a stable hash = grant persists).
 set -e
-APP="${1:-/Users/vvclaw/Downloads/接线员/AI接线员.app}"
+APP="${1:-$(cd "$(dirname "$0")" && pwd)/AI接线员.app}"
 ENT="$(dirname "$0")/KeyRelay/KeyRelay.entitlements"
 echo "Signing: $APP"
 xattr -cr "$APP"

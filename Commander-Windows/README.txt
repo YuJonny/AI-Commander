@@ -1,4 +1,4 @@
-接线员 Commander - Windows Version (WPF + WPF-UI)
+AI接线员 Commander - Windows Version (WPF + WPF-UI)
 ====================================================
 
 Tech stack:
@@ -11,7 +11,7 @@ Requirements:
   - .NET 8 SDK (https://dotnet.microsoft.com/download/dotnet/8.0)
 
 Build:
-  1. Double-click 一键编译.bat (Chinese) or build.bat
+  1. Double-click 一键编译.bat
   2. Or manually: dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
   3. Output: publish/Commander.exe
 

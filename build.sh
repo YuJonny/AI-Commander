@@ -1,53 +1,49 @@
 #!/bin/bash
+# Build AI接线员.app — a universal (Intel + Apple Silicon) macOS app bundle,
+# then sign it with a stable ad-hoc identity (via sign.sh) so the macOS
+# Accessibility (辅助功能) grant survives rebuilds.
+#
+# Requirements: Xcode command-line tools (swiftc, lipo, codesign).
+# Usage: ./build.sh
 set -e
+cd "$(dirname "$0")"
 
-APP_NAME="接线员"
-EXECUTABLE="KeyRelay"
-BUNDLE="${APP_NAME}.app"
-SDK_PATH=$(xcrun --show-sdk-path)
+APP="AI接线员.app"
+EXEC="Commander"
+SDK="$(xcrun --show-sdk-path)"
 
-ARCHS=""
-if [[ $(uname -m) == "arm64" ]]; then
-    ARCHS="-target arm64-apple-macosx12.0"
-else
-    ARCHS="-target x86_64-apple-macosx12.0"
-fi
-
-# Build for both architectures (universal binary)
-if [ "$1" == "universal" ]; then
-    echo "Building universal binary..."
-
-    swiftc $ARCHS -sdk "$SDK_PATH" -parse-as-library \
+compile() {  # $1 = arch target
+    swiftc -O -sdk "$SDK" -parse-as-library \
         -framework SwiftUI -framework AppKit -framework CoreGraphics \
         -framework IOKit -framework Carbon -framework ApplicationServices \
-        KeyRelay/*.swift -o /tmp/KeyRelay_arm64 \
-        -target arm64-apple-macosx12.0
+        -framework MediaPlayer \
+        KeyRelay/*.swift -o "/tmp/${EXEC}_$1" -target "$1"
+}
 
-    swiftc -sdk "$SDK_PATH" -parse-as-library \
-        -framework SwiftUI -framework AppKit -framework CoreGraphics \
-        -framework IOKit -framework Carbon -framework ApplicationServices \
-        KeyRelay/*.swift -o /tmp/KeyRelay_x86_64 \
-        -target x86_64-apple-macosx12.0
+echo "==> Compiling arm64 ..."
+compile arm64-apple-macosx13.0
+echo "==> Compiling x86_64 ..."
+compile x86_64-apple-macosx13.0
 
-    lipo -create /tmp/KeyRelay_arm64 /tmp/KeyRelay_x86_64 -output /tmp/KeyRelay_universal
-    rm /tmp/KeyRelay_arm64 /tmp/KeyRelay_x86_64
-    BINARY="/tmp/KeyRelay_universal"
-else
-    echo "Building for current architecture..."
-    swiftc $ARCHS -sdk "$SDK_PATH" -parse-as-library \
-        -framework SwiftUI -framework AppKit -framework CoreGraphics \
-        -framework IOKit -framework Carbon -framework ApplicationServices \
-        KeyRelay/*.swift -o /tmp/KeyRelay_build
-    BINARY="/tmp/KeyRelay_build"
-fi
+echo "==> Creating universal binary ..."
+lipo -create "/tmp/${EXEC}_arm64-apple-macosx13.0" "/tmp/${EXEC}_x86_64-apple-macosx13.0" \
+     -output "/tmp/${EXEC}_universal"
+rm -f "/tmp/${EXEC}_arm64-apple-macosx13.0" "/tmp/${EXEC}_x86_64-apple-macosx13.0"
 
-# Create .app bundle
-rm -rf "${BUNDLE}"
-mkdir -p "${BUNDLE}/Contents/MacOS"
-mkdir -p "${BUNDLE}/Contents/Resources"
-cp "$BINARY" "${BUNDLE}/Contents/MacOS/${EXECUTABLE}"
-cp KeyRelay/Info.plist "${BUNDLE}/Contents/"
-rm "$BINARY"
+echo "==> Assembling ${APP} ..."
+rm -rf "$APP"
+mkdir -p "$APP/Contents/MacOS" \
+         "$APP/Contents/Resources/zh-Hans.lproj" \
+         "$APP/Contents/Resources/en.lproj"
+mv "/tmp/${EXEC}_universal"                    "$APP/Contents/MacOS/$EXEC"
+cp KeyRelay/Info.plist                         "$APP/Contents/Info.plist"
+cp Commander.icns                              "$APP/Contents/Resources/"
+cp statusbar_icon.png statusbar_icon@2x.png    "$APP/Contents/Resources/"
+cp KeyRelay/zh-Hans.lproj/Localizable.strings  "$APP/Contents/Resources/zh-Hans.lproj/"
+cp KeyRelay/en.lproj/Localizable.strings       "$APP/Contents/Resources/en.lproj/"
 
-echo "✅ Build complete: ${BUNDLE}"
-echo "   Run: open \"${BUNDLE}\""
+echo "==> Signing (stable identity) ..."
+bash sign.sh "$PWD/$APP"
+
+echo ""
+echo "✅ Done: $APP  (universal, signed)"

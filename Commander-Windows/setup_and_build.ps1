@@ -4,7 +4,7 @@
 chcp 65001 | Out-Null
 Write-Host ""
 Write-Host "  ================================" -ForegroundColor Cyan
-Write-Host "    接线员 Commander - Windows Build" -ForegroundColor Cyan
+Write-Host "    AI接线员 Commander - Windows Build" -ForegroundColor Cyan
 Write-Host "  ================================" -ForegroundColor Cyan
 Write-Host ""
 
