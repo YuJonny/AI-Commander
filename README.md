@@ -13,6 +13,12 @@
 
 [中文](#中文) · [English](#english)
 
+<img src="assets/demo.gif" width="300" alt="功能演示 / Demo" />
+
+⭐ **觉得有用，点个 Star 支持一下** · *If it helps, a Star means a lot.*
+
+<sub>语音输入 · 媒体键映射 · 快捷键 · push-to-talk · voice input · hotkey · vibe coding · 接线员 · macOS · Windows</sub>
+
 </div>
 
 ---
