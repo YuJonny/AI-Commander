@@ -30,6 +30,8 @@
 "setup.recommended" = "建议";
 "setup.done" = "确定";
 "setup.footer" = "完成必需项后，可以先检测耳机键，再点「确定」关闭。下一步：在主界面下载语音识别模型，就可以开始说话了。";
+"dl.cancel" = "取消下载";
+"dl.cancelled" = "已取消下载";
 "dl.space.title" = "磁盘空间不足";
 "dl.space.msg" = "下载并安装此模型大约需要 %@ 可用空间，当前仅剩 %@。请清理磁盘后重试。";
 "setup.accessibility.title" = "辅助功能权限";

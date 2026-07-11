@@ -29,9 +29,14 @@ final class ModelDownloader: NSObject {
         var checkFile: String { requiredFiles[0] }
     }
 
-    /// GitHub 直链 → 国内镜像优先的地址列表
+    /// GitHub 直链 → 国内镜像优先的地址列表（2026-07 裸中国网络实测排序：
+    /// ghfast≈163KB/s、gh-proxy≈127KB/s、ghproxy.net 慢但活、直连仅海外可用）。
+    /// 配合假活看门狗：某源持续 <30KB/s 会被自动掐掉换下一个。
     private static func gh(_ u: String) -> [String] {
-        ["https://ghfast.top/" + u, "https://gh-proxy.com/" + u, u]
+        ["https://ghfast.top/" + u,
+         "https://gh-proxy.com/" + u,
+         "https://ghproxy.net/" + u,
+         u]
     }
 
     /// 高精度 ASR：Qwen3-0.6B（中英混说强、自带标点）
@@ -71,9 +76,39 @@ final class ModelDownloader: NSObject {
         isArchive: false, isGGUF: true, sizeHint: 4790)
 
     private(set) var isRunning = false
+    private var cancelled = false
+    private weak var activeTask: URLSessionTask?
     var onProgress: ((String) -> Void)?
     var onFraction: ((Double) -> Void)?    // 0…1 总体进度（驱动进度条）
     var onFinished: ((Bool) -> Void)?
+
+    /// 用户取消：中断当前任务并结束整个下载流程（GGUF 的 .part 保留，下次续传）
+    func cancel() {
+        cancelled = true
+        activeTask?.cancel()
+    }
+
+    /// 假活看门狗：连接建立但持续低速（30 秒窗口 < 约 30KB/s）→ 掐掉当前源换下一个。
+    /// 中国网络下公益镜像常见"接上了但不给数据"，仅靠超时（只防完全断流）挡不住。
+    private func startWatchdog(task: URLSessionTask) -> DispatchSourceTimer {
+        var history: [Int64] = []
+        let timer = DispatchSource.makeTimerSource(queue: .global(qos: .utility))
+        timer.schedule(deadline: .now() + 10, repeating: 10)
+        timer.setEventHandler { [weak self, weak task] in
+            guard let task, self?.cancelled != true else { return }
+            history.append(task.countOfBytesReceived)
+            if history.count >= 4 {                       // 30 秒窗口（3 个间隔）
+                let delta = history[history.count - 1] - history[history.count - 4]
+                if delta < 900_000 {                      // <0.9MB/30s ≈ 30KB/s：假活
+                    NSLog("[ModelDownloader] watchdog: stalled source (%.0f KB in 30s), switching", Double(delta) / 1024)
+                    task.cancel()
+                }
+                history.removeFirst()
+            }
+        }
+        timer.resume()
+        return timer
+    }
 
     static var modelsRoot: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -110,20 +145,23 @@ final class ModelDownloader: NSObject {
         guard !isRunning else { return }
         guard !items.isEmpty else { DispatchQueue.main.async { self.onFinished?(true) }; return }
         isRunning = true
+        cancelled = false
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let self else { return }
             var okAll = true
             let totalMB = items.reduce(0) { $0 + $1.sizeHint }
             var doneMB = 0.0
             for item in items {
+                if self.cancelled { okAll = false; break }
                 if self.fetch(item: item, doneMB: doneMB, totalMB: totalMB) {
                     doneMB += item.sizeHint
                 } else { okAll = false; break }
             }
             self.isRunning = false
             let ok = okAll
+            let wasCancelled = self.cancelled
             DispatchQueue.main.async {
-                self.onProgress?(ok ? L("dl.done") : L("dl.fail"))
+                self.onProgress?(ok ? L("dl.done") : (wasCancelled ? L("dl.cancelled") : L("dl.fail")))
                 self.onFinished?(ok)
             }
         }
@@ -131,6 +169,7 @@ final class ModelDownloader: NSObject {
 
     private func fetch(item: Item, doneMB: Double, totalMB: Double) -> Bool {
         for urlStr in item.urls {
+            if cancelled { return false }
             guard let url = URL(string: urlStr) else { continue }
             if downloadAndInstall(url: url, item: item, doneMB: doneMB, totalMB: totalMB) { return true }
         }
@@ -155,8 +194,12 @@ final class ModelDownloader: NSObject {
         cfg.timeoutIntervalForRequest = 40
         cfg.timeoutIntervalForResource = 7200
         let session = URLSession(configuration: cfg, delegate: delegate, delegateQueue: nil)
-        session.downloadTask(with: url).resume()
+        let task = session.downloadTask(with: url)
+        activeTask = task
+        let watchdog = startWatchdog(task: task)
+        task.resume()
         sem.wait()
+        watchdog.cancel()
         session.finishTasksAndInvalidate()
         guard let f = file else { return false }
         defer { try? FileManager.default.removeItem(at: f) }
@@ -192,10 +235,14 @@ final class ModelDownloader: NSObject {
         cfg.timeoutIntervalForRequest = 40
         cfg.timeoutIntervalForResource = 7200
         let session = URLSession(configuration: cfg, delegate: delegate, delegateQueue: nil)
-        session.dataTask(with: req).resume()
+        let task = session.dataTask(with: req)
+        activeTask = task
+        let watchdog = startWatchdog(task: task)
+        task.resume()
         sem.wait()
+        watchdog.cancel()
         session.finishTasksAndInvalidate()
-        guard delegate.ok else { return false }          // 失败：保留 .part 供续传
+        guard delegate.ok else { return false }          // 失败/被掐：保留 .part 供续传（换源后 Range 接着下）
 
         // 校验：GGUF magic + 体积（防镜像塞 HTML 错误页）
         guard let fh = FileHandle(forReadingAtPath: part.path) else { return false }

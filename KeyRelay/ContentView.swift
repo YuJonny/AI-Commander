@@ -363,7 +363,7 @@ struct FunctionView: View {
 
     private var statusLabel: String {
         if needsRequiredSetup { return L("home.status.setup") }
-        if store.downloadingKind != nil { return L("home.status.downloading") }
+        if store.downloadingVoice || store.downloadingLLM { return L("home.status.downloading") }
         if !store.isEnabled { return L("home.status.off") }
         if store.selectedInputMethod == .localLLM && !currentASRReady {
             return L(store.asrChoiceQwen ? "home.status.needqwen" : "home.status.needsense")
@@ -373,7 +373,7 @@ struct FunctionView: View {
 
     private var statusTint: Color {
         if needsRequiredSetup { return .orange }
-        if store.downloadingKind != nil { return .blue }
+        if store.downloadingVoice || store.downloadingLLM { return .blue }
         if store.selectedInputMethod == .localLLM && store.isEnabled && !currentASRReady { return .orange }
         return store.isEnabled ? .green : .secondary
     }
@@ -572,10 +572,11 @@ struct FunctionView: View {
     }
 
     @ViewBuilder
-    private func compactModelRow(title: String, detail: String, ready: Bool, kind: String,
+    private func compactModelRow(title: String, detail: String, ready: Bool,
+                                 active: Bool, fraction: Double,
                                  action: @escaping () -> Void,
+                                 cancel: @escaping () -> Void,
                                  onDelete: @escaping () -> Void) -> some View {
-        let active = store.downloadingKind == kind
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center, spacing: 8) {
                 Image(systemName: "brain.head.profile")
@@ -593,11 +594,12 @@ struct FunctionView: View {
                 }
                 .lineLimit(1)
                 Spacer()
-                modelActionControl(ready: ready, active: active, prominent: false,
-                                   download: action, delete: onDelete)
+                modelActionControl(ready: ready, active: active, fraction: fraction,
+                                   prominent: false, downloadDisabled: active,
+                                   download: action, cancel: cancel, delete: onDelete)
             }
             if active {
-                ProgressView(value: store.downloadFraction)
+                ProgressView(value: fraction)
                     .progressViewStyle(.linear)
                     .controlSize(.small)
                     .tint(.accentColor)
@@ -609,8 +611,11 @@ struct FunctionView: View {
     private func modelActionControl(
         ready: Bool,
         active: Bool,
+        fraction: Double,
         prominent: Bool,
+        downloadDisabled: Bool,
         download: @escaping () -> Void,
+        cancel: @escaping () -> Void,
         delete: @escaping () -> Void
     ) -> some View {
         Group {
@@ -630,19 +635,27 @@ struct FunctionView: View {
                     .help(L("model.delete.help"))
                 }
             } else if active {
-                Text("\(Int(store.downloadFraction * 100))%")
-                    .font(.system(size: 12, weight: .semibold).monospacedDigit())
-                    .foregroundColor(.accentColor)
-            } else if prominent {
-                modelDownloadButton(prominent: true, action: download)
+                HStack(spacing: 4) {
+                    Text("\(Int(fraction * 100))%")
+                        .font(.system(size: 12, weight: .semibold).monospacedDigit())
+                        .foregroundColor(.accentColor)
+                    Button { cancel() } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 12))
+                            .frame(width: 18, height: 22)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundColor(.secondary)
+                    .help(L("dl.cancel"))
+                }
             } else {
-                modelDownloadButton(prominent: false, action: download)
+                modelDownloadButton(prominent: prominent, disabled: downloadDisabled, action: download)
             }
         }
         .frame(width: modelActionWidth, height: 24, alignment: .trailing)
     }
 
-    private func modelDownloadButton(prominent: Bool, action: @escaping () -> Void) -> some View {
+    private func modelDownloadButton(prominent: Bool, disabled: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 3) {
                 Image(systemName: "arrow.down.circle")
@@ -663,13 +676,13 @@ struct FunctionView: View {
             )
         }
         .buttonStyle(.plain)
-        .disabled(store.downloadingKind != nil)
+        .disabled(disabled)
     }
 
     // 语音识别模型：两行自述式选项——两档说明常驻可对比（无需先选中才能看介绍）；
     // 选中行 = 运行时实际使用的模型（严格，不回退）；下载/删除只作用于选中行。
     private var asrChoice: some View {
-        let active = store.downloadingKind == "voice"
+        let active = store.downloadingVoice
         return VStack(alignment: .leading, spacing: 8) {
             sectionLabel(L("model.voice.title"))
 
@@ -699,7 +712,7 @@ struct FunctionView: View {
                 )
 
                 if active {
-                    ProgressView(value: store.downloadFraction).progressViewStyle(.linear)
+                    ProgressView(value: store.voiceFraction).progressViewStyle(.linear)
                         .controlSize(.small).tint(.accentColor)
                         .padding(.top, 8)
                 }
@@ -736,9 +749,11 @@ struct FunctionView: View {
 
             Spacer(minLength: 8)
 
-            // 操作区常驻：就绪=✓+删除，未下载=下载按钮（点未选中行的下载会先切到该档），下载中=百分比
-            modelActionControl(ready: ready, active: active && selected, prominent: selected,
+            // 操作区常驻：就绪=✓+删除，未下载=下载按钮（点未选中行的下载会先切到该档），下载中=百分比+取消
+            modelActionControl(ready: ready, active: active && selected, fraction: store.voiceFraction,
+                               prominent: selected, downloadDisabled: active,
                                download: { if !selected { select() }; download() },
+                               cancel: { store.cancelVoiceDownload() },
                                delete: delete)
         }
         .contentShape(Rectangle())
@@ -881,8 +896,10 @@ struct FunctionView: View {
                     .padding(.leading, 34)   // 与 rowItem 文字列对齐（图标 22 + 间距 12）
                 }
                 compactModelRow(title: L("model.llm.title"), detail: L("model.llm.sub"),
-                                ready: store.llmModelReady, kind: "llm",
+                                ready: store.llmModelReady,
+                                active: store.downloadingLLM, fraction: store.llmFraction,
                                 action: { store.downloadLLMModel() },
+                                cancel: { store.cancelLLMDownload() },
                                 onDelete: { confirmDelete = "llm" })
             }
             .padding(12)

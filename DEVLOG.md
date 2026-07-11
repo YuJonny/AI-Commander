@@ -18,7 +18,10 @@
 - [2026-07-05] (自发) v2 = **arm64-only**：sherpa-onnx / llama.cpp 库仅 arm64，`build.sh` 去掉 universal。
 - [2026-07-05] (自发) `build.sh` 增加打包 llama.cpp 运行时（`llama-server` + 全套 dylib → `Contents/Frameworks/llama/`，rpath `@loader_path`）。
 - [2026-07-09] (用户要求) 用户确认分发原则是“DMG 下载后直接运行最重要” → 明确 vendor 策略：最终 `.app` 必须自带 sherpa-onnx / llama.cpp 运行时；`vendor/` 是否进 git 只影响源码开发者 clone 后能否直接编译，不影响最终用户。
-- ⚠️ 发布三件套（终刷 DMG / 审核 CHANGELOG / GitHub Release）**未做**，等用户拍板。Apple 公证需 $99 账号，用户暂不办。
+- [2026-07-11] (用户拍板) **v2 全量提交 git**：`f15e247`，149 文件 +21710 行——vendor/ 进仓库（用户拍板"clone 即编译"优先）、eval/ 评测资产、assets/redbook、全部文档。仅本地提交**未 push**（push=对外，随 Release 一起）。
+- [2026-07-11] (用户要求) **终刷 DMG**：`python3 dmg-build/build.py` → `终版分发/AI接线员.dmg`（23MB 压缩/App 64MB），已挂载验证：sherpa/llama 运行时、AutoGLM 图标、安装说明齐全，hdiutil 校验 VALID。交用户换机自测新用户全流程；通过后就剩 GitHub Release（发前再确认）。
+- [2026-07-11] (用户定稿) README「缘起」多轮迭代定稿：Claude 三版（伪个人叙事被否"莫名其妙创造奇怪需求"→按键传记→诚实怀旧版），最终**用户亲笔重写**——"以前打电话，是一件很具体的事…现在，我们用它，和未来说话"。教训入档：**品牌故事的情感锚点必须是作者自己的，AI 只能供结构和备选表达，不能代拟"我"的经历**。
+- ⚠️ Apple 公证需 $99 账号，用户暂不办（README 已教绕过）。
 
 ## 2. 语音输入核心（ASR 管线）
 

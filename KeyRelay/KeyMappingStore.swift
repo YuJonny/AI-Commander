@@ -273,10 +273,15 @@ final class KeyMappingStore: ObservableObject {
             voiceController.selectModel(asrChoiceQwen ? .qwen : .senseVoice)
         }
     }
-    @Published var downloadingKind: String? = nil {    // "voice" / "llm"
-        didSet { voiceController.isVoiceModelDownloading = downloadingKind == "voice" }
+    // 语音与润色两条独立下载通道：可同时下载，各自进度、各自可取消
+    @Published var downloadingVoice = false {
+        didSet { voiceController.isVoiceModelDownloading = downloadingVoice }
     }
-    @Published var downloadFraction: Double = 0
+    @Published var voiceFraction: Double = 0
+    @Published var downloadingLLM = false
+    @Published var llmFraction: Double = 0
+    private let voiceDL = ModelDownloader()
+    private let llmDL = ModelDownloader()
     @Published var headsetKeyDetected: Bool {
         didSet { UserDefaults.standard.set(headsetKeyDetected, forKey: "headsetKeyDetected") }
     }
@@ -293,11 +298,14 @@ final class KeyMappingStore: ObservableObject {
 
     // 下载前磁盘预检查：需求 = 下载体积 + 解压/校验余量。不够就明确告知，别下到 99% 才失败。
     func downloadQwenASR()  { guard ensureDiskSpace(neededGB: 2.5) else { return }
-                              startDownload(kind: "voice") { ModelDownloader.shared.startQwen() } }
+                              startVoiceDownload { $0.startQwen() } }
     func downloadSenseASR() { guard ensureDiskSpace(neededGB: 0.8) else { return }
-                              startDownload(kind: "voice") { ModelDownloader.shared.startSense() } }
+                              startVoiceDownload { $0.startSense() } }
     func downloadLLMModel()    { guard ensureDiskSpace(neededGB: 5.5) else { return }
-                                 startDownload(kind: "llm")   { ModelDownloader.shared.startLLM() } }
+                                 startLLMDownload { $0.startLLM() } }
+
+    func cancelVoiceDownload() { voiceDL.cancel() }
+    func cancelLLMDownload()   { llmDL.cancel() }
 
     private func ensureDiskSpace(neededGB: Double) -> Bool {
         let root = ModelDownloader.modelsRoot
@@ -349,18 +357,30 @@ final class KeyMappingStore: ObservableObject {
         statusText = L("del.llm.done")
     }
 
-    private func startDownload(kind: String, _ begin: @escaping () -> Void) {
-        guard !ModelDownloader.shared.isRunning else { return }
-        downloadingKind = kind
-        downloadFraction = 0
-        let dl = ModelDownloader.shared
-        dl.onProgress = { [weak self] text in self?.statusText = text }
-        dl.onFraction = { [weak self] f in self?.downloadFraction = f }
-        dl.onFinished = { [weak self] _ in
-            self?.downloadingKind = nil
+    private func startVoiceDownload(_ begin: (ModelDownloader) -> Void) {
+        guard !voiceDL.isRunning else { return }
+        downloadingVoice = true
+        voiceFraction = 0
+        voiceDL.onProgress = { [weak self] text in self?.statusText = text }
+        voiceDL.onFraction = { [weak self] f in self?.voiceFraction = f }
+        voiceDL.onFinished = { [weak self] _ in
+            self?.downloadingVoice = false
             self?.refreshModelStates()
         }
-        begin()
+        begin(voiceDL)
+    }
+
+    private func startLLMDownload(_ begin: (ModelDownloader) -> Void) {
+        guard !llmDL.isRunning else { return }
+        downloadingLLM = true
+        llmFraction = 0
+        llmDL.onProgress = { [weak self] text in self?.statusText = text }
+        llmDL.onFraction = { [weak self] f in self?.llmFraction = f }
+        llmDL.onFinished = { [weak self] _ in
+            self?.downloadingLLM = false
+            self?.refreshModelStates()
+        }
+        begin(llmDL)
     }
 
     @Published var isRecording: Bool = false      // 正在录制"自定义"按键

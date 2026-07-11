@@ -30,6 +30,8 @@
 "setup.recommended" = "Recommended";
 "setup.done" = "Done";
 "setup.footer" = "After required items are complete, you can test the headset key, then click Done. Next step: download a speech model on the main panel and start talking.";
+"dl.cancel" = "Cancel download";
+"dl.cancelled" = "Download cancelled";
 "dl.space.title" = "Not Enough Disk Space";
 "dl.space.msg" = "Downloading and installing this model needs about %@ free space; only %@ is available. Please free up disk space and try again.";
 "setup.accessibility.title" = "Accessibility";
