@@ -18,8 +18,15 @@ final class MediaKeyInterceptor {
     var targetKeyCode: UInt16 = 54
     var isModifierKey: Bool = true
     var modifierFlag: CGEventFlags = .maskCommand
+    var isDoubleTap: Bool = false   // 目标为双击某修饰键（兼容历史/自定义配置）
 
     var onStatusChange: ((String) -> Void)?
+
+    /// 语音输入模式：开启时，耳机播放键不再做键映射，而是触发录音开关
+    var voiceMode: Bool = false
+    var onVoiceTrigger: (() -> Void)?
+    var detectionOnly: Bool = false
+    var onMediaKeyDown: (() -> Void)?
 
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -129,6 +136,21 @@ final class MediaKeyInterceptor {
         let keyState = (keyFlags & 0xFF00) >> 8
         let isDown = (keyState == 0x0A)
 
+        if isDown {
+            DispatchQueue.main.async { [weak self] in self?.onMediaKeyDown?() }
+        }
+
+        if detectionOnly {
+            return nil
+        }
+
+        if voiceMode {
+            if isDown {
+                DispatchQueue.main.async { [weak self] in self?.onVoiceTrigger?() }
+            }
+            return nil   // 语音模式：吞掉播放键——既不播放/暂停，也不做键映射
+        }
+
         DispatchQueue.main.async { [weak self] in
             self?.onStatusChange?(isDown ? L("status.key.down") : L("status.key.up"))
         }
@@ -140,15 +162,53 @@ final class MediaKeyInterceptor {
     func simulateKey(down: Bool) {
         let source = CGEventSource(stateID: .combinedSessionState)
 
+        if isDoubleTap {
+            // 双击唤起：仅在按下时，快速点该修饰键两次
+            guard down else { return }
+            let kc = targetKeyCode, flag = modifierFlag
+            DispatchQueue.global(qos: .userInteractive).async {
+                func tapOnce() {
+                    if let d = CGEvent(source: source) {
+                        d.type = .flagsChanged
+                        d.setIntegerValueField(.keyboardEventKeycode, value: Int64(kc))
+                        d.flags = flag; d.post(tap: .cghidEventTap)
+                    }
+                    usleep(25_000)
+                    if let u = CGEvent(source: source) {
+                        u.type = .flagsChanged
+                        u.setIntegerValueField(.keyboardEventKeycode, value: Int64(kc))
+                        u.flags = []; u.post(tap: .cghidEventTap)
+                    }
+                }
+                tapOnce(); usleep(90_000); tapOnce()
+            }
+            return
+        }
+
         if isModifierKey {
+            // 纯修饰键（如 ⌘）：用 flagsChanged 模拟按住/松开
             guard let flagEvent = CGEvent(source: source) else { return }
             flagEvent.type = .flagsChanged
             flagEvent.setIntegerValueField(.keyboardEventKeycode, value: Int64(targetKeyCode))
             flagEvent.flags = down ? modifierFlag : []
             flagEvent.post(tap: .cghidEventTap)
+        } else if modifierFlag.isEmpty {
+            // 普通单键
+            guard let e = CGEvent(keyboardEventSource: source, virtualKey: targetKeyCode, keyDown: down) else { return }
+            e.post(tap: .cghidEventTap)
         } else {
-            guard let keyEvent = CGEvent(keyboardEventSource: source, virtualKey: targetKeyCode, keyDown: down) else { return }
-            keyEvent.post(tap: .cghidEventTap)
+            // 组合键（如 ⌘⇧Space）：按下时先压修饰键→主键；松开时先放主键→修饰键
+            if down {
+                if let f = CGEvent(source: source) { f.type = .flagsChanged; f.flags = modifierFlag; f.post(tap: .cghidEventTap) }
+                if let e = CGEvent(keyboardEventSource: source, virtualKey: targetKeyCode, keyDown: true) {
+                    e.flags = modifierFlag; e.post(tap: .cghidEventTap)
+                }
+            } else {
+                if let e = CGEvent(keyboardEventSource: source, virtualKey: targetKeyCode, keyDown: false) {
+                    e.flags = modifierFlag; e.post(tap: .cghidEventTap)
+                }
+                if let f = CGEvent(source: source) { f.type = .flagsChanged; f.flags = []; f.post(tap: .cghidEventTap) }
+            }
         }
     }
 }

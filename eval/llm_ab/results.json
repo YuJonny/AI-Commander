@@ -1,0 +1,4420 @@
+{
+  "prompt_sha256": "dcd8856753b27cd15b16563ca17a507540af43fe0e20fd2d22cd5f0e362288c5",
+  "rows": {
+    "diag-20260710-224658-167-231C79BE": {
+      "case": {
+        "id": "diag-20260710-224658-167-231C79BE",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-224658-167-231C79BE · llm.input",
+        "started_at": "2026-07-10T14:46:58.167Z",
+        "dirty": "我本机的磁盘空间快满了，你可以把一些需要储存的文件，或者一些特别大的模型，或者接下来可能需要你下载的一些别的东西，本机放不下的话，你可以放在一个外接磁盘里。我刚刚创建了一个文件夹。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "我本机的磁盘空间快满了，你可以把一些需要储存的文件，或者一些特别大的模型，或者接下来可能需要你下载的一些别的东西，本机放不下的话，你可以放在一个外接磁盘里。我刚刚创建了一个文件夹。",
+        "raw_output": "我本机的磁盘空间快满了，你可以把一些需要储存的文件，或者一些特别大的模型，或者接下来可能需要你下载的一些别的东西，本机放不下的话，你可以放在一个外接磁盘里。我刚刚创建了一个文件夹。",
+        "latency_seconds": 7.81291425,
+        "usage": {
+          "completion_tokens": 57,
+          "prompt_tokens": 726,
+          "total_tokens": 783,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "我本机的磁盘空间快满了，你可以把一些需要储存的文件，或者一些特别大的模型，或者接下来可能需要你下载的一些别的东西，本机放不下的话，你可以放在一个外接磁盘里。我刚刚创建了一个文件夹。",
+        "raw_output": "我本机的磁盘空间快满了，你可以把一些需要储存的文件，或者一些特别大的模型，或者接下来可能需要你下载的一些别的东西，本机放不下的话，你可以放在一个外接磁盘里。我刚刚创建了一个文件夹。",
+        "latency_seconds": 13.909931457999988,
+        "usage": {
+          "completion_tokens": 57,
+          "prompt_tokens": 726,
+          "total_tokens": 783,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-224619-725-6928D5FA": {
+      "case": {
+        "id": "diag-20260710-224619-725-6928D5FA",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-224619-725-6928D5FA · llm.input",
+        "started_at": "2026-07-10T14:46:19.725Z",
+        "dirty": "不是发给你的，没关系，可以不用管。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "不是发给你的，没关系，可以不用管。",
+        "raw_output": "不是发给你的，没关系，可以不用管。",
+        "latency_seconds": 0.8915108749999998,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 681,
+          "total_tokens": 693,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "不是发给你的，没关系，可以不用管。",
+        "raw_output": "不是发给你的，没关系，可以不用管。",
+        "latency_seconds": 1.5951291670000103,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 681,
+          "total_tokens": 693,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-223924-720-E18CDA25": {
+      "case": {
+        "id": "diag-20260710-223924-720-E18CDA25",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-223924-720-E18CDA25 · llm.input",
+        "started_at": "2026-07-10T14:39:24.720Z",
+        "dirty": "倒是也不需要了。我看目前的这个标点符号处理的还可以，没有出现我所担心的那种情况。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "倒是也不需要了。我看目前的这个标点符号处理的还可以，没有出现我所担心的那种情况。",
+        "raw_output": "倒是也不需要了。我看目前的这个标点符号处理的还可以，没有出现我所担心的那种情况。",
+        "latency_seconds": 1.876338500000001,
+        "usage": {
+          "completion_tokens": 25,
+          "prompt_tokens": 694,
+          "total_tokens": 719,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "倒是也不需要了。我看目前的这个标点符号处理的还可以，没有出现我所担心的那种情况。",
+        "raw_output": "倒是也不需要了。我看目前的这个标点符号处理的还可以，没有出现我所担心的那种情况。",
+        "latency_seconds": 3.433298291,
+        "usage": {
+          "completion_tokens": 25,
+          "prompt_tokens": 694,
+          "total_tokens": 719,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-223754-966-B346F826": {
+      "case": {
+        "id": "diag-20260710-223754-966-B346F826",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-223754-966-B346F826 · llm.input",
+        "started_at": "2026-07-10T14:37:54.966Z",
+        "dirty": "把它存在同一个这个文档里面，把他们俩的结果这种并排的展示给我，并且，要标出他们俩的差异点，最后，我来review。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "把它存在同一个文档里面，把他们俩的结果并排展示给我，并且要标出他们俩的差异点，最后，我来 review。",
+        "raw_output": "把它存在同一个文档里面，把他们俩的结果并排展示给我，并且要标出他们俩的差异点，最后，我来 review。",
+        "latency_seconds": 2.340628334,
+        "usage": {
+          "completion_tokens": 32,
+          "prompt_tokens": 705,
+          "total_tokens": 737,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "把它存在同一个文档里面，把他们俩的结果并排展示给我，并且要标出他们俩的差异点，最后我来 review。",
+        "raw_output": "把它存在同一个文档里面，把他们俩的结果并排展示给我，并且要标出他们俩的差异点，最后我来 review。",
+        "latency_seconds": 4.107878040999992,
+        "usage": {
+          "completion_tokens": 31,
+          "prompt_tokens": 705,
+          "total_tokens": 736,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -5
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -6
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-223720-620-CF0415F6": {
+      "case": {
+        "id": "diag-20260710-223720-620-CF0415F6",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-223720-620-CF0415F6 · llm.input",
+        "started_at": "2026-07-10T14:37:20.620Z",
+        "dirty": "建立一个测试的方案，比方说，我接下来说的每句话，或者是之前的日志里所保存那些东西，都让两个模型分别的都处理一遍，看一下谁的效果好，效果差异到底有多大？",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "建立一个测试的方案，比方说，我接下来说的每句话，或者是之前的日志里所保存那些东西，都让两个模型分别处理一遍，看一下谁的效果好，效果差异到底有多大？",
+        "raw_output": "建立一个测试的方案，比方说，我接下来说的每句话，或者是之前的日志里所保存那些东西，都让两个模型分别处理一遍，看一下谁的效果好，效果差异到底有多大？",
+        "latency_seconds": 3.305957375,
+        "usage": {
+          "completion_tokens": 47,
+          "prompt_tokens": 719,
+          "total_tokens": 766,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "建立一个测试的方案，比方说，我接下来说的每句话，或者是之前的日志里所保存的那些东西，都让两个模型分别处理一遍，看一下谁的效果好，效果差异到底有多大？",
+        "raw_output": "建立一个测试的方案，比方说，我接下来说的每句话，或者是之前的日志里所保存的那些东西，都让两个模型分别处理一遍，看一下谁的效果好，效果差异到底有多大？",
+        "latency_seconds": 5.970809625000015,
+        "usage": {
+          "completion_tokens": 48,
+          "prompt_tokens": 719,
+          "total_tokens": 767,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-223658-195-5A727664": {
+      "case": {
+        "id": "diag-20260710-223658-195-5A727664",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-223658-195-5A727664 · llm.input",
+        "started_at": "2026-07-10T14:36:58.195Z",
+        "dirty": "那你试一下吧，把这个十四b下载下来，做一下ab test。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "那你试一下吧，把这个 14b 下载下来，做一下 AB 测试。",
+        "raw_output": "那你试一下吧，把这个 14b 下载下来，做一下 AB 测试。",
+        "latency_seconds": 1.4840419580000024,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 686,
+          "total_tokens": 707,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "那你试一下吧，把这十四 B 下载下来，做一下 A/B test。",
+        "raw_output": "那你试一下吧，把这十四 B 下载下来，做一下 A/B test。",
+        "latency_seconds": 2.5084454999999934,
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 686,
+          "total_tokens": 706,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-223434-609-E4ABFE47": {
+      "case": {
+        "id": "diag-20260710-223434-609-E4ABFE47",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-223434-609-E4ABFE47 · llm.input",
+        "started_at": "2026-07-10T14:34:34.609Z",
+        "dirty": "但是这样的话，会不会导致，比如说，会不会导致标点符号的问题？比如说我一句话，可能中间没有说完，我只是在思考，中间这个，稍微停顿了一下，DAD分断了，他就直接做语音转文字生成了。那他也会同时生成这个标点符号吗？他认为这就是一句话完成了，就生成了一个句号。这句话并没有说完，它只是中间的一个停顿。会有这种情况出现吗？",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "但是这样的话，会不会导致，比如说，标点符号的问题？比如说我一句话，可能中间没有说完，我只是在思考，中间稍微停顿了一下，DAD分断了，他就直接做语音转文字生成了。那他也会同时生成这个标点符号吗？他认为这就是一句话完成了，就生成了一个句号。这句话并没有说完，它只是中间的一个停顿。会有这种情况出现吗？",
+        "raw_output": "但是这样的话，会不会导致，比如说，标点符号的问题？比如说我一句话，可能中间没有说完，我只是在思考，中间稍微停顿了一下，DAD分断了，他就直接做语音转文字生成了。那他也会同时生成这个标点符号吗？他认为这就是一句话完成了，就生成了一个句号。这句话并没有说完，它只是中间的一个停顿。会有这种情况出现吗？",
+        "latency_seconds": 6.220695124999999,
+        "usage": {
+          "completion_tokens": 86,
+          "prompt_tokens": 760,
+          "total_tokens": 846,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "但是这样的话，会不会导致标点符号的问题？比如说，我一句话，可能中间没有说完，我只是在思考，中间这个稍微停顿了一下，DAD 分断了，他就直接做语音转文字生成了。那他也会同时生成这个标点符号吗？他认为这就是一句话完成了，就生成了一个句号。这句话并没有说完，它只是中间的一个停顿。会有这种情况出现吗？",
+        "raw_output": "但是这样的话，会不会导致标点符号的问题？比如说，我一句话，可能中间没有说完，我只是在思考，中间这个稍微停顿了一下，DAD 分断了，他就直接做语音转文字生成了。那他也会同时生成这个标点符号吗？他认为这就是一句话完成了，就生成了一个句号。这句话并没有说完，它只是中间的一个停顿。会有这种情况出现吗？",
+        "latency_seconds": 10.826585082999998,
+        "usage": {
+          "completion_tokens": 85,
+          "prompt_tokens": 760,
+          "total_tokens": 845,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -8
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -9
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-223102-895-E5F630B8": {
+      "case": {
+        "id": "diag-20260710-223102-895-E5F630B8",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-223102-895-E5F630B8 · llm.input",
+        "started_at": "2026-07-10T14:31:02.895Z",
+        "dirty": "你大概调研一下，千问三八B和千问三十四B这两个模型。如果我用来做这个润色模型的话，这两个模型的差异会有多大？",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "你大概调研一下，千问三八B 和千问三十四B 这两个模型。如果我用来做这个润色模型的话，这两个模型的差异会有多大？",
+        "raw_output": "你大概调研一下，千问三八B 和千问三十四B 这两个模型。如果我用来做这个润色模型的话，这两个模型的差异会有多大？",
+        "latency_seconds": 2.832645124999999,
+        "usage": {
+          "completion_tokens": 39,
+          "prompt_tokens": 707,
+          "total_tokens": 746,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "你大概调研一下，千问三八B和千问三十四B这两个模型。如果我用来做这个润色模型的话，这两个模型的差异会有多大？",
+        "raw_output": "你大概调研一下，千问三八B和千问三十四B这两个模型。如果我用来做这个润色模型的话，这两个模型的差异会有多大？",
+        "latency_seconds": 4.740006499999993,
+        "usage": {
+          "completion_tokens": 37,
+          "prompt_tokens": 707,
+          "total_tokens": 744,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-222414-146-05FFC45C": {
+      "case": {
+        "id": "diag-20260710-222414-146-05FFC45C",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-222414-146-05FFC45C · llm.input",
+        "started_at": "2026-07-10T14:24:14.146Z",
+        "dirty": "好的，我了解了。那我们再做一个尾流式吧，同时做这个尾流试的时候，你是想怎么做？是固定的时间去切分每一段话吗？还是说可以用VAD切分完的状态？因为可以避免同一句话在一句话的中间被切开，能不能就是VAD切完，表示这是一个停顿，这是一小段话，介入去进行这个处理。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "好的，我了解了。那我们再做一个尾流式吧。同时做这个尾流测试的时候，你是想怎么做？是固定的时间去切分每一段话吗？还是说可以用 VAD 切分完的状态？因为可以避免同一句话在一句话的中间被切开。能不能就是 VAD 切完，表示这是一个停顿，这是一小段话，介入去进行这个处理。",
+        "raw_output": "好的，我了解了。那我们再做一个尾流式吧。同时做这个尾流测试的时候，你是想怎么做？是固定的时间去切分每一段话吗？还是说可以用 VAD 切分完的状态？因为可以避免同一句话在一句话的中间被切开。能不能就是 VAD 切完，表示这是一个停顿，这是一小段话，介入去进行这个处理。",
+        "latency_seconds": 6.409586834000002,
+        "usage": {
+          "completion_tokens": 88,
+          "prompt_tokens": 755,
+          "total_tokens": 843,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "好的，我了解了。那我们再做一个尾流式吧，同时做这个尾流试的时候，你是想怎么做？是固定的时间去切分每一段话吗？还是说可以用 VAD 切分完的状态？因为可以避免同一句话在一句话的中间被切开，能不能就是 VAD 切完，表示这是一个停顿，这是一小段话，介入去进行这个处理。",
+        "raw_output": "好的，我了解了。那我们再做一个尾流式吧，同时做这个尾流试的时候，你是想怎么做？是固定的时间去切分每一段话吗？还是说可以用 VAD 切分完的状态？因为可以避免同一句话在一句话的中间被切开，能不能就是 VAD 切完，表示这是一个停顿，这是一小段话，介入去进行这个处理。",
+        "latency_seconds": 11.14425912500002,
+        "usage": {
+          "completion_tokens": 88,
+          "prompt_tokens": 755,
+          "total_tokens": 843,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 5
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 4
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-222021-378-851F8F76": {
+      "case": {
+        "id": "diag-20260710-222021-378-851F8F76",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-222021-378-851F8F76 · llm.input",
+        "started_at": "2026-07-10T14:20:21.378Z",
+        "dirty": "所以，为什么我们的这份只能离线呢？我们为什么不用官方的这个模型呢？我不太理解，不用官方的这个模型有什么好处？看起来官方的这个很厉害呀。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "所以，为什么我们的这份只能离线呢？我们为什么不用官方的这个模型呢？我不太理解，不用官方的这个模型有什么好处？看起来官方的这个很厉害呀。",
+        "raw_output": "所以，为什么我们的这份只能离线呢？我们为什么不用官方的这个模型呢？我不太理解，不用官方的这个模型有什么好处？看起来官方的这个很厉害呀。",
+        "latency_seconds": 2.9139949170000037,
+        "usage": {
+          "completion_tokens": 40,
+          "prompt_tokens": 709,
+          "total_tokens": 749,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "所以，为什么我们的这份只能离线呢？我们为什么不用官方的这个模型呢？我不太理解，不用官方的这个模型有什么好处？看起来官方的这个很厉害呀。",
+        "raw_output": "所以，为什么我们的这份只能离线呢？我们为什么不用官方的这个模型呢？我不太理解，不用官方的这个模型有什么好处？看起来官方的这个很厉害呀。",
+        "latency_seconds": 5.1304737500000215,
+        "usage": {
+          "completion_tokens": 40,
+          "prompt_tokens": 709,
+          "total_tokens": 749,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-221619-320-28484951": {
+      "case": {
+        "id": "diag-20260710-221619-320-28484951",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-221619-320-28484951 · llm.input",
+        "started_at": "2026-07-10T14:16:19.320Z",
+        "dirty": "但是好像千问三ASR这个是流式的模型吧？它是支持流式的吗？我们现在没有在流式的状态下运行吗？以及流式和普通的，这个准确性会差很多吗？",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "但是好像千问三 ASR 这个是流式的模型吧？它是支持流式的吗？我们现在没有在流式的状态下运行吗？以及流式和普通的，这个准确性会差很多吗？",
+        "raw_output": "但是好像千问三 ASR 这个是流式的模型吧？它是支持流式的吗？我们现在没有在流式的状态下运行吗？以及流式和普通的，这个准确性会差很多吗？",
+        "latency_seconds": 3.2430420000000026,
+        "usage": {
+          "completion_tokens": 45,
+          "prompt_tokens": 713,
+          "total_tokens": 758,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "但是好像 Qwen3 ASR 这个是流式的模型吧？它是支持流式的吗？我们现在没有在流式的状态下运行吗？以及流式和普通的，这个准确性会差很多吗？",
+        "raw_output": "但是好像 Qwen3 ASR 这个是流式的模型吧？它是支持流式的吗？我们现在没有在流式的状态下运行吗？以及流式和普通的，这个准确性会差很多吗？",
+        "latency_seconds": 5.622237458000001,
+        "usage": {
+          "completion_tokens": 45,
+          "prompt_tokens": 713,
+          "total_tokens": 758,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 5
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-220221-655-B17B8C8A": {
+      "case": {
+        "id": "diag-20260710-220221-655-B17B8C8A",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-220221-655-B17B8C8A · llm.input",
+        "started_at": "2026-07-10T14:02:21.655Z",
+        "dirty": "提纲。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "提纲。",
+        "raw_output": "提纲。",
+        "latency_seconds": 0.4144752919999988,
+        "usage": {
+          "completion_tokens": 4,
+          "prompt_tokens": 673,
+          "total_tokens": 677,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "提纲。",
+        "raw_output": "提纲。",
+        "latency_seconds": 0.7124656670000036,
+        "usage": {
+          "completion_tokens": 4,
+          "prompt_tokens": 673,
+          "total_tokens": 677,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-215855-540-A7DE7A57": {
+      "case": {
+        "id": "diag-20260710-215855-540-A7DE7A57",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-215855-540-A7DE7A57 · llm.input",
+        "started_at": "2026-07-10T13:58:55.540Z",
+        "dirty": "平仄急，就等再攒几条再一起看吧。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "平仄急，就等再攒几条再一起看吧。",
+        "raw_output": "平仄急，就等再攒几条再一起看吧。",
+        "latency_seconds": 1.1878955419999997,
+        "usage": {
+          "completion_tokens": 16,
+          "prompt_tokens": 685,
+          "total_tokens": 701,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "平仄急，就等再攒几条再一起看吧。",
+        "raw_output": "平仄急，就等再攒几条再一起看吧。",
+        "latency_seconds": 2.0660143329999983,
+        "usage": {
+          "completion_tokens": 16,
+          "prompt_tokens": 685,
+          "total_tokens": 701,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-213716-835-EE553E8E": {
+      "case": {
+        "id": "diag-20260710-213716-835-EE553E8E",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-213716-835-EE553E8E · llm.input",
+        "started_at": "2026-07-10T13:37:16.835Z",
+        "dirty": "你。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "你。",
+        "raw_output": "你。",
+        "latency_seconds": 0.3476529169999978,
+        "usage": {
+          "completion_tokens": 3,
+          "prompt_tokens": 672,
+          "total_tokens": 675,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "你。",
+        "raw_output": "你。",
+        "latency_seconds": 0.5972686249999981,
+        "usage": {
+          "completion_tokens": 3,
+          "prompt_tokens": 672,
+          "total_tokens": 675,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-213539-930-9FA7BBBD": {
+      "case": {
+        "id": "diag-20260710-213539-930-9FA7BBBD",
+        "group": "真实口述（优先 Review）",
+        "category": "数字日期电话保真-回归保护",
+        "source": "diagnostics/20260710-213539-930-9FA7BBBD · llm.input",
+        "started_at": "2026-07-10T13:35:39.930Z",
+        "dirty": "下面是一条带数字和英文术语的。数字的话，我想今天是二零二六年的七月十号，周五晚上九点三十五分，我的手机号是，幺三五幺二三四六七八八，但这个手机号是假的，你不用记下来，我们明天会约在商场的二号门，去三楼吃一个拌面。",
+        "clean": "下面是一条带数字和英文术语的。数字的话，我想今天是2026年7月10日，周五晚上9:35。我的手机号是13512346788，但这个手机号是假的，你不用记下来。我们明天会约在商场的2号门，去三楼吃一个拌面。",
+        "must_keep": [
+          "2026年7月10日",
+          "9:35",
+          "13512346788",
+          "2号门",
+          "三楼"
+        ],
+        "must_not_include": [],
+        "gold_status": "待用户确认的产品金标"
+      },
+      "8b": {
+        "output": "今天是2026年7月10日，周五晚上9点35分，我的手机号是13512346788，但这个手机号是假的，你不用记下来，我们明天会约在商场的2号门，去三楼吃一个拌面。",
+        "raw_output": "今天是2026年7月10日，周五晚上9点35分，我的手机号是13512346788，但这个手机号是假的，你不用记下来，我们明天会约在商场的2号门，去三楼吃一个拌面。",
+        "latency_seconds": 4.939211583999999,
+        "usage": {
+          "completion_tokens": 68,
+          "prompt_tokens": 748,
+          "total_tokens": 816,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "下面是一条带数字和英文术语的。数字的话，我想今天是 2026 年 7 月 10 号，周五晚上 9 点 35 分，我的手机号是 13512346788，但这个手机号是假的，你不用记下来，我们明天会约在商场的 2 号门，去三楼吃一个拌面。",
+        "raw_output": "下面是一条带数字和英文术语的。数字的话，我想今天是 2026 年 7 月 10 号，周五晚上 9 点 35 分，我的手机号是 13512346788，但这个手机号是假的，你不用记下来，我们明天会约在商场的 2 号门，去三楼吃一个拌面。",
+        "latency_seconds": 11.593604957999986,
+        "usage": {
+          "completion_tokens": 94,
+          "prompt_tokens": 748,
+          "total_tokens": 842,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.7634408602150538,
+        "missing_must_keep": [
+          "9:35"
+        ],
+        "forbidden_present": [],
+        "redline_ok": false,
+        "digit_ok": true,
+        "input_character_delta": -24
+      },
+      "score_14b": {
+        "similarity": 0.968421052631579,
+        "missing_must_keep": [
+          "2026年7月10日",
+          "9:35"
+        ],
+        "forbidden_present": [],
+        "redline_ok": false,
+        "digit_ok": true,
+        "input_character_delta": 11
+      },
+      "winner": "14B"
+    },
+    "diag-20260710-213533-331-D525D34A": {
+      "case": {
+        "id": "diag-20260710-213533-331-D525D34A",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-213533-331-D525D34A · llm.input",
+        "started_at": "2026-07-10T13:35:33.331Z",
+        "dirty": "你可以把这一版先上传到给他们。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "你可以把这一版先上传给他们。",
+        "raw_output": "你可以把这一版先上传给他们。",
+        "latency_seconds": 0.7306262919999966,
+        "usage": {
+          "completion_tokens": 9,
+          "prompt_tokens": 679,
+          "total_tokens": 688,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "你可以把这一版先上传给他们。",
+        "raw_output": "你可以把这一版先上传给他们。",
+        "latency_seconds": 1.2800930420000043,
+        "usage": {
+          "completion_tokens": 9,
+          "prompt_tokens": 679,
+          "total_tokens": 688,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-213508-986-B0CDC597": {
+      "case": {
+        "id": "diag-20260710-213508-986-B0CDC597",
+        "group": "真实口述（优先 Review）",
+        "category": "自我更正-换指令重说",
+        "source": "diagnostics/20260710-213508-986-B0CDC597 · llm.input",
+        "started_at": "2026-07-10T13:35:08.986Z",
+        "dirty": "接下来是一条快节奏的短指令，没有问题，请你把这个，不是，不是这样的。，你可以把这一版先上传到 GitHub 一下。",
+        "clean": "接下来是一条快节奏的短指令。没有问题，你可以把这一版先上传到 GitHub 一下。",
+        "must_keep": [
+          "GitHub"
+        ],
+        "must_not_include": [
+          "请你把这个",
+          "不是，不是"
+        ],
+        "gold_status": "待用户确认的产品金标"
+      },
+      "8b": {
+        "output": "接下来是一条快节奏的短指令，没有问题，请你把这个，不是，不是这样的。你可以把这一版先上传到 GitHub 一下。",
+        "raw_output": "接下来是一条快节奏的短指令，没有问题，请你把这个，不是，不是这样的。你可以把这一版先上传到 GitHub 一下。",
+        "latency_seconds": 2.3981069579999996,
+        "usage": {
+          "completion_tokens": 32,
+          "prompt_tokens": 701,
+          "total_tokens": 733,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "接下来是一条快节奏的短指令，没有问题，请你把这一版先上传到 GitHub。",
+        "raw_output": "接下来是一条快节奏的短指令，没有问题，请你把这一版先上传到 GitHub。",
+        "latency_seconds": 3.0338310000000206,
+        "usage": {
+          "completion_tokens": 22,
+          "prompt_tokens": 701,
+          "total_tokens": 723,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.75,
+        "missing_must_keep": [],
+        "forbidden_present": [
+          "请你把这个",
+          "不是，不是"
+        ],
+        "redline_ok": false,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 0.8611111111111112,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": true,
+        "digit_ok": null,
+        "input_character_delta": -20
+      },
+      "winner": "14B"
+    },
+    "diag-20260710-213341-509-88E2E2FF": {
+      "case": {
+        "id": "diag-20260710-213341-509-88E2E2FF",
+        "group": "真实口述（优先 Review）",
+        "category": "思考停顿长句+去重复",
+        "source": "diagnostics/20260710-213341-509-88E2E2FF · llm.input",
+        "started_at": "2026-07-10T13:33:41.509Z",
+        "dirty": "好的，我想一下这个。在思考停顿的长句，应该怎么说？主要是看这个验证，主要的这个修复。，这个VAD是具体是一个什么逻辑？它是，比如说我说的这一段话，它是把我切分成很多段，再交给这个大模型处理嘛，我想知道现在这个大模型是，我在说话的时候，我边说，他就边在处理嘛，还是要等我说完之后，他再统一的进行处理，并且，并且的话，这个，比如说，我如果特别长的这种时长，异常的这种时长，比如说说了十分钟或者三十分钟的这样的语音，它是怎么样进行处理呢？对，这是一条带思考停顿的长句。",
+        "clean": "好的，我想一下这个。在思考停顿的长句，应该怎么说？主要是看这个验证，主要的这个修复。这个 VAD 具体是一个什么逻辑？比如说我说的这一段话，它是把我切分成很多段，再交给这个大模型处理嘛？我想知道现在这个大模型，是我边说它就边处理，还是要等我说完之后再统一进行处理？并且，如果特别长的时长、异常的时长，比如说了十分钟或者三十分钟的语音，它是怎么样进行处理呢？对，这是一条带思考停顿的长句。",
+        "must_keep": [
+          "VAD",
+          "十分钟",
+          "三十分钟"
+        ],
+        "must_not_include": [
+          "并且，并且"
+        ],
+        "gold_status": "待用户确认的产品金标"
+      },
+      "8b": {
+        "output": "好的，我想一下这个。在思考停顿的长句，应该怎么说？主要是看这个验证，主要的这个修复。这个 VAD 是具体是一个什么逻辑？它是，比如说我说的这一段话，它是把我切分成很多段，再交给这个大模型处理嘛，我想知道现在这个大模型是，我在说话的时候，我边说，他就边在处理嘛，还是要等我说完之后，他再统一的进行处理，并且，并且的话，这个，比如说，我如果特别长的这种时长，异常的这种时长，比如说说了十分钟或者三十分钟的这样的语音，它是怎么样进行处理呢？对，这是一条带思考停顿的长句。",
+        "raw_output": "好的，我想一下这个。在思考停顿的长句，应该怎么说？主要是看这个验证，主要的这个修复。这个 VAD 是具体是一个什么逻辑？它是，比如说我说的这一段话，它是把我切分成很多段，再交给这个大模型处理嘛，我想知道现在这个大模型是，我在说话的时候，我边说，他就边在处理嘛，还是要等我说完之后，他再统一的进行处理，并且，并且的话，这个，比如说，我如果特别长的这种时长，异常的这种时长，比如说说了十分钟或者三十分钟的这样的语音，它是怎么样进行处理呢？对，这是一条带思考停顿的长句。",
+        "latency_seconds": 10.736143708,
+        "usage": {
+          "completion_tokens": 149,
+          "prompt_tokens": 818,
+          "total_tokens": 967,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "好的，我想一下这个。在思考停顿的长句，应该怎么说？主要是看这个验证，主要的这个修复。这个 VAD 是具体是一个什么逻辑？它是，比如说我说的这一段话，它是把我切分成很多段，再交给这个大模型处理嘛，我想知道现在这个大模型是，我在说话的时候，我边说，他就边在处理嘛，还是要等我说完之后，他再统一的进行处理，并且，并且的话，这个，比如说，我如果特别长的这种时长，异常的这种时长，比如说说了十分钟或者三十分钟的这样的语音，它是怎么样进行处理呢？对，这是一条带思考停顿的长句。",
+        "raw_output": "好的，我想一下这个。在思考停顿的长句，应该怎么说？主要是看这个验证，主要的这个修复。这个 VAD 是具体是一个什么逻辑？它是，比如说我说的这一段话，它是把我切分成很多段，再交给这个大模型处理嘛，我想知道现在这个大模型是，我在说话的时候，我边说，他就边在处理嘛，还是要等我说完之后，他再统一的进行处理，并且，并且的话，这个，比如说，我如果特别长的这种时长，异常的这种时长，比如说说了十分钟或者三十分钟的这样的语音，它是怎么样进行处理呢？对，这是一条带思考停顿的长句。",
+        "latency_seconds": 18.597728458999995,
+        "usage": {
+          "completion_tokens": 149,
+          "prompt_tokens": 818,
+          "total_tokens": 967,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8374384236453202,
+        "missing_must_keep": [],
+        "forbidden_present": [
+          "并且，并且"
+        ],
+        "redline_ok": false,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.8374384236453202,
+        "missing_must_keep": [],
+        "forbidden_present": [
+          "并且，并且"
+        ],
+        "redline_ok": false,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "diag-20260710-211327-653-C768D44C": {
+      "case": {
+        "id": "diag-20260710-211327-653-C768D44C",
+        "group": "真实口述（优先 Review）",
+        "category": "真实诊断会话",
+        "source": "diagnostics/20260710-211327-653-C768D44C · llm.input",
+        "started_at": "2026-07-10T13:13:27.653Z",
+        "dirty": "好了，现在。这个。UI方面没有什么问题了。我刚才让Codex帮我做好了。一些买点。关于整个调试过程的一些埋点的记录。你可以先看一下，我们开始。做整体的。准确性的调试。",
+        "clean": null,
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "无金标，人工并排 Review"
+      },
+      "8b": {
+        "output": "好了，现在这个 UI 方面没有什么问题了。我刚才让 Codex 帮我做好了一些买点。关于整个调试过程的一些埋点的记录，你可以先看一下，我们开始做整体的准确性调试。",
+        "raw_output": "好了，现在这个 UI 方面没有什么问题了。我刚才让 Codex 帮我做好了一些买点。关于整个调试过程的一些埋点的记录，你可以先看一下，我们开始做整体的准确性调试。",
+        "latency_seconds": 3.465584542000002,
+        "usage": {
+          "completion_tokens": 48,
+          "prompt_tokens": 720,
+          "total_tokens": 768,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "好了，现在。这个。UI 方面没有什么问题了。我刚才让 Codex 帮我做好了。一些买点。关于整个调试过程的一些埋点的记录。你可以先看一下，我们开始。做整体的。准确性的调试。",
+        "raw_output": "好了，现在。这个。UI 方面没有什么问题了。我刚才让 Codex 帮我做好了。一些买点。关于整个调试过程的一些埋点的记录。你可以先看一下，我们开始。做整体的。准确性的调试。",
+        "latency_seconds": 6.864201416000014,
+        "usage": {
+          "completion_tokens": 55,
+          "prompt_tokens": 720,
+          "total_tokens": 775,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "score_14b": {
+        "similarity": null,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-1": {
+      "case": {
+        "id": "ramc-1",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-574.txt",
+        "dirty": "就就想了一下，然后说觉得不对，然后让那个弟弟赶紧开车走",
+        "clean": "就想了想，然后说觉得不对，让那个弟弟赶紧开车走。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "就想了一下，然后觉得不对，让那个弟弟赶紧开车走。",
+        "raw_output": "就想了一下，然后觉得不对，让那个弟弟赶紧开车走。",
+        "latency_seconds": 1.1207044579999916,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 687,
+          "total_tokens": 702,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "就想想了一下，然后说觉得不对，然后让那个弟弟赶紧开车走。",
+        "raw_output": "就想想了一下，然后说觉得不对，然后让那个弟弟赶紧开车走。",
+        "latency_seconds": 2.289937082999984,
+        "usage": {
+          "completion_tokens": 18,
+          "prompt_tokens": 687,
+          "total_tokens": 705,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8571428571428572,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -3
+      },
+      "score_14b": {
+        "similarity": 0.8,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "8B"
+    },
+    "ramc-2": {
+      "case": {
+        "id": "ramc-2",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-814.txt",
+        "dirty": "对他们有一些是不懂但是有一些故意的就不对了，然后我我有一次夏天",
+        "clean": "对他们有一些是不懂，但是有一些是故意的，就不对了。然后我有一次夏天。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "对他们有一些是不懂，但是有一些是故意的，就不对了。然后我有一次夏天。",
+        "raw_output": "对他们有一些是不懂，但是有一些是故意的，就不对了。然后我有一次夏天。",
+        "latency_seconds": 1.5281579579999942,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 688,
+          "total_tokens": 709,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "对他们有一些是不懂，但是有一些是故意的就不对了。然后我有一次夏天",
+        "raw_output": "对他们有一些是不懂，但是有一些是故意的就不对了。然后我有一次夏天",
+        "latency_seconds": 2.3865136249999637,
+        "usage": {
+          "completion_tokens": 19,
+          "prompt_tokens": 688,
+          "total_tokens": 707,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-5": {
+      "case": {
+        "id": "ramc-5",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-797.txt",
+        "dirty": "哦那其实她挺不对的呀，为什么应该我认为同学之间就是应该",
+        "clean": "那其实她挺不对的呀，我认为同学之间就是应该。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "哦，那其实她挺不对的呀，为什么应该？我认为同学之间就是应该。",
+        "raw_output": "哦，那其实她挺不对的呀，为什么应该？我认为同学之间就是应该。",
+        "latency_seconds": 1.4523597499999994,
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 687,
+          "total_tokens": 707,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "哦，那其实她挺不对的呀。为什么应该？我认为同学之间就是应该。",
+        "raw_output": "哦，那其实她挺不对的呀。为什么应该？我认为同学之间就是应该。",
+        "latency_seconds": 2.4972402089999832,
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 687,
+          "total_tokens": 707,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.7692307692307692,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "score_14b": {
+        "similarity": 0.7692307692307692,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-6": {
+      "case": {
+        "id": "ramc-6",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-1331.txt",
+        "dirty": "怎么半天还不上来了后边发现事情越来越不对劲了，然后大家就下那河里面去捞他",
+        "clean": "怎么半天还不上来？后边发现事情越来越不对劲了，大家就下那河里面去捞他。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "怎么半天还不上来了？后边发现事情越来越不对劲了，然后大家就下那河里面去捞他。",
+        "raw_output": "怎么半天还不上来了？后边发现事情越来越不对劲了，然后大家就下那河里面去捞他。",
+        "latency_seconds": 2.157832291999995,
+        "usage": {
+          "completion_tokens": 27,
+          "prompt_tokens": 695,
+          "total_tokens": 722,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "怎么半天还不上来了？后边发现事情越来越不对劲了，然后大家就下那河里面去捞他。",
+        "raw_output": "怎么半天还不上来了？后边发现事情越来越不对劲了，然后大家就下那河里面去捞他。",
+        "latency_seconds": 3.588682457999994,
+        "usage": {
+          "completion_tokens": 27,
+          "prompt_tokens": 695,
+          "total_tokens": 722,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9142857142857143,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 0.9142857142857143,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-7": {
+      "case": {
+        "id": "ramc-7",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-162.txt",
+        "dirty": "那就是没有就说的就是夸大点是那种七年不对，咋说的？七年之痒，他",
+        "clean": "那就是没有，就说的就是夸大点，是那种七年之痒。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "那就是没有就说的就是夸大点，是那种七年不对，咋说的？七年之痒。",
+        "raw_output": "那就是没有就说的就是夸大点，是那种七年不对，咋说的？七年之痒。",
+        "latency_seconds": 1.7678440000000109,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 691,
+          "total_tokens": 712,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "那就是没有，就说的，就是夸大点，是那种七年不对，咋说的？七年之痒，他",
+        "raw_output": "那就是没有，就说的，就是夸大点，是那种七年不对，咋说的？七年之痒，他",
+        "latency_seconds": 3.377685917000008,
+        "usage": {
+          "completion_tokens": 25,
+          "prompt_tokens": 691,
+          "total_tokens": 716,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.7407407407407407,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 0.7142857142857143,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "winner": "8B"
+    },
+    "ramc-8": {
+      "case": {
+        "id": "ramc-8",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-1063.txt",
+        "dirty": "哦对，最近也不是说有一个周琦事件对不对",
+        "clean": "最近有一个周琦事件，对不对。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "哦对，最近也不是说有一个周琦事件对不对。",
+        "raw_output": "哦对，最近也不是说有一个周琦事件对不对。",
+        "latency_seconds": 1.0579567909999952,
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 683,
+          "total_tokens": 697,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "哦对，最近也不是说有一个周琦事件对不对。",
+        "raw_output": "哦对，最近也不是说有一个周琦事件对不对。",
+        "latency_seconds": 1.8404177920000393,
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 683,
+          "total_tokens": 697,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.6666666666666667,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.6666666666666667,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-9": {
+      "case": {
+        "id": "ramc-9",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-1342.txt",
+        "dirty": "说是啊不是说的是她为新剧抽烟",
+        "clean": "是她为新剧抽烟。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "说是啊，不是说的是她为新剧抽烟。",
+        "raw_output": "说是啊，不是说的是她为新剧抽烟。",
+        "latency_seconds": 0.9156769579999917,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 680,
+          "total_tokens": 692,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "说是啊，不是，说的是她为新剧抽烟。",
+        "raw_output": "说是啊，不是，说的是她为新剧抽烟。",
+        "latency_seconds": 1.7250600830000167,
+        "usage": {
+          "completion_tokens": 13,
+          "prompt_tokens": 680,
+          "total_tokens": 693,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.5,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 0.5,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-10": {
+      "case": {
+        "id": "ramc-10",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-1039.txt",
+        "dirty": "你可能说错一个字你两百块钱就没了",
+        "clean": "你可能说错一个字，两百块钱就没了。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "你可能说错一个字，两百块钱就没了。",
+        "raw_output": "你可能说错一个字，两百块钱就没了。",
+        "latency_seconds": 1.0607021670000023,
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 683,
+          "total_tokens": 697,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "你可能说错一个字，你两百块钱就没了。",
+        "raw_output": "你可能说错一个字，你两百块钱就没了。",
+        "latency_seconds": 1.9328849999999989,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 683,
+          "total_tokens": 698,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.9375,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "winner": "8B"
+    },
+    "ramc-11": {
+      "case": {
+        "id": "ramc-11",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-15-539.txt",
+        "dirty": "后来就是不对劲儿然后他逃他",
+        "clean": "后来不对劲儿，然后他逃。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "后来不对劲儿，然后他逃。",
+        "raw_output": "后来不对劲儿，然后他逃。",
+        "latency_seconds": 0.7940815410000113,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 680,
+          "total_tokens": 690,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "后来就是不对劲儿，然后他逃了。",
+        "raw_output": "后来就是不对劲儿，然后他逃了。",
+        "latency_seconds": 1.6101137080000285,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 680,
+          "total_tokens": 692,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 0.7692307692307692,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "winner": "8B"
+    },
+    "ramc-12": {
+      "case": {
+        "id": "ramc-12",
+        "group": "RAMC 56 条回归",
+        "category": "自我更正",
+        "source": "CTS-CN-F2F-2019-11-04-387.txt",
+        "dirty": "然后你还不能偷盗，对不对",
+        "clean": "你还不能偷盗，对不对？",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "然后你还不能偷盗，对不对？",
+        "raw_output": "然后你还不能偷盗，对不对？",
+        "latency_seconds": 0.8159952080000039,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 679,
+          "total_tokens": 689,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "然后你还不能偷盗，对不对？",
+        "raw_output": "然后你还不能偷盗，对不对？",
+        "latency_seconds": 1.3682946669999865,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 679,
+          "total_tokens": 689,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8181818181818181,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.8181818181818181,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-13": {
+      "case": {
+        "id": "ramc-13",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-374.txt",
+        "dirty": "就推理类的电影拍的拍的比较好的",
+        "clean": "推理类的电影，拍得比较好的。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "就推理类的电影，拍得比较好的。",
+        "raw_output": "就推理类的电影，拍得比较好的。",
+        "latency_seconds": 0.9335425410000084,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 682,
+          "total_tokens": 694,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "就推理类的电影拍得比较好的。",
+        "raw_output": "就推理类的电影拍得比较好的。",
+        "latency_seconds": 1.4792391249999923,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 682,
+          "total_tokens": 693,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9230769230769231,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 0.9230769230769231,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-14": {
+      "case": {
+        "id": "ramc-14",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-973.txt",
+        "dirty": "就是什么什么三下锅，针对游客，因为是本地人做的，去了可以尝一尝",
+        "clean": "就是三下锅，针对游客，因为是本地人做的，去了可以尝一尝。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "就是什么什么三下锅，针对游客，因为是本地人做的，去了可以尝一尝。",
+        "raw_output": "就是什么什么三下锅，针对游客，因为是本地人做的，去了可以尝一尝。",
+        "latency_seconds": 1.8376810000000035,
+        "usage": {
+          "completion_tokens": 23,
+          "prompt_tokens": 692,
+          "total_tokens": 715,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "就是什么什么三下锅，针对游客，因为是本地人做的，去了可以尝一尝。",
+        "raw_output": "就是什么什么三下锅，针对游客，因为是本地人做的，去了可以尝一尝。",
+        "latency_seconds": 3.132010666000042,
+        "usage": {
+          "completion_tokens": 23,
+          "prompt_tokens": 692,
+          "total_tokens": 715,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8571428571428572,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.8571428571428572,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-15": {
+      "case": {
+        "id": "ramc-15",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-1144.txt",
+        "dirty": "伪娘，让我想到了那个那个天天有喜看过没",
+        "clean": "伪娘，让我想到了那个天天有喜，看过没？",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "伪娘，让我想到了那个天天有喜，看过没？",
+        "raw_output": "伪娘，让我想到了那个天天有喜，看过没？",
+        "latency_seconds": 1.0638313339999996,
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 683,
+          "total_tokens": 697,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "伪娘，让我想到了那个天天有喜，看过没？",
+        "raw_output": "伪娘，让我想到了那个天天有喜，看过没？",
+        "latency_seconds": 1.8202859169999783,
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 683,
+          "total_tokens": 697,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-16": {
+      "case": {
+        "id": "ramc-16",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-451.txt",
+        "dirty": "她就抑郁抑郁症怎么了抑郁症怎么了",
+        "clean": "她就抑郁症，怎么了？",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "她就抑郁抑郁症怎么了？",
+        "raw_output": "她就抑郁抑郁症怎么了？",
+        "latency_seconds": 0.6698728329999994,
+        "usage": {
+          "completion_tokens": 8,
+          "prompt_tokens": 680,
+          "total_tokens": 688,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "她就抑郁抑郁症怎么了？抑郁症怎么了？",
+        "raw_output": "她就抑郁抑郁症怎么了？抑郁症怎么了？",
+        "latency_seconds": 1.6080969170000117,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 680,
+          "total_tokens": 692,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -5
+      },
+      "score_14b": {
+        "similarity": 0.5,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "winner": "8B"
+    },
+    "ramc-17": {
+      "case": {
+        "id": "ramc-17",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-1449.txt",
+        "dirty": "然后然后她就知道反应过来了",
+        "clean": "然后她就知道反应过来了。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "然后她就知道反应过来了。",
+        "raw_output": "然后她就知道反应过来了。",
+        "latency_seconds": 0.6870414159999996,
+        "usage": {
+          "completion_tokens": 8,
+          "prompt_tokens": 678,
+          "total_tokens": 686,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "然后她就知道反应过来了。",
+        "raw_output": "然后她就知道反应过来了。",
+        "latency_seconds": 1.149843959000009,
+        "usage": {
+          "completion_tokens": 8,
+          "prompt_tokens": 678,
+          "total_tokens": 686,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-18": {
+      "case": {
+        "id": "ramc-18",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-724.txt",
+        "dirty": "我刚才过来的时候他那个新余新余高尔夫球场，他有那个真人C S还有个什么棒球然后",
+        "clean": "我刚才过来的时候他去的新余高尔夫球场，那里有真人CS，还有棒球。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "我刚才过来的时候他去的新余高尔夫球场，那里有真人CS，还有棒球。",
+        "raw_output": "我刚才过来的时候他去的新余高尔夫球场，那里有真人CS，还有棒球。",
+        "latency_seconds": 1.7186882499999996,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 696,
+          "total_tokens": 717,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "我刚才过来的时候，他那个新余高尔夫球场，他有那个真人CS，还有个什么棒球，然后",
+        "raw_output": "我刚才过来的时候，他那个新余高尔夫球场，他有那个真人CS，还有个什么棒球，然后",
+        "latency_seconds": 3.4839392920000023,
+        "usage": {
+          "completion_tokens": 26,
+          "prompt_tokens": 696,
+          "total_tokens": 722,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -7
+      },
+      "score_14b": {
+        "similarity": 0.6857142857142857,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "8B"
+    },
+    "ramc-19": {
+      "case": {
+        "id": "ramc-19",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-202.txt",
+        "dirty": "我本来觉得杰克辣舞其实在我的印象中，杰克辣舞真的不算特别特别强的那种。",
+        "clean": "我本来觉得杰克辣舞，其实在我的印象中，杰克辣舞真的不算特别特别强的那种。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "我本来觉得杰克辣舞，其实在我的印象中，杰克辣舞真的不算特别特别强的那种。",
+        "raw_output": "我本来觉得杰克辣舞，其实在我的印象中，杰克辣舞真的不算特别特别强的那种。",
+        "latency_seconds": 2.0268938330000026,
+        "usage": {
+          "completion_tokens": 26,
+          "prompt_tokens": 694,
+          "total_tokens": 720,
+          "prompt_tokens_details": {
+            "cached_tokens": 659
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "我本来觉得杰克辣舞其实在我的印象中，杰克辣舞真的不算特别特别强的那种。",
+        "raw_output": "我本来觉得杰克辣舞其实在我的印象中，杰克辣舞真的不算特别特别强的那种。",
+        "latency_seconds": 3.3938821250000046,
+        "usage": {
+          "completion_tokens": 25,
+          "prompt_tokens": 694,
+          "total_tokens": 719,
+          "prompt_tokens_details": {
+            "cached_tokens": 659
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-20": {
+      "case": {
+        "id": "ramc-20",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-501.txt",
+        "dirty": "左上角，然后就是就是因为我手机有那个消息通知嘛",
+        "clean": "左上角，然后就是因为我手机有消息通知。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "左上角，然后就是因为我手机有那个消息通知嘛。",
+        "raw_output": "左上角，然后就是因为我手机有那个消息通知嘛。",
+        "latency_seconds": 1.1173204579999947,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 685,
+          "total_tokens": 700,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "左上角，然后就是因为我手机有那个消息通知嘛。",
+        "raw_output": "左上角，然后就是因为我手机有那个消息通知嘛。",
+        "latency_seconds": 1.9391098749999855,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 685,
+          "total_tokens": 700,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.85,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 0.85,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-21": {
+      "case": {
+        "id": "ramc-21",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-714.txt",
+        "dirty": "就算是大到我爸那样的年龄年龄对枪也还是很喜欢的",
+        "clean": "就算是大到我爸那样的年龄，对枪也还是很喜欢的。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "就算是大到我爸那样的年龄，对枪也还是很喜欢的。",
+        "raw_output": "就算是大到我爸那样的年龄，对枪也还是很喜欢的。",
+        "latency_seconds": 1.135037667000006,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 684,
+          "total_tokens": 699,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "就算是大到我爸那样的年龄，对枪也还是很喜欢的。",
+        "raw_output": "就算是大到我爸那样的年龄，对枪也还是很喜欢的。",
+        "latency_seconds": 1.9296467079999502,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 684,
+          "total_tokens": 699,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-22": {
+      "case": {
+        "id": "ramc-22",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-1109.txt",
+        "dirty": "每年我们系那儿举办篮球赛，还有学校举办这种球类球类运动会",
+        "clean": "每年我们系那儿举办篮球赛，还有学校举办这种球类运动会。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "每年我们系那儿举办篮球赛，还有学校举办这种球类运动会。",
+        "raw_output": "每年我们系那儿举办篮球赛，还有学校举办这种球类运动会。",
+        "latency_seconds": 1.265420958000007,
+        "usage": {
+          "completion_tokens": 17,
+          "prompt_tokens": 688,
+          "total_tokens": 705,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "每年我们系那儿举办篮球赛，还有学校举办这种球类运动会。",
+        "raw_output": "每年我们系那儿举办篮球赛，还有学校举办这种球类运动会。",
+        "latency_seconds": 2.168391999999983,
+        "usage": {
+          "completion_tokens": 17,
+          "prompt_tokens": 688,
+          "total_tokens": 705,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-23": {
+      "case": {
+        "id": "ramc-23",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-1110.txt",
+        "dirty": "就是一节一节可多可多可多了",
+        "clean": "一节一节，可多了。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "一节一节，可多可多，可多了。",
+        "raw_output": "一节一节，可多可多，可多了。",
+        "latency_seconds": 1.0581216249999983,
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 682,
+          "total_tokens": 696,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "就是一节一节，可多可多了。",
+        "raw_output": "就是一节一节，可多可多了。",
+        "latency_seconds": 1.5985429999999496,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 682,
+          "total_tokens": 694,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.6363636363636364,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.6363636363636364,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-24": {
+      "case": {
+        "id": "ramc-24",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-1258.txt",
+        "dirty": "结果后来呢，慢慢的发展发展到了，后来就是英格兰，他就开始有了一些足球赛原来的足球赛呢，他们的",
+        "clean": "结果后来呢，慢慢的发展到了，英格兰开始有了一些足球赛。原来的足球赛呢，他们的。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "结果后来呢，慢慢的发展发展到了，后来就是英格兰，他就开始有了一些足球赛。原来的足球赛呢，他们的",
+        "raw_output": "结果后来呢，慢慢的发展发展到了，后来就是英格兰，他就开始有了一些足球赛。原来的足球赛呢，他们的",
+        "latency_seconds": 2.0948210000000103,
+        "usage": {
+          "completion_tokens": 27,
+          "prompt_tokens": 696,
+          "total_tokens": 723,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "结果后来呢，慢慢的发展到了，后来就是英格兰，他就开始有了一些足球赛。原来的足球赛呢，他们的",
+        "raw_output": "结果后来呢，慢慢的发展到了，后来就是英格兰，他就开始有了一些足球赛。原来的足球赛呢，他们的",
+        "latency_seconds": 3.503235625000002,
+        "usage": {
+          "completion_tokens": 26,
+          "prompt_tokens": 696,
+          "total_tokens": 722,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8095238095238095,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.85,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "14B"
+    },
+    "ramc-25": {
+      "case": {
+        "id": "ramc-25",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-815.txt",
+        "dirty": "这真的不好，我也真的是，不好意思说去要求要求他，买那些贵的东西哦。",
+        "clean": "这真的不好，我也真的是，不好意思说去要求他买那些贵的东西哦。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "这真的不好，我也真的是，不好意思说去要求他买那些贵的东西哦。",
+        "raw_output": "这真的不好，我也真的是，不好意思说去要求他买那些贵的东西哦。",
+        "latency_seconds": 1.3833885419999916,
+        "usage": {
+          "completion_tokens": 19,
+          "prompt_tokens": 690,
+          "total_tokens": 709,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "这真的不好，我也真的是，不好意思说去要求他买那些贵的东西哦。",
+        "raw_output": "这真的不好，我也真的是，不好意思说去要求他买那些贵的东西哦。",
+        "latency_seconds": 2.375720250000029,
+        "usage": {
+          "completion_tokens": 19,
+          "prompt_tokens": 690,
+          "total_tokens": 709,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -3
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -3
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-27": {
+      "case": {
+        "id": "ramc-27",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-1323.txt",
+        "dirty": "这些这些我觉得，是也是要特别特别注重那个啥的",
+        "clean": "这些我觉得，是要特别特别注重那个啥的。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "这些我觉得，是也要特别特别注重那个啥的。",
+        "raw_output": "这些我觉得，是也要特别特别注重那个啥的。",
+        "latency_seconds": 0.995330832999997,
+        "usage": {
+          "completion_tokens": 13,
+          "prompt_tokens": 684,
+          "total_tokens": 697,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "这些我觉得也是要特别特别注重那个啥的。",
+        "raw_output": "这些我觉得也是要特别特别注重那个啥的。",
+        "latency_seconds": 1.5976736659999915,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 684,
+          "total_tokens": 696,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9444444444444444,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "score_14b": {
+        "similarity": 0.9444444444444444,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -3
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-28": {
+      "case": {
+        "id": "ramc-28",
+        "group": "RAMC 56 条回归",
+        "category": "重复口吃",
+        "source": "CTS-CN-F2F-2019-11-15-793.txt",
+        "dirty": "对我都是买的那种大版大版",
+        "clean": "对，都是买的那种大版。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "对，都是买的那种大版。",
+        "raw_output": "对，都是买的那种大版。",
+        "latency_seconds": 0.7287923749999976,
+        "usage": {
+          "completion_tokens": 9,
+          "prompt_tokens": 679,
+          "total_tokens": 688,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "我对都是买的那种大版大版。",
+        "raw_output": "我对都是买的那种大版大版。",
+        "latency_seconds": 1.3635578330000158,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 679,
+          "total_tokens": 689,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 0.75,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "8B"
+    },
+    "ramc-29": {
+      "case": {
+        "id": "ramc-29",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-1137.txt",
+        "dirty": "啊不是，他是他第一次登上了羽毛球世界，世界排名的第一",
+        "clean": "他第一次登上了羽毛球世界排名的第一。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "他第一次登上了羽毛球世界排名的第一。",
+        "raw_output": "他第一次登上了羽毛球世界排名的第一。",
+        "latency_seconds": 0.8044194999999945,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 685,
+          "total_tokens": 695,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "他第一次登上了羽毛球世界排名第一。",
+        "raw_output": "他第一次登上了羽毛球世界排名第一。",
+        "latency_seconds": 1.2538797079999995,
+        "usage": {
+          "completion_tokens": 9,
+          "prompt_tokens": 685,
+          "total_tokens": 694,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -8
+      },
+      "score_14b": {
+        "similarity": 0.9411764705882353,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -9
+      },
+      "winner": "8B"
+    },
+    "ramc-30": {
+      "case": {
+        "id": "ramc-30",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-1193.txt",
+        "dirty": "咱们，孙杨还得了一种，得了世界冠军啊",
+        "clean": "咱们孙杨还得了一种世界冠军。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "咱们孙杨还得了一种世界冠军。",
+        "raw_output": "咱们孙杨还得了一种世界冠军。",
+        "latency_seconds": 0.8076102500000104,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 683,
+          "total_tokens": 693,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "咱们，孙杨还得了世界冠军啊。",
+        "raw_output": "咱们，孙杨还得了世界冠军啊。",
+        "latency_seconds": 1.4924179580000327,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 683,
+          "total_tokens": 694,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -4
+      },
+      "score_14b": {
+        "similarity": 0.7692307692307692,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -4
+      },
+      "winner": "8B"
+    },
+    "ramc-31": {
+      "case": {
+        "id": "ramc-31",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-126.txt",
+        "dirty": "是那种长时间熬夜的，因为我一般都会熬到什么个十一点十二点啊",
+        "clean": "是那种长时间熬夜的，因为我一般都会熬到十一点十二点。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "是那种长时间熬夜的，因为我一般都会熬到十一点十二点。",
+        "raw_output": "是那种长时间熬夜的，因为我一般都会熬到十一点十二点。",
+        "latency_seconds": 1.2692861250000078,
+        "usage": {
+          "completion_tokens": 17,
+          "prompt_tokens": 689,
+          "total_tokens": 706,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "是那种长时间熬夜的，因为我一般都会熬到十一点、十二点啊。",
+        "raw_output": "是那种长时间熬夜的，因为我一般都会熬到十一点、十二点啊。",
+        "latency_seconds": 2.3878278329999603,
+        "usage": {
+          "completion_tokens": 19,
+          "prompt_tokens": 689,
+          "total_tokens": 708,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -3
+      },
+      "score_14b": {
+        "similarity": 0.96,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "8B"
+    },
+    "ramc-32": {
+      "case": {
+        "id": "ramc-32",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-480.txt",
+        "dirty": "啊，微信啊，有个相册功能我挺喜欢的，因为他可以把一些东西上传到微信相册中",
+        "clean": "微信有个相册功能，我挺喜欢的，因为它可以把一些东西上传到微信相册中。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "微信有个相册功能，我挺喜欢的，因为它可以把一些东西上传到微信相册中。",
+        "raw_output": "微信有个相册功能，我挺喜欢的，因为它可以把一些东西上传到微信相册中。",
+        "latency_seconds": 1.834619917000012,
+        "usage": {
+          "completion_tokens": 23,
+          "prompt_tokens": 695,
+          "total_tokens": 718,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "微信有个相册功能，我挺喜欢的，因为它可以把一些东西上传到微信相册中。",
+        "raw_output": "微信有个相册功能，我挺喜欢的，因为它可以把一些东西上传到微信相册中。",
+        "latency_seconds": 3.1916737500000067,
+        "usage": {
+          "completion_tokens": 23,
+          "prompt_tokens": 695,
+          "total_tokens": 718,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-33": {
+      "case": {
+        "id": "ramc-33",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-896.txt",
+        "dirty": "嗯，怎样为人处世啊，还有一些，嗯，寓言故事的一些印象深刻的道理",
+        "clean": "怎样为人处世，还有一些寓言故事的一些印象深刻的道理。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "怎样为人处世？还有一些寓言故事的一些印象深刻的道理。",
+        "raw_output": "怎样为人处世？还有一些寓言故事的一些印象深刻的道理。",
+        "latency_seconds": 1.128798875000001,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 690,
+          "total_tokens": 705,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "怎样为人处世，还有一些寓言故事中印象深刻的道理。",
+        "raw_output": "怎样为人处世，还有一些寓言故事中印象深刻的道理。",
+        "latency_seconds": 1.9585671250000019,
+        "usage": {
+          "completion_tokens": 15,
+          "prompt_tokens": 690,
+          "total_tokens": 705,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -5
+      },
+      "score_14b": {
+        "similarity": 0.875,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -7
+      },
+      "winner": "8B"
+    },
+    "ramc-34": {
+      "case": {
+        "id": "ramc-34",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-1279.txt",
+        "dirty": "一直没有脂肪高啊，然后我怀了他也没有说有脂肪高啊，呃，那个",
+        "clean": "一直没有脂肪高啊，然后我怀了，他也没有说有脂肪高啊。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "一直没有脂肪高啊，然后我怀了，他也没有说有脂肪高啊。",
+        "raw_output": "一直没有脂肪高啊，然后我怀了，他也没有说有脂肪高啊。",
+        "latency_seconds": 1.561545959,
+        "usage": {
+          "completion_tokens": 19,
+          "prompt_tokens": 691,
+          "total_tokens": 710,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "一直没有脂肪高啊，然后我怀了他也没有说有脂肪高啊，那个",
+        "raw_output": "一直没有脂肪高啊，然后我怀了他也没有说有脂肪高啊，那个",
+        "latency_seconds": 2.7117465830000356,
+        "usage": {
+          "completion_tokens": 19,
+          "prompt_tokens": 691,
+          "total_tokens": 710,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -3
+      },
+      "score_14b": {
+        "similarity": 0.92,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "winner": "8B"
+    },
+    "ramc-35": {
+      "case": {
+        "id": "ramc-35",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-650.txt",
+        "dirty": "呃这样的一个过程，然后呢",
+        "clean": "这样的一个过程，然后呢。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "这样的一个过程，然后呢。",
+        "raw_output": "这样的一个过程，然后呢。",
+        "latency_seconds": 0.6653045000000049,
+        "usage": {
+          "completion_tokens": 8,
+          "prompt_tokens": 678,
+          "total_tokens": 686,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "这样的一个过程，然后呢。",
+        "raw_output": "这样的一个过程，然后呢。",
+        "latency_seconds": 1.1479809589999945,
+        "usage": {
+          "completion_tokens": 8,
+          "prompt_tokens": 678,
+          "total_tokens": 686,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-36": {
+      "case": {
+        "id": "ramc-36",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-39.txt",
+        "dirty": "呃他不戴面具和口罩被人认出来",
+        "clean": "他不戴面具和口罩被人认出来。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "他不戴面具和口罩被人认出来。",
+        "raw_output": "他不戴面具和口罩被人认出来。",
+        "latency_seconds": 0.8556758750000029,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 681,
+          "total_tokens": 692,
+          "prompt_tokens_details": {
+            "cached_tokens": 659
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "他不戴面具和口罩，被人认出来。",
+        "raw_output": "他不戴面具和口罩，被人认出来。",
+        "latency_seconds": 1.590374708000013,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 681,
+          "total_tokens": 693,
+          "prompt_tokens_details": {
+            "cached_tokens": 659
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-37": {
+      "case": {
+        "id": "ramc-37",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-1331.txt",
+        "dirty": "玩儿一些小时候玩过玩的游戏啊",
+        "clean": "玩一些小时候玩过的游戏啊",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "玩一些小时候玩过的游戏。",
+        "raw_output": "玩一些小时候玩过的游戏。",
+        "latency_seconds": 0.6658317500000095,
+        "usage": {
+          "completion_tokens": 8,
+          "prompt_tokens": 680,
+          "total_tokens": 688,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "玩儿一些小时候玩过的游戏啊。",
+        "raw_output": "玩儿一些小时候玩过的游戏啊。",
+        "latency_seconds": 1.3881548339999767,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 680,
+          "total_tokens": 690,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9166666666666666,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "score_14b": {
+        "similarity": 0.9230769230769231,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "14B"
+    },
+    "ramc-38": {
+      "case": {
+        "id": "ramc-38",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-267.txt",
+        "dirty": "啊是啊，以前都说只有七十二行啊，是说现在可能有七百多行啊",
+        "clean": "以前都说只有 72 行，现在可能有 700 多行。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "以前都说只有 72 行，是说现在可能有 700 多行。",
+        "raw_output": "以前都说只有 72 行，是说现在可能有 700 多行。",
+        "latency_seconds": 1.8092582919999955,
+        "usage": {
+          "completion_tokens": 23,
+          "prompt_tokens": 693,
+          "total_tokens": 716,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "啊是啊，以前都说只有七十二行，是说现在可能有七百多行啊。",
+        "raw_output": "啊是啊，以前都说只有七十二行，是说现在可能有七百多行啊。",
+        "latency_seconds": 3.145630666000045,
+        "usage": {
+          "completion_tokens": 23,
+          "prompt_tokens": 693,
+          "total_tokens": 716,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9047619047619048,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 0.52,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": false,
+        "input_character_delta": 0
+      },
+      "winner": "8B"
+    },
+    "ramc-39": {
+      "case": {
+        "id": "ramc-39",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-427.txt",
+        "dirty": "我觉得也是啊，就是感觉就是那里面就是真的跟现实其实差别老大了",
+        "clean": "我觉得也是啊，就是感觉那里面真的跟现实差别老大了。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "我觉得也是啊，就是感觉那里面真的跟现实差别老大了。",
+        "raw_output": "我觉得也是啊，就是感觉那里面真的跟现实差别老大了。",
+        "latency_seconds": 1.1183314590000037,
+        "usage": {
+          "completion_tokens": 16,
+          "prompt_tokens": 688,
+          "total_tokens": 704,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "我觉得也是啊，就是感觉那里面真的跟现实其实差别老大了。",
+        "raw_output": "我觉得也是啊，就是感觉那里面真的跟现实其实差别老大了。",
+        "latency_seconds": 2.138588083000002,
+        "usage": {
+          "completion_tokens": 17,
+          "prompt_tokens": 688,
+          "total_tokens": 705,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -5
+      },
+      "score_14b": {
+        "similarity": 0.92,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -3
+      },
+      "winner": "8B"
+    },
+    "ramc-40": {
+      "case": {
+        "id": "ramc-40",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-1422.txt",
+        "dirty": "对嗯，电动车呢它有利有弊",
+        "clean": "对，电动车呢，它有利有弊。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "对，电动车呢，它有利有弊。",
+        "raw_output": "对，电动车呢，它有利有弊。",
+        "latency_seconds": 0.8222228340000015,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 680,
+          "total_tokens": 691,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "对，电动车有利有弊。",
+        "raw_output": "对，电动车有利有弊。",
+        "latency_seconds": 1.1392196670000203,
+        "usage": {
+          "completion_tokens": 8,
+          "prompt_tokens": 680,
+          "total_tokens": 688,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.8,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -2
+      },
+      "winner": "8B"
+    },
+    "ramc-41": {
+      "case": {
+        "id": "ramc-41",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-687.txt",
+        "dirty": "啊在看N B A以前我我就知道知道，呃，有个乔丹",
+        "clean": "在看 NBA 以前，我就知道，有个乔丹。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "在看 NBA 以前，我就知道，有个乔丹。",
+        "raw_output": "在看 NBA 以前，我就知道，有个乔丹。",
+        "latency_seconds": 0.9411555410000005,
+        "usage": {
+          "completion_tokens": 13,
+          "prompt_tokens": 687,
+          "total_tokens": 700,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "在看 NBA，以前我就知道有个乔丹。",
+        "raw_output": "在看 NBA，以前我就知道有个乔丹。",
+        "latency_seconds": 1.5000277500000152,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 687,
+          "total_tokens": 698,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -4
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -6
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-42": {
+      "case": {
+        "id": "ramc-42",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-105.txt",
+        "dirty": "啊，最底下最底层的就是一个奴隶制",
+        "clean": "最底层的就是一个奴隶制。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "最底下的最底层的就是一个奴隶制。",
+        "raw_output": "最底下的最底层的就是一个奴隶制。",
+        "latency_seconds": 0.8176487500000036,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 681,
+          "total_tokens": 692,
+          "prompt_tokens_details": {
+            "cached_tokens": 659
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "最底下最底层的就是一个奴隶制。",
+        "raw_output": "最底下最底层的就是一个奴隶制。",
+        "latency_seconds": 1.3637385409999752,
+        "usage": {
+          "completion_tokens": 10,
+          "prompt_tokens": 681,
+          "total_tokens": 691,
+          "prompt_tokens_details": {
+            "cached_tokens": 659
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.7333333333333334,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 0.7857142857142857,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "winner": "14B"
+    },
+    "ramc-44": {
+      "case": {
+        "id": "ramc-44",
+        "group": "RAMC 56 条回归",
+        "category": "口水词",
+        "source": "CTS-CN-F2F-2019-11-15-370.txt",
+        "dirty": "在他死后，他的画的价值还是得到了很高的承认啊",
+        "clean": "在他死后，他的画的价值还是得到了很高的承认。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "在他死后，他的画的价值还是得到了很高的承认。",
+        "raw_output": "在他死后，他的画的价值还是得到了很高的承认。",
+        "latency_seconds": 0.8755653750000079,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 682,
+          "total_tokens": 694,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "在他死后，他的画的价值还是得到了很高的承认。",
+        "raw_output": "在他死后，他的画的价值还是得到了很高的承认。",
+        "latency_seconds": 1.5929747909999605,
+        "usage": {
+          "completion_tokens": 12,
+          "prompt_tokens": 682,
+          "total_tokens": 694,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-45": {
+      "case": {
+        "id": "ramc-45",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-166.txt",
+        "dirty": "八月二十，然后不是在那个十一月媒体报道嘛，在那个八月二十七日有警方在一户",
+        "clean": "八月二十，然后是在十一月媒体报道嘛。八月二十七日，有警方在一户",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "八月二十，然后是在十一月媒体报道的，在八月二十七日有警方在一户",
+        "raw_output": "八月二十，然后是在十一月媒体报道的，在八月二十七日有警方在一户",
+        "latency_seconds": 1.5984252500000053,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 694,
+          "total_tokens": 715,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "八月二十日，然后不是在那个十一月媒体报道嘛，在那个八月二十七日有警方在一户",
+        "raw_output": "八月二十日，然后不是在那个十一月媒体报道嘛，在那个八月二十七日有警方在一户",
+        "latency_seconds": 3.4095592500000294,
+        "usage": {
+          "completion_tokens": 25,
+          "prompt_tokens": 694,
+          "total_tokens": 719,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9310344827586207,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -5
+      },
+      "score_14b": {
+        "similarity": 0.8,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "8B"
+    },
+    "ramc-46": {
+      "case": {
+        "id": "ramc-46",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-1333.txt",
+        "dirty": "然后我当时我想的我不知道，我就可想说一个你五六十你给我修起",
+        "clean": "然后我当时我想的我不知道，我就只想说一个你五六十，你给我修起。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "然后我当时我想的我不知道，我就只想说一个你五六十，你给我修起。",
+        "raw_output": "然后我当时我想的我不知道，我就只想说一个你五六十，你给我修起。",
+        "latency_seconds": 1.3636910830000062,
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 688,
+          "total_tokens": 708,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "然后我当时我想的，我不知道，我就想说一个，你五六十，你给我修起。",
+        "raw_output": "然后我当时我想的，我不知道，我就想说一个，你五六十，你给我修起。",
+        "latency_seconds": 2.7247766670000146,
+        "usage": {
+          "completion_tokens": 22,
+          "prompt_tokens": 688,
+          "total_tokens": 710,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 0.9642857142857143,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "winner": "8B"
+    },
+    "ramc-47": {
+      "case": {
+        "id": "ramc-47",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-1196.txt",
+        "dirty": "每一年接待中国游客三百万",
+        "clean": "每一年接待中国游客 300 万。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "每一年接待中国游客 300 万。",
+        "raw_output": "每一年接待中国游客 300 万。",
+        "latency_seconds": 0.938601165999998,
+        "usage": {
+          "completion_tokens": 13,
+          "prompt_tokens": 678,
+          "total_tokens": 691,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "每一年接待中国游客 300 万。",
+        "raw_output": "每一年接待中国游客 300 万。",
+        "latency_seconds": 1.697810957999991,
+        "usage": {
+          "completion_tokens": 13,
+          "prompt_tokens": 678,
+          "total_tokens": 691,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": 4
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": 4
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-48": {
+      "case": {
+        "id": "ramc-48",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-551.txt",
+        "dirty": "那然后呢，现在还是一百八",
+        "clean": "那然后呢，现在还是一百八。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "那然后呢，现在还是一百八。",
+        "raw_output": "那然后呢，现在还是一百八。",
+        "latency_seconds": 0.8268642499999999,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 680,
+          "total_tokens": 691,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "那然后呢，现在还是一百八。",
+        "raw_output": "那然后呢，现在还是一百八。",
+        "latency_seconds": 1.4755631670000184,
+        "usage": {
+          "completion_tokens": 11,
+          "prompt_tokens": 680,
+          "total_tokens": 691,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-49": {
+      "case": {
+        "id": "ramc-49",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-551.txt",
+        "dirty": "我真的我真的见了，人那卷子上就写六百一",
+        "clean": "我真的见了，人那卷子上就写 610。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "我真的见了，人那卷子上就写 601。",
+        "raw_output": "我真的见了，人那卷子上就写 601。",
+        "latency_seconds": 1.188076959,
+        "usage": {
+          "completion_tokens": 17,
+          "prompt_tokens": 686,
+          "total_tokens": 703,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "我真的见了，那卷子上就写 610。",
+        "raw_output": "我真的见了，那卷子上就写 610。",
+        "latency_seconds": 2.0360000839999657,
+        "usage": {
+          "completion_tokens": 16,
+          "prompt_tokens": 686,
+          "total_tokens": 702,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8666666666666667,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": false,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 0.9333333333333333,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": -2
+      },
+      "winner": "14B"
+    },
+    "ramc-50": {
+      "case": {
+        "id": "ramc-50",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-392.txt",
+        "dirty": "四十五度就是那种相当于也是三D的，但是你是上帝视角四十五度。",
+        "clean": "45度就是那种相当于也是3D的，但是你是上帝视角45度。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "四十五度就是那种相当于也是 3D 的，但是你是上帝视角四十五度。",
+        "raw_output": "四十五度就是那种相当于也是 3D 的，但是你是上帝视角四十五度。",
+        "latency_seconds": 1.426274915999997,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 689,
+          "total_tokens": 710,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "四十五度就是那种相当于也是 3D 的，但是你是上帝视角四十五度。",
+        "raw_output": "四十五度就是那种相当于也是 3D 的，但是你是上帝视角四十五度。",
+        "latency_seconds": 2.5994445420000147,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 689,
+          "total_tokens": 710,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.7857142857142857,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": false,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 0.7857142857142857,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": false,
+        "input_character_delta": 2
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-51": {
+      "case": {
+        "id": "ramc-51",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-144.txt",
+        "dirty": "二十九分，还有三十秒一分三十",
+        "clean": "29 分，还有 30 秒，1 分 30 秒。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "29 分，还有 30 秒，1 分 30 秒。",
+        "raw_output": "29 分，还有 30 秒，1 分 30 秒。",
+        "latency_seconds": 1.3660675829999889,
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 680,
+          "total_tokens": 700,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "29 分，还有 30 秒，1 分 30 秒。",
+        "raw_output": "29 分，还有 30 秒，1 分 30 秒。",
+        "latency_seconds": 2.4667445000000043,
+        "usage": {
+          "completion_tokens": 20,
+          "prompt_tokens": 680,
+          "total_tokens": 700,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": 8
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": 8
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-52": {
+      "case": {
+        "id": "ramc-52",
+        "group": "RAMC 56 条回归",
+        "category": "含数字",
+        "source": "CTS-CN-F2F-2019-11-15-479.txt",
+        "dirty": "至正十一年也就是一三五一年的时候",
+        "clean": "至正十一年，也就是1351年的时候。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "至正十一年，也就是1351年的时候。",
+        "raw_output": "至正十一年，也就是1351年的时候。",
+        "latency_seconds": 1.0032655409999904,
+        "usage": {
+          "completion_tokens": 14,
+          "prompt_tokens": 681,
+          "total_tokens": 695,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "至正十一年，也就是 1351 年的时候。",
+        "raw_output": "至正十一年，也就是 1351 年的时候。",
+        "latency_seconds": 2.042407125000011,
+        "usage": {
+          "completion_tokens": 16,
+          "prompt_tokens": 681,
+          "total_tokens": 697,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": true,
+        "input_character_delta": 4
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-53": {
+      "case": {
+        "id": "ramc-53",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-311.txt",
+        "dirty": "而且也真的会很影响我觉得像鹿晗和关晓彤公布恋情的时候我感觉他鹿晗有多大的勇气啊。",
+        "clean": "而且也真的会很影响。我觉得像鹿晗和关晓彤公布恋情的时候，他鹿晗有多大的勇气啊。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "而且也真的会很影响。我觉得像鹿晗和关晓彤公布恋情的时候，我感觉他鹿晗有多大的勇气啊。",
+        "raw_output": "而且也真的会很影响。我觉得像鹿晗和关晓彤公布恋情的时候，我感觉他鹿晗有多大的勇气啊。",
+        "latency_seconds": 2.2253099999999932,
+        "usage": {
+          "completion_tokens": 30,
+          "prompt_tokens": 697,
+          "total_tokens": 727,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "而且也真的会很影响。我觉得像鹿晗和关晓彤公布恋情的时候，我感觉他鹿晗有多大的勇气啊。",
+        "raw_output": "而且也真的会很影响。我觉得像鹿晗和关晓彤公布恋情的时候，我感觉他鹿晗有多大的勇气啊。",
+        "latency_seconds": 3.908935749999955,
+        "usage": {
+          "completion_tokens": 30,
+          "prompt_tokens": 697,
+          "total_tokens": 727,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9230769230769231,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 0.9230769230769231,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-54": {
+      "case": {
+        "id": "ramc-54",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-667.txt",
+        "dirty": "真的是三个菜，她做的又香又好吃，然后就是心情不好，好三个菜一起给你炒了，大烩菜然后",
+        "clean": "真的是三个菜，她做的又香又好吃。然后就是心情不好，三个菜一起给你炒了，大烩菜。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "真的是三个菜，她做的又香又好吃，然后就是心情不好，好三个菜一起给你炒了，大烩菜。",
+        "raw_output": "真的是三个菜，她做的又香又好吃，然后就是心情不好，好三个菜一起给你炒了，大烩菜。",
+        "latency_seconds": 2.083320041999997,
+        "usage": {
+          "completion_tokens": 29,
+          "prompt_tokens": 699,
+          "total_tokens": 728,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "真的是三个菜，她做的又香又好吃，然后就是心情不好，好，三个菜一起给你炒了，大烩菜。",
+        "raw_output": "真的是三个菜，她做的又香又好吃，然后就是心情不好，好，三个菜一起给你炒了，大烩菜。",
+        "latency_seconds": 3.901542667000001,
+        "usage": {
+          "completion_tokens": 30,
+          "prompt_tokens": 699,
+          "total_tokens": 729,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9714285714285714,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": -1
+      },
+      "score_14b": {
+        "similarity": 0.9714285714285714,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-55": {
+      "case": {
+        "id": "ramc-55",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-1102.txt",
+        "dirty": "后来还是楼上有一个人说是你们再这样闹的话我就报警了，然后当时他们就玩疯了嘛，那女孩才知道就是那个",
+        "clean": "后来还是楼上有一个人说：“你们再这样闹的话，我就报警了。”然后当时他们就玩疯了嘛，那女孩才知道就是那个。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "后来还是楼上有一个人说：“你们再这样闹的话，我就报警了。”然后当时他们就玩疯了嘛，那女孩才知道就是那个。",
+        "raw_output": "后来还是楼上有一个人说：“你们再这样闹的话，我就报警了。”然后当时他们就玩疯了嘛，那女孩才知道就是那个。",
+        "latency_seconds": 2.3974199169999935,
+        "usage": {
+          "completion_tokens": 33,
+          "prompt_tokens": 700,
+          "total_tokens": 733,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "后来还是楼上有一个人说是你们再这样闹的话我就报警了，然后当时他们就玩疯了嘛，那女孩才知道就是那个。",
+        "raw_output": "后来还是楼上有一个人说是你们再这样闹的话我就报警了，然后当时他们就玩疯了嘛，那女孩才知道就是那个。",
+        "latency_seconds": 4.0643738329999906,
+        "usage": {
+          "completion_tokens": 31,
+          "prompt_tokens": 700,
+          "total_tokens": 731,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 4
+      },
+      "score_14b": {
+        "similarity": 0.9574468085106383,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "8B"
+    },
+    "ramc-56": {
+      "case": {
+        "id": "ramc-56",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-126.txt",
+        "dirty": "然后虽然我们都有，但是我们那时候都不怎么玩嘛，他初三来的时候他就天天，每天晚上都在",
+        "clean": "虽然我们都有，但是我们那时候都不怎么玩嘛。他初三来的时候，他就每天晚上都在。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "然后虽然我们都有，但是我们那时候都不怎么玩嘛。他初三来的时候，他就天天，每天晚上都在。",
+        "raw_output": "然后虽然我们都有，但是我们那时候都不怎么玩嘛。他初三来的时候，他就天天，每天晚上都在。",
+        "latency_seconds": 1.9139406250000093,
+        "usage": {
+          "completion_tokens": 26,
+          "prompt_tokens": 694,
+          "total_tokens": 720,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "然后虽然我们都有，但是我们那时候都不怎么玩嘛。他初三来的时候，他就天天，每天晚上都在。",
+        "raw_output": "然后虽然我们都有，但是我们那时候都不怎么玩嘛。他初三来的时候，他就天天，每天晚上都在。",
+        "latency_seconds": 3.4685139160000062,
+        "usage": {
+          "completion_tokens": 26,
+          "prompt_tokens": 694,
+          "total_tokens": 720,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.8947368421052632,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 0.8947368421052632,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-57": {
+      "case": {
+        "id": "ramc-57",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-729.txt",
+        "dirty": "而无人驾驶之所现在的有些产业的瓶，无人驾驶汽车其实也很多，但是就是由于互联网技术",
+        "clean": "而无人驾驶之所以现在的有些产业的瓶颈，无人驾驶汽车其实也很多，但是就是由于互联网技术",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "而无人驾驶之所以现在的有些产业的瓶颈，无人驾驶汽车其实也很多，但是就是由于互联网技术",
+        "raw_output": "而无人驾驶之所以现在的有些产业的瓶颈，无人驾驶汽车其实也很多，但是就是由于互联网技术",
+        "latency_seconds": 1.6092181669999945,
+        "usage": {
+          "completion_tokens": 21,
+          "prompt_tokens": 691,
+          "total_tokens": 712,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "而无人驾驶之所以现在的有些产业的瓶颈，无人驾驶汽车其实也很多，但是就是由于互联网技术。",
+        "raw_output": "而无人驾驶之所以现在的有些产业的瓶颈，无人驾驶汽车其实也很多，但是就是由于互联网技术。",
+        "latency_seconds": 3.061527291999994,
+        "usage": {
+          "completion_tokens": 22,
+          "prompt_tokens": 691,
+          "total_tokens": 713,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "score_14b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 3
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-58": {
+      "case": {
+        "id": "ramc-58",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-285.txt",
+        "dirty": "放个炒鸡蛋，哎呀光西红柿也不好吃，但是放了炒鸡蛋也不好吃，反正就感觉不好吃，那个面感觉就不好吃",
+        "clean": "放个炒鸡蛋，光西红柿也不好吃，但是放了炒鸡蛋也不好吃，反正就感觉不好吃，那个面感觉就不好吃。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "放个炒鸡蛋，哎呀光西红柿也不好吃，但是放了炒鸡蛋也不好吃，反正就感觉不好吃，那个面感觉就不好吃。",
+        "raw_output": "放个炒鸡蛋，哎呀光西红柿也不好吃，但是放了炒鸡蛋也不好吃，反正就感觉不好吃，那个面感觉就不好吃。",
+        "latency_seconds": 2.4814451669999755,
+        "usage": {
+          "completion_tokens": 34,
+          "prompt_tokens": 703,
+          "total_tokens": 737,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "放个炒鸡蛋，哎呀光西红柿也不好吃，但是放了炒鸡蛋也不好吃，反正就感觉不好吃，那个面感觉就不好吃。",
+        "raw_output": "放个炒鸡蛋，哎呀光西红柿也不好吃，但是放了炒鸡蛋也不好吃，反正就感觉不好吃，那个面感觉就不好吃。",
+        "latency_seconds": 4.38379974999998,
+        "usage": {
+          "completion_tokens": 34,
+          "prompt_tokens": 703,
+          "total_tokens": 737,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9534883720930233,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.9534883720930233,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "自动指标持平/无金标"
+    },
+    "ramc-59": {
+      "case": {
+        "id": "ramc-59",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-91.txt",
+        "dirty": "没有，不是的，我因为我们班刚开始，刚来的时候我就觉得我们班应该要多组织一些比较团结男女团结这种活动",
+        "clean": "没有，不是的。因为我们班刚开始，刚来的时候我就觉得我们班应该要多组织一些比较团结、男女团结这种活动。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "没有，不是的。因为我们班刚开始，刚来的时候我就觉得我们班应该要多组织一些比较团结、男女团结这种活动。",
+        "raw_output": "没有，不是的。因为我们班刚开始，刚来的时候我就觉得我们班应该要多组织一些比较团结、男女团结这种活动。",
+        "latency_seconds": 2.162772708999995,
+        "usage": {
+          "completion_tokens": 30,
+          "prompt_tokens": 699,
+          "total_tokens": 729,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "没有，不是的。因为我们班刚开始，刚来的时候我就觉得我们班应该要多组织一些比较团结、男女团结的这种活动。",
+        "raw_output": "没有，不是的。因为我们班刚开始，刚来的时候我就觉得我们班应该要多组织一些比较团结、男女团结的这种活动。",
+        "latency_seconds": 4.007067124999992,
+        "usage": {
+          "completion_tokens": 31,
+          "prompt_tokens": 699,
+          "total_tokens": 730,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 1.0,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "score_14b": {
+        "similarity": 0.9782608695652174,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 2
+      },
+      "winner": "8B"
+    },
+    "ramc-60": {
+      "case": {
+        "id": "ramc-60",
+        "group": "RAMC 56 条回归",
+        "category": "长句",
+        "source": "CTS-CN-F2F-2019-11-15-1165.txt",
+        "dirty": "现在也可以开始美团自助点餐，因为不用菜单了，也省省掉了纸质的用品也省掉的一些资源的浪费",
+        "clean": "现在也可以开始美团自助点餐，因为不用菜单了，省掉了纸质用品，也省掉了一些资源的浪费。",
+        "must_keep": [],
+        "must_not_include": [],
+        "gold_status": "人工金标准"
+      },
+      "8b": {
+        "output": "现在也可以开始美团自助点餐，因为不用菜单了，也省掉了纸质用品，也省掉了一些资源的浪费。",
+        "raw_output": "现在也可以开始美团自助点餐，因为不用菜单了，也省掉了纸质用品，也省掉了一些资源的浪费。",
+        "latency_seconds": 2.0136595830000203,
+        "usage": {
+          "completion_tokens": 28,
+          "prompt_tokens": 698,
+          "total_tokens": 726,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "14b": {
+        "output": "现在也可以开始美团自助点餐，因为不用菜单了，也省掉了纸质的用品，也省掉了一些资源的浪费。",
+        "raw_output": "现在也可以开始美团自助点餐，因为不用菜单了，也省掉了纸质的用品，也省掉了一些资源的浪费。",
+        "latency_seconds": 3.8168313749999925,
+        "usage": {
+          "completion_tokens": 29,
+          "prompt_tokens": 698,
+          "total_tokens": 727,
+          "prompt_tokens_details": {
+            "cached_tokens": 658
+          }
+        },
+        "error": null
+      },
+      "score_8b": {
+        "similarity": 0.9743589743589743,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 0
+      },
+      "score_14b": {
+        "similarity": 0.95,
+        "missing_must_keep": [],
+        "forbidden_present": [],
+        "redline_ok": null,
+        "digit_ok": null,
+        "input_character_delta": 1
+      },
+      "winner": "8B"
+    }
+  },
+  "metadata": {
+    "generated_at": "2026-07-10 23:14:33",
+    "prompt_path": "eval/prompts/prompt_v1.txt",
+    "prompt_sha256": "dcd8856753b27cd15b16563ca17a507540af43fe0e20fd2d22cd5f0e362288c5",
+    "models": {
+      "8b": {
+        "path": "/Users/vvclaw/Library/Application Support/AI接线员/models/llm/Qwen3-8B-Q4_K_M.gguf",
+        "size_gb": 5.027783488,
+        "load_seconds": 2.573499166
+      },
+      "14b": {
+        "path": "/Volumes/AIReceptionistModels/AI接线员/models/llm-ab/Qwen3-14B-Q4_K_M.gguf",
+        "size_gb": 9.00175296,
+        "load_seconds": 24.851912375000012
+      }
+    }
+  }
+}

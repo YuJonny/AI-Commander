@@ -40,6 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             if let w = NSApp.windows.first {
                 self.window = w
+                w.isReleasedWhenClosed = false
                 w.styleMask.remove(.resizable)
                 w.setContentSize(NSSize(width: 440, height: 520))
                 // Liquid Glass window setup: transparent titlebar, translucent background
@@ -67,6 +68,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     /// Watch for window close → hide Dock icon; window open → show Dock icon
     private func observeWindow(_ w: NSWindow) {
+        // 先摘旧观察者再挂新：block 型观察者不显式 remove 会泄漏，且同一窗口会重复触发
+        if let old = windowObserver {
+            NotificationCenter.default.removeObserver(old)
+        }
         // When window becomes visible, show Dock icon
         windowObserver = NotificationCenter.default.addObserver(
             forName: NSWindow.willCloseNotification,
@@ -98,16 +103,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         menu.addItem(NSMenuItem.separator())
 
-        let statusMenuItem = NSMenuItem(title: store.isEnabled ? L("menu.status.running") : L("menu.status.stopped"), action: nil, keyEquivalent: "")
-        statusMenuItem.tag = 100
-        menu.addItem(statusMenuItem)
+        // 开关（勾选样式）：总开关 + 本地大模型润色
+        let masterItem = NSMenuItem(title: L("menu.master"), action: #selector(toggleMapping), keyEquivalent: "")
+        masterItem.target = self
+        masterItem.tag = 101
+        masterItem.state = store.isEnabled ? .on : .off
+        menu.addItem(masterItem)
 
-        menu.addItem(NSMenuItem.separator())
-
-        let toggleItem = NSMenuItem(title: store.isEnabled ? L("menu.disable") : L("menu.enable"), action: #selector(toggleMapping), keyEquivalent: "")
-        toggleItem.target = self
-        toggleItem.tag = 101
-        menu.addItem(toggleItem)
+        let polishItem = NSMenuItem(title: L("menu.polish"), action: #selector(togglePolish), keyEquivalent: "")
+        polishItem.target = self
+        polishItem.tag = 102
+        polishItem.state = store.localLLM ? .on : .off
+        polishItem.isEnabled = store.llmModelReady
+        menu.addItem(polishItem)
 
         let showItem = NSMenuItem(title: L("menu.open"), action: #selector(showWindow), keyEquivalent: "")
         showItem.target = self
@@ -146,13 +154,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     private func updateMenu() {
         guard let menu = statusItem?.menu else { return }
-        let enabled = KeyMappingStore.shared.isEnabled
-
-        if let item = menu.item(withTag: 100) {
-            item.title = enabled ? L("menu.status.running") : L("menu.status.stopped")
-        }
-        if let item = menu.item(withTag: 101) {
-            item.title = enabled ? L("menu.disable") : L("menu.enable")
+        let store = KeyMappingStore.shared
+        if let item = menu.item(withTag: 101) { item.state = store.isEnabled ? .on : .off }
+        if let item = menu.item(withTag: 102) {
+            item.state = store.localLLM ? .on : .off
+            item.isEnabled = store.llmModelReady
         }
     }
 
@@ -160,15 +166,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         KeyMappingStore.shared.isEnabled.toggle()
     }
 
+    @objc private func togglePolish() {
+        KeyMappingStore.shared.localLLM.toggle()
+    }
+
     @objc private func showWindow() {
         // Show Dock icon first, then show window — no flash because window appears after policy change
         NSApp.setActivationPolicy(.regular)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             if let w = self.window {
+                w.isReleasedWhenClosed = false
+                w.center()
                 w.makeKeyAndOrderFront(nil)
                 self.observeWindow(w)
             } else if let w = NSApp.windows.first {
                 self.window = w
+                w.isReleasedWhenClosed = false
+                w.center()
                 w.makeKeyAndOrderFront(nil)
                 self.observeWindow(w)
             }

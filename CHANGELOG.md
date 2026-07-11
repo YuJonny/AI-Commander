@@ -1,23 +1,56 @@
-# Changelog
+# 更新日志 · Changelog
 
-All notable changes to this project are documented here.
-The format is based on [Keep a Changelog](https://keepachangelog.com/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
+本项目所有值得记录的改动都写在这里。
+格式参考 [Keep a Changelog](https://keepachangelog.com/)，版本遵循 [语义化版本](https://semver.org/)。
 
-## [1.0.0] - 2026-06
+## [2.0.0] · 未发布
 
-First public release. 首个公开版本。
+macOS 版从「按键映射工具」升级成一条**本地语音输入链路**：
+耳机键 → 录音 → 本机识别 → 清理 / 可选润色 → 文字落到当前 App。全程离线。
 
-### Added / 新增
-- 🎧 Map the headset play/pause media key to any keyboard key.
-  将耳机的播放/暂停媒体键映射为任意键盘按键。
-- ⌨️ Default mapping: Right Command (macOS) / Right Alt (Windows).
-  默认映射：右 Command（macOS）/ 右 Alt（Windows）。
-- 🪟 Menu-bar (macOS) / system-tray (Windows) presence with a master on/off switch.
-  常驻菜单栏（macOS）/ 系统托盘（Windows），带主开关。
-- 🚀 Launch at login.
-  开机自启。
-- 🍎 Universal macOS binary (Intel + Apple Silicon); 🪟 self-contained single-file Windows build (x64).
-  macOS 通用二进制（Intel + Apple Silicon）；Windows 自包含单文件版（x64）。
+### 新增
 
-[1.0.0]: https://github.com/your-username/AI-Commander/releases/tag/v1.0.0
+- 🗣 **本地语音输入（macOS · Apple 芯片）**：按耳机键说话，文字直接键入当前 App；不联网、不过剪贴板。
+- 🎙 **两档语音识别模型，下载时自选**：Qwen3-ASR 高精度（约 840MB，默认推荐）／ SenseVoice 轻量（约 220MB）。
+- 🧠 **可选语义增强大模型润色**：本地 Qwen3-8B（约 4.7GB）——去口水词、自我更正、补标点分段、数字规范化，「随口说，出成稿」。
+- ⚡️ **伪流式转写**：说话过程中每个停顿段落后台先行识别，按停后只需处理尾段——长口述出字明显更快，精度零损失。
+- 🧹 **口语词自动过滤 + 技术热词纠正**：不开润色也生效，纯规则、绝不乱改。
+- ⬇️ **模型按需下载管理**：进度显示、断点续传、就绪检测、删除（带二次确认）、下载前磁盘空间预检查。
+- 🪟 **首次启动权限引导**：辅助功能 + 麦克风为必需项，可顺手检测耳机播放键，并指引下载语音模型。
+- 💎 **Liquid Glass 状态胶囊**：Listening → 识别中 → 润色中；权限 / 模型 / 静音 / 密码框等异常都有明确提示。
+- 🔁 **第三方语音工具预设**：豆包、微信、Typeless、闪电说、Wispr Flow、Superwhisper、AutoGLM、Claude Code、Codex，一键映射到对应快捷键，也支持自定义组合键。
+
+### 变更
+
+- 🍎 macOS 版改为 **Apple 芯片专属（arm64）**：内置的 sherpa-onnx / llama.cpp 运行时为 arm64。
+- 📦 App 已内置所需语音 / 大模型运行时，DMG 下载后即可运行（模型仍按需下载）。
+- 🎧 macOS 保留原有「耳机键映射」用法，但本地语音输入成为主体验。
+- 🪟 Windows 版本阶段暂仍为耳机键映射，尚无本地语音链路。
+
+### 稳定性与保护
+
+- ⏱ 录音上限 20 分钟：到点自动停止并**照常转写插入**，内容不丢。
+- 🛡 超长口述（约 3 分钟以上）自动跳过大模型润色、改走规则清理，避免超出模型上下文后输出被截断。
+- 🎛 耳机键 0.5 秒防抖：手抖连按不会误开新录音；线控按键抖动免疫。
+- 🧠 低内存机型提示：8GB 内存的 Mac 开启润色时给出「会明显变慢」的明确警告（不禁用，保留选择权）。
+- 🔍 模型文件完整性检查加强：残缺 / 截断的模型不会被误加载导致闪退。
+
+### 说明
+
+- 尚未做 Apple 公证，首次打开可能提示「已损坏 / 身份不明的开发者」；README 与安装说明附处理方法。
+- 唯一主动联网：你点击下载模型时，从 GitHub Releases / ModelScope / 镜像源拉取模型文件。
+
+## [1.0.0] · 2026-06
+
+首个公开版本。
+
+### 新增
+
+- 🎧 把耳机的播放 / 暂停键映射成任意键盘按键。
+- ⌨️ 默认映射：右 Command（macOS）／右 Alt（Windows）。
+- 🪟 常驻菜单栏（macOS）／系统托盘（Windows），带总开关。
+- 🚀 开机自启。
+- 🍎 macOS 通用二进制（Intel + Apple 芯片）；Windows 自包含单文件版（x64）。
+
+[2.0.0]: https://github.com/YuJonny/AI-Commander/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/YuJonny/AI-Commander/releases/tag/v1.0.0

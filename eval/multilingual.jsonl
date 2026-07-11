@@ -1,0 +1,18 @@
+{"id":"zh_asr_001","category":"zh_asr_error","dirty":"明天下午三点啊不对两点半和 Alice review 这个 pull request","clean":"明天下午 2 点半和 Alice review 这个 pull request。","must_keep":["明天","2 点半","Alice","review","pull request"],"must_not_include":["3 点半"]}
+{"id":"zh_asr_002","category":"zh_asr_error","dirty":"把这个订单号一三八零零六六改成一三八零零六八不是六六","clean":"把这个订单号 1380066 改成 1380068，不是 66。","must_keep":["1380066","1380068","66"]}
+{"id":"zh_asr_003","category":"zh_asr_error","dirty":"我住在北京市海淀区中关村大街二十七号不要改地址","clean":"我住在北京市海淀区中关村大街 27 号，不要改地址。","must_keep":["北京市","海淀区","中关村大街","27 号"]}
+{"id":"zh_asr_004","category":"zh_asr_error","dirty":"这个型号是 x p s 十三不是 x p s 三十","clean":"这个型号是 XPS 13，不是 XPS 30。","must_keep":["XPS 13","XPS 30"]}
+{"id":"code_switch_001","category":"code_switch","dirty":"帮我把这个 react component 的 props 类型改成 optional 然后加一个 loading state","clean":"帮我把这个 React component 的 props 类型改成 optional，然后加一个 loading state。","must_keep":["React","component","props","optional","loading state"]}
+{"id":"code_switch_002","category":"code_switch","dirty":"这个 api 返回的 json 里面 user id 是 string 不要转 number","clean":"这个 API 返回的 JSON 里面 user id 是 string，不要转 number。","must_keep":["API","JSON","user id","string","number"]}
+{"id":"code_switch_003","category":"code_switch","dirty":"commit message 写 fix login redirect bug 不要写中文","clean":"commit message 写 fix login redirect bug，不要写中文。","must_keep":["commit message","fix login redirect bug"],"must_not_include":["修复登录"]}
+{"id":"code_switch_004","category":"code_switch","dirty":"把 read me 里面的 ai commander 改成 AI 接线员 commander","clean":"把 README 里面的 AI Commander 改成 AI 接线员 Commander。","must_keep":["README","AI Commander","AI 接线员 Commander"]}
+{"id":"en_001","category":"english","dirty":"um please schedule the meeting for three no sorry two thirty tomorrow with Alice","clean":"Please schedule the meeting for 2:30 tomorrow with Alice.","must_keep":["2:30","tomorrow","Alice"],"must_not_include":["3"]}
+{"id":"en_002","category":"english","dirty":"I I think we should keep the current API response and not rename user id","clean":"I think we should keep the current API response and not rename user id.","must_keep":["API","user id"]}
+{"id":"en_003","category":"english","dirty":"create a branch called feature slash voice eval and push it later","clean":"Create a branch called feature/voice-eval and push it later.","must_keep":["feature/voice-eval"]}
+{"id":"en_004","category":"english","dirty":"do not translate this sentence just clean the punctuation please","clean":"Do not translate this sentence. Just clean the punctuation, please.","must_keep":["Do not translate"]}
+{"id":"ja_001","category":"japanese","dirty":"えっと明日の午後三時じゃなくて二時半に会議を入れてください","clean":"明日の午後2時半に会議を入れてください。","must_keep":["明日","午後2時半","会議"]}
+{"id":"ja_002","category":"japanese","dirty":"github の issue を確認してから pull request を出します","clean":"GitHub の issue を確認してから pull request を出します。","must_keep":["GitHub","issue","pull request"]}
+{"id":"ko_001","category":"korean","dirty":"어 내일 세 시 아니 두 시 반에 Alice 랑 미팅 잡아줘","clean":"내일 2시 반에 Alice랑 미팅 잡아줘.","must_keep":["내일","2시 반","Alice"]}
+{"id":"ko_002","category":"korean","dirty":"github issue 확인하고 pull request 올릴게","clean":"GitHub issue 확인하고 pull request 올릴게.","must_keep":["GitHub","issue","pull request"]}
+{"id":"yue_001","category":"cantonese","dirty":"聽日下午三點唔係兩點半同 Alice 開會","clean":"聽日下午 2 點半同 Alice 開會。","must_keep":["聽日","2 點半","Alice"]}
+{"id":"yue_002","category":"cantonese","dirty":"幫我睇下 GitHub 個 pull request 先","clean":"幫我睇下 GitHub 個 pull request 先。","must_keep":["GitHub","pull request"]}
