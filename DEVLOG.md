@@ -22,6 +22,7 @@
 - [2026-07-11] (用户要求) **终刷 DMG**：`python3 dmg-build/build.py` → `终版分发/AI接线员.dmg`（23MB 压缩/App 64MB），已挂载验证：sherpa/llama 运行时、AutoGLM 图标、安装说明齐全，hdiutil 校验 VALID。交用户换机自测新用户全流程；通过后就剩 GitHub Release（发前再确认）。
 - [2026-07-11] (用户定稿) README「缘起」多轮迭代定稿：Claude 三版（伪个人叙事被否"莫名其妙创造奇怪需求"→按键传记→诚实怀旧版），最终**用户亲笔重写**——"以前打电话，是一件很具体的事…现在，我们用它，和未来说话"。教训入档：**品牌故事的情感锚点必须是作者自己的，AI 只能供结构和备选表达，不能代拟"我"的经历**。
 - [2026-07-12] (用户实测通过+要求) 换机三测全部通过，进入发布准备；用户嫌 README（Codex 重构版）啰嗦 → Claude 整篇脱水：保留 Codex 的结构（主要能力/模型与语言表/折叠开发者信息）与用户亲笔「缘起」，砍掉解释性尾巴和形容词堆叠（Liquid Glass 段从 90 字压到 40 字、能力五条每条砍一半、表格单元格短语化、删与平台表重复的说明行），正文约 -35%。事实零删减。
+- ✅🚀 [2026-07-12] (用户拍板"A 就这么发") **v2.0.0 正式发布**：push `f15e247→c15bbec` 4 个 commit → tag `v2.0.0` → GitHub Release 挂 `AI.Commander_Mac_v2.0.dmg`(23MB) + `AI.Commander_Win.exe`(77MB, v1.0.1 功能)。发布说明含新增/稳定性/下载表/未公证绕过。README 中英双版（`README.en.md` 新增互链）。gh 认证走 device flow（用户浏览器确认），`gh auth setup-git` 接管 git 凭据。⚠️ 已知遗留：demo.gif/截图仍是 v1 界面（用户选 A：先发后补）。Release: https://github.com/YuJonny/AI-Commander/releases/tag/v2.0.0
 - ⚠️ Apple 公证需 $99 账号，用户暂不办（README 已教绕过）。
 
 ## 2. 语音输入核心（ASR 管线）
