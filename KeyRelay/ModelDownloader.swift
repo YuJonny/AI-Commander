@@ -18,13 +18,23 @@ private func L(_ key: String) -> String {
 final class ModelDownloader: NSObject {
     static let shared = ModelDownloader()
 
+    /// 多文件散装源：ModelScope / HuggingFace 按文件托管（无 tar 包），逐个文件直下。
+    /// 中国网络下这是唯一稳定快速的通道（GitHub 及其公益镜像分运营商随缘）。
+    struct FileSource {
+        let base: String                 // 以 / 结尾的仓库 resolve 前缀
+        let files: [String]              // 要下载的相对路径
+        let renameTo: [String: String]   // 下载路径 → 落位路径（默认同名）
+    }
+
     struct Item {
         let canonicalDir: String   // models/ 下的目录名
-        let urls: [String]         // 依次尝试的完整地址
+        let urls: [String]         // 依次尝试的完整地址（归档或单文件）
         let requiredFiles: [String] // 就绪所需文件（相对 canonicalDir）
         let isArchive: Bool        // true=tar.bz2 解压；false=单文件直接落位
         let isGGUF: Bool           // GGUF 单文件走 Range 断点续传和 magic 校验
         let sizeHint: Double       // MB，用于合并进度
+        var fileSources: [FileSource] = []   // 多文件散装源
+        var fileSourcesFirst: Bool = true    // true=散装源优先（中国直连快）；false=归档优先（体积小）
 
         var checkFile: String { requiredFiles[0] }
     }
@@ -39,33 +49,54 @@ final class ModelDownloader: NSObject {
          u]
     }
 
-    /// 高精度 ASR：Qwen3-0.6B（中英混说强、自带标点）
+    /// 高精度 ASR：Qwen3-0.6B（中英混说强、自带标点）。
+    /// 主路=ModelScope 散装直下（中国 CDN，2026-07 实测唯一在裸网稳定的通道）；gh 归档兜底。
     static let asrQwen = Item(
         canonicalDir: "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25",
         urls: gh("https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25.tar.bz2"),
         requiredFiles: ["conv_frontend.onnx", "encoder.int8.onnx", "decoder.int8.onnx",
                         "tokenizer/tokenizer_config.json"],
-        isArchive: true, isGGUF: false, sizeHint: 838)
+        isArchive: true, isGGUF: false, sizeHint: 838,
+        fileSources: [FileSource(
+            base: "https://modelscope.cn/models/zengshuishui/Qwen3-ASR-onnx/resolve/master/",
+            files: ["model_0.6B/conv_frontend.onnx", "model_0.6B/encoder.int8.onnx",
+                    "model_0.6B/decoder.int8.onnx",
+                    "tokenizer/merges.txt", "tokenizer/tokenizer_config.json", "tokenizer/vocab.json"],
+            renameTo: ["model_0.6B/conv_frontend.onnx": "conv_frontend.onnx",
+                       "model_0.6B/encoder.int8.onnx": "encoder.int8.onnx",
+                       "model_0.6B/decoder.int8.onnx": "decoder.int8.onnx"])])
 
-    /// Qwen3 长语音分段：官方 Silero VAD（16kHz，约 0.63MB）。
+    /// Qwen3 长语音分段：官方 Silero VAD（16kHz，约 0.63MB）。hf-mirror 中国直连优先。
     static let vad = Item(
         canonicalDir: "silero-vad",
-        urls: gh("https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx"),
+        urls: ["https://hf-mirror.com/csukuangfj/vad/resolve/main/silero_vad.onnx"]
+            + gh("https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx"),
         requiredFiles: ["silero_vad.onnx"],
         isArchive: false, isGGUF: false, sizeHint: 0.63)
 
-    /// 轻量 ASR：SenseVoice（小而快、省内存）+ 配套标点模型
+    /// 轻量 ASR：SenseVoice（小而快、省内存）+ 配套标点模型。hf-mirror 散装优先。
     static let asrSense = Item(
         canonicalDir: "sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17",
         urls: gh("https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2"),
         requiredFiles: ["model.int8.onnx", "tokens.txt"],
-        isArchive: true, isGGUF: false, sizeHint: 155)
+        isArchive: true, isGGUF: false, sizeHint: 155,
+        fileSources: [FileSource(
+            base: "https://hf-mirror.com/csukuangfj/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-2024-07-17/resolve/main/",
+            files: ["model.int8.onnx", "tokens.txt"],
+            renameTo: [:])])
 
+    /// 标点模型：gh 的 int8 归档（62MB）优先；中国直连兜底只有 fp32（约 292MB，
+    /// 内容等价可用，落位命名为引擎期望的 model.int8.onnx）。
     static let punct = Item(
         canonicalDir: "sherpa-onnx-punct-ct-transformer-zh-en-vocab272727-2024-04-12-int8",
         urls: gh("https://github.com/k2-fsa/sherpa-onnx/releases/download/punctuation-models/sherpa-onnx-punct-ct-transformer-zh-en-vocab272727-2024-04-12-int8.tar.bz2"),
         requiredFiles: ["model.int8.onnx"],
-        isArchive: true, isGGUF: false, sizeHint: 62)
+        isArchive: true, isGGUF: false, sizeHint: 62,
+        fileSources: [FileSource(
+            base: "https://hf-mirror.com/csukuangfj/sherpa-onnx-punct-ct-transformer-zh-en-vocab272727-2024-04-12/resolve/main/",
+            files: ["model.onnx", "config.yaml", "tokens.json"],
+            renameTo: ["model.onnx": "model.int8.onnx"])],
+        fileSourcesFirst: false)
 
     static let llm = Item(
         canonicalDir: "llm",
@@ -168,28 +199,67 @@ final class ModelDownloader: NSObject {
     }
 
     private func fetch(item: Item, doneMB: Double, totalMB: Double) -> Bool {
-        for urlStr in item.urls {
-            if cancelled { return false }
-            guard let url = URL(string: urlStr) else { continue }
-            if downloadAndInstall(url: url, item: item, doneMB: doneMB, totalMB: totalMB) { return true }
+        let tryFiles = { () -> Bool in
+            for src in item.fileSources {
+                if self.cancelled { return false }
+                if self.fetchFiles(src, item: item, doneMB: doneMB, totalMB: totalMB) { return true }
+            }
+            return false
         }
-        return false
+        let tryURLs = { () -> Bool in
+            for urlStr in item.urls {
+                if self.cancelled { return false }
+                guard let url = URL(string: urlStr) else { continue }
+                if self.downloadAndInstall(url: url, item: item, doneMB: doneMB, totalMB: totalMB) { return true }
+            }
+            return false
+        }
+        return item.fileSourcesFirst ? (tryFiles() || tryURLs()) : (tryURLs() || tryFiles())
     }
 
-    private func downloadAndInstall(url: URL, item: Item, doneMB: Double, totalMB: Double) -> Bool {
-        if item.isGGUF {
-            // 大文件（GGUF）走断点续传
-            return rangedDownload(url: url, item: item, doneMB: doneMB, totalMB: totalMB)
+    /// 多文件散装下载：逐文件下到 canonicalDir（已存在且体积正常的文件跳过 = 文件粒度断点续传）。
+    private func fetchFiles(_ src: FileSource, item: Item, doneMB: Double, totalMB: Double) -> Bool {
+        let fm = FileManager.default
+        let dir = Self.modelsRoot.appendingPathComponent(item.canonicalDir)
+        var gotBytes: Int64 = 0
+        let hintBytes = item.sizeHint * 1_048_576
+        for f in src.files {
+            if cancelled { return false }
+            let destName = src.renameTo[f] ?? f
+            let dest = dir.appendingPathComponent(destName)
+            if let sz = ((try? fm.attributesOfItem(atPath: dest.path)[.size]) as? NSNumber)?.int64Value, sz >= 1024 {
+                gotBytes += sz
+                continue     // 该文件上次已下好
+            }
+            guard let url = URL(string: src.base + f.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!) else { return false }
+            let base = gotBytes
+            guard let tmp = fetchSingle(url: url, onBytes: { [weak self] written, _ in
+                let frac = min(1, Double(base + written) / hintBytes)
+                DispatchQueue.main.async {
+                    self?.onFraction?((doneMB + frac * item.sizeHint) / totalMB)
+                    self?.onProgress?(String(format: L(item.isGGUF ? "dl.progress.llm" : "dl.progress.voice"), Int(frac * 100)))
+                }
+            }) else { return false }
+            defer { try? fm.removeItem(at: tmp) }
+            // 校验：拒绝镜像的 HTML 错误页 + 零字节残骸
+            guard let fh = FileHandle(forReadingAtPath: tmp.path) else { return false }
+            let head = fh.readData(ofLength: 15); try? fh.close()
+            let headText = String(data: head, encoding: .ascii)?.lowercased() ?? ""
+            let sz = ((try? fm.attributesOfItem(atPath: tmp.path)[.size]) as? NSNumber)?.int64Value ?? 0
+            guard sz >= 1024 || !f.hasSuffix(".onnx"), !headText.contains("<!doc"), !headText.contains("<html") else { return false }
+            try? fm.createDirectory(at: dest.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try? fm.removeItem(at: dest)
+            do { try fm.moveItem(at: tmp, to: dest) } catch { return false }
+            gotBytes += sz
         }
+        return Self.isReady(item)
+    }
+
+    /// 单文件下载到临时路径（看门狗 + 可取消 + 字节进度回调）
+    private func fetchSingle(url: URL, onBytes: @escaping (Int64, Int64) -> Void) -> URL? {
         let sem = DispatchSemaphore(value: 0)
         var file: URL?
-        let delegate = DownloadDelegate(onFraction: { [weak self] frac in
-            let overall = (doneMB + frac * item.sizeHint) / totalMB
-            DispatchQueue.main.async {
-                self?.onFraction?(overall)
-                self?.onProgress?(String(format: L("dl.progress.voice"), Int(overall * 100)))
-            }
-        }, completion: { loc in file = loc; sem.signal() })
+        let delegate = DownloadDelegate(onBytes: onBytes, completion: { loc in file = loc; sem.signal() })
         let cfg = URLSessionConfiguration.default
         cfg.timeoutIntervalForRequest = 40
         cfg.timeoutIntervalForResource = 7200
@@ -201,7 +271,23 @@ final class ModelDownloader: NSObject {
         sem.wait()
         watchdog.cancel()
         session.finishTasksAndInvalidate()
-        guard let f = file else { return false }
+        return file
+    }
+
+    private func downloadAndInstall(url: URL, item: Item, doneMB: Double, totalMB: Double) -> Bool {
+        if item.isGGUF {
+            // 大文件（GGUF）走断点续传
+            return rangedDownload(url: url, item: item, doneMB: doneMB, totalMB: totalMB)
+        }
+        guard let f = fetchSingle(url: url, onBytes: { [weak self] written, expected in
+            guard expected > 0 else { return }
+            let frac = Double(written) / Double(expected)
+            let overall = (doneMB + frac * item.sizeHint) / totalMB
+            DispatchQueue.main.async {
+                self?.onFraction?(overall)
+                self?.onProgress?(String(format: L("dl.progress.voice"), Int(overall * 100)))
+            }
+        }) else { return false }
         defer { try? FileManager.default.removeItem(at: f) }
         return Self.install(downloaded: f, item: item)
     }
@@ -364,21 +450,21 @@ private final class RangedDelegate: NSObject, URLSessionDataDelegate {
 
 /// 进度 + 完成回调；校验 HTTP 200（镜像 404 也会"下载成功"一个错误页，必须挡掉）
 private final class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
-    private let onFraction: (Double) -> Void
+    private let onBytes: (Int64, Int64) -> Void
     private let completion: (URL?) -> Void
     private var lastEmit = Date.distantPast
     private var finished = false
 
-    init(onFraction: @escaping (Double) -> Void, completion: @escaping (URL?) -> Void) {
-        self.onFraction = onFraction
+    init(onBytes: @escaping (Int64, Int64) -> Void, completion: @escaping (URL?) -> Void) {
+        self.onBytes = onBytes
         self.completion = completion
     }
 
     func urlSession(_ s: URLSession, downloadTask t: URLSessionDownloadTask,
                     didWriteData _: Int64, totalBytesWritten w: Int64, totalBytesExpectedToWrite e: Int64) {
-        guard e > 0, Date().timeIntervalSince(lastEmit) > 0.3 else { return }
+        guard Date().timeIntervalSince(lastEmit) > 0.3 else { return }
         lastEmit = Date()
-        onFraction(Double(w) / Double(e))
+        onBytes(w, e)
     }
 
     func urlSession(_ s: URLSession, downloadTask t: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
