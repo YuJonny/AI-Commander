@@ -29,6 +29,9 @@ public sealed class ModelDownloadService : IDisposable
     private const string BundledLlamaLicenseResource = "Commander.Bundled.llama-license.txt";
     private const string BundledLlamaSha256 =
         "18994b4b365dc67db9933c8d285f9f5dca614ff771a5aa0097377c2a170b7bff";
+    private const string BundledVadResource = "Commander.Bundled.silero_vad.onnx";
+    private const string BundledVadSha256 =
+        "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6";
 
     public static ModelDownloadService Shared { get; } = new();
 
@@ -234,7 +237,7 @@ public sealed class ModelDownloadService : IDisposable
             }
             Emit(target, null, T("下载完成", "Download complete"), 1);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
         {
             Emit(
                 target,
@@ -271,11 +274,63 @@ public sealed class ModelDownloadService : IDisposable
         if (item.Kind == ModelComponentKind.LlamaRuntime &&
             await TryInstallBundledLlamaRuntimeAsync(target, item, completedMb, totalMb, token))
             return true;
+        // Silero VAD 直接从内嵌资源装，不走网络（629KB，Qwen 档的必要组件）
+        if (item.Kind == ModelComponentKind.SileroVad &&
+            await TryInstallBundledVadAsync(target, item, completedMb, totalMb, token))
+            return true;
         if (item.PreferArchives && await TryArchivesAsync(target, item, completedMb, totalMb, token))
             return true;
         if (await TryFileSourcesAsync(target, item, completedMb, totalMb, token)) return true;
         return !item.PreferArchives &&
                await TryArchivesAsync(target, item, completedMb, totalMb, token);
+    }
+
+    /// 从内嵌资源装 Silero VAD。此前它唯一的国内源是 hf-mirror，一旦那条线路在用户网络上
+    /// 不通，整个 Qwen 档就卡死在 GitHub 镜像——而这个文件只有 629KB，没有任何理由走网络。
+    private async Task<bool> TryInstallBundledVadAsync(
+        ModelDownloadTarget target,
+        ModelItem item,
+        double completedMb,
+        double totalMb,
+        CancellationToken token)
+    {
+        try
+        {
+            await using var resource = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream(BundledVadResource);
+            if (resource is null) return false;
+
+            Emit(target, item.Kind, PreparingText(item.Kind), completedMb / totalMb, true);
+            Directory.CreateDirectory(item.DirectoryPath);
+            var destination = Path.Combine(item.DirectoryPath, item.RequiredFiles[0]);
+            var staging = destination + ".bundled";
+            await using (var output = new FileStream(
+                             staging, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 64, useAsync: true))
+            {
+                await resource.CopyToAsync(output, 1024 * 64, token);
+                await output.FlushAsync(token);
+            }
+
+            await using (var written = File.OpenRead(staging))
+            {
+                var digest = Convert.ToHexString(await SHA256.HashDataAsync(written, token)).ToLowerInvariant();
+                if (!string.Equals(digest, BundledVadSha256, StringComparison.Ordinal))
+                    throw new InvalidDataException("Bundled Silero VAD failed SHA-256 validation.");
+            }
+
+            File.Move(staging, destination, overwrite: true);
+            return ModelCatalog.IsReady(item);
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            // 内嵌装不上就退回网络下载，不阻断流程
+            AppLog.Error(nameof(ModelDownloadService), exception, "Bundled Silero VAD install failed; falling back to network.");
+            return false;
+        }
     }
 
     private async Task<bool> TryInstallBundledLlamaRuntimeAsync(
@@ -321,7 +376,7 @@ public sealed class ModelDownloadService : IDisposable
             if (installed) await InstallBundledLlamaLicenseAsync(item, token);
             return installed;
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             throw;
         }
@@ -412,7 +467,9 @@ public sealed class ModelDownloadService : IDisposable
                     }
                     if (ModelCatalog.IsReady(item)) return true;
                 }
-                catch (OperationCanceledException)
+                // ⚠️ TaskCanceledException 继承自 OperationCanceledException，HttpClient 超时抛的正是它。
+                // 只有我们自己的 token 真被取消才算"用户取消"，否则当普通失败继续换源。
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
                 {
                     throw;
                 }
@@ -477,7 +534,9 @@ public sealed class ModelDownloadService : IDisposable
                     Emit(target, item.Kind, InstallingText(item.Kind), completedMb / totalMb, true);
                     if (await InstallArchiveAsync(local, item, token)) return true;
                 }
-                catch (OperationCanceledException)
+                // ⚠️ TaskCanceledException 继承自 OperationCanceledException，HttpClient 超时抛的正是它。
+                // 只有我们自己的 token 真被取消才算"用户取消"，否则当普通失败继续换源。
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
                 {
                     throw;
                 }

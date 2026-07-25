@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 
 namespace Commander;
 
@@ -62,9 +62,14 @@ public static class ModelCatalog
                     new("tokenizer/vocab.json", "tokenizer/vocab.json"),
                 ])
         ],
+        // 归档兜底：先走 ModelScope 的整包（国内直连，实测 11MB/s），GitHub 镜像排在其后
         GitHubMirrors(
-            "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/" +
-            "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25.tar.bz2"));
+                "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/" +
+                "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25.tar.bz2")
+            .Prepend(
+                "https://modelscope.cn/models/ZhaoChaoqun/sherpa-onnx-asr-models/resolve/master/" +
+                "Qwen3-ASR-0.6B.tar.bz2")
+            .ToArray());
 
     public static ModelItem SileroVad { get; } = new(
         ModelComponentKind.SileroVad,

@@ -33,6 +33,11 @@
                       Condition="Exists('Resources\llama-b9873-bin-win-cpu-x64.zip')" />
     <EmbeddedResource Include="Resources\llama.cpp-LICENSE.txt"
                       LogicalName="Commander.Bundled.llama-license.txt" />
+    <!-- Silero VAD 只有 629KB，直接内嵌：Qwen 档必须有它才能分段，
+         而它此前唯一的国内源是 hf-mirror，一挂整个 Qwen 档就下不动。内嵌后彻底不依赖网络。 -->
+    <EmbeddedResource Include="Resources\silero_vad.onnx"
+                      LogicalName="Commander.Bundled.silero_vad.onnx"
+                      Condition="Exists('Resources\silero_vad.onnx')" />
   </ItemGroup>
 
   <PropertyGroup Condition="Exists('Resources\app.ico')">
