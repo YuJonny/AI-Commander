@@ -171,12 +171,9 @@ public sealed class ModelDownloadService : IDisposable
         catch (Exception exception)
         {
             AppLog.Error(nameof(ModelDownloadService), exception);
-            Emit(
-                target,
-                null,
-                T("下载失败，已保留进度，请重试", "Download failed. Progress was saved; try again"),
-                0,
-                isIndeterminate: true);
+            // 失败文案必须给三样东西，否则用户只会觉得"点几次都失败"：
+            // ① 到底为什么失败 ② 已经下了多少（证明再点是续传不是重来）③ 下一步做什么
+            Emit(target, null, FailureText(missing, exception), 0, isIndeterminate: true);
         }
         finally
         {
@@ -291,8 +288,16 @@ public sealed class ModelDownloadService : IDisposable
         double totalMb,
         CancellationToken token)
     {
+        var sourceIndex = 0;
+        var sourceTotal = item.FileSources.Count + item.ArchiveUrls.Count;
         foreach (var source in item.FileSources)
         {
+            sourceIndex++;
+            // 从第二条线路起，明确告诉用户"在换第几条线、换到哪家"，切换才不像乱撞
+            if (sourceIndex > 1)
+                Emit(target, item.Kind,
+                     SwitchingSourceText(item.Kind, sourceIndex, sourceTotal, source.BaseUrl),
+                     completedMb / totalMb, true);
             for (var attempt = 1; attempt <= 2; attempt++)
             {
                 try
@@ -342,6 +347,7 @@ public sealed class ModelDownloadService : IDisposable
                         nameof(ModelDownloadService),
                         exception,
                         $"File source {source.BaseUrl} failed for {item.Kind}, attempt {attempt}");
+                    if (IsPermanentFailure(exception)) break;   // 404/DNS 重试第二次没有意义，直接换线路
                     if (attempt < 2)
                     {
                         Emit(
@@ -365,8 +371,16 @@ public sealed class ModelDownloadService : IDisposable
         double totalMb,
         CancellationToken token)
     {
+        // 归档源接在散装源之后编号，用户看到的线路序号是连续的
+        var sourceIndex = item.FileSources.Count;
+        var sourceTotal = item.FileSources.Count + item.ArchiveUrls.Count;
         foreach (var address in item.ArchiveUrls)
         {
+            sourceIndex++;
+            if (sourceTotal > 1)
+                Emit(target, item.Kind,
+                     SwitchingSourceText(item.Kind, sourceIndex, sourceTotal, address),
+                     completedMb / totalMb, true);
             var extension = ArchiveExtension(address);
             var downloads = Path.Combine(AppPaths.ModelsRoot, ".downloads");
             Directory.CreateDirectory(downloads);
@@ -398,6 +412,7 @@ public sealed class ModelDownloadService : IDisposable
                         nameof(ModelDownloadService),
                         exception,
                         $"Archive source {address} failed for {item.Kind}, attempt {attempt}");
+                    if (IsPermanentFailure(exception)) break;
                     if (attempt < 2)
                     {
                         Emit(
@@ -679,6 +694,75 @@ public sealed class ModelDownloadService : IDisposable
         return T(
             $"模型准备失败，正在尝试备用方式",
             $"Model setup failed. Trying another method");
+    }
+
+    /// 换源时告诉用户"第几条线路 / 来源是谁"，让切换看起来是设计好的流程，而不是在乱撞
+    private static string SwitchingSourceText(ModelComponentKind kind, int index, int total, string baseUrl) =>
+        T($"正在切换线路 {index}/{total}（{SourceLabel(baseUrl)}）· {DisplayName(kind)}",
+          $"Trying source {index}/{total} ({SourceLabel(baseUrl)}) · {DisplayName(kind)}");
+
+    private static string SourceLabel(string url)
+    {
+        if (url.Contains("modelscope", StringComparison.OrdinalIgnoreCase)) return "ModelScope";
+        if (url.Contains("hf-mirror", StringComparison.OrdinalIgnoreCase)) return T("HF 镜像", "HF mirror");
+        if (url.Contains("huggingface", StringComparison.OrdinalIgnoreCase)) return "Hugging Face";
+        if (url.Contains("ghfast", StringComparison.OrdinalIgnoreCase) ||
+            url.Contains("gh-proxy", StringComparison.OrdinalIgnoreCase) ||
+            url.Contains("ghproxy", StringComparison.OrdinalIgnoreCase)) return T("GitHub 镜像", "GitHub mirror");
+        if (url.Contains("github.com", StringComparison.OrdinalIgnoreCase)) return T("GitHub 直连", "GitHub direct");
+        return Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri.Host : url;
+    }
+
+    /// 永久性错误（404、DNS 查不到）重试第二次纯属浪费用户的时间，直接换下一条线路
+    private static bool IsPermanentFailure(Exception exception) =>
+        exception is HttpRequestException http &&
+        (http.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden or HttpStatusCode.Gone ||
+         http.InnerException is System.Net.Sockets.SocketException
+         {
+             SocketErrorCode: System.Net.Sockets.SocketError.HostNotFound
+                           or System.Net.Sockets.SocketError.NoData
+         });
+
+    /// 最终失败文案：说清原因 + 已下多少（证明再点是续传）+ 下一步
+    private static string FailureText(IReadOnlyList<ModelItem> items, Exception exception)
+    {
+        var reason = exception switch
+        {
+            InvalidDataException => T("文件校验未通过", "downloaded files failed validation"),
+            TimeoutException or TaskCanceledException => T("连接超时", "the connection timed out"),
+            IOException io when io.Message.Contains("30 KB/s") => T("所有线路速度都过慢", "every source was too slow"),
+            HttpRequestException { StatusCode: not null } http => T($"服务器返回 {(int)http.StatusCode!}", $"server returned {(int)http.StatusCode!}"),
+            HttpRequestException => T("连不上下载服务器", "could not reach the download server"),
+            IOException => T("网络中断", "the network dropped"),
+            _ => T("下载出错", "the download failed"),
+        };
+
+        var downloadedMb = items.Sum(DownloadedMb);
+        var totalMb = items.Sum(item => item.SizeMb);
+        var progress = downloadedMb >= 1
+            ? T($"已下载 {downloadedMb:F0}/{totalMb:F0} MB，再次点击可从断点继续。",
+                $"{downloadedMb:F0}/{totalMb:F0} MB already downloaded — click again to resume.")
+            : T("再次点击可重试；若一直失败，请检查网络或代理设置。",
+                "Click again to retry; if it keeps failing, check your network or proxy settings.");
+
+        return T($"下载失败（{reason}）。{progress}", $"Download failed ({reason}). {progress}");
+    }
+
+    /// 已落盘的字节数（含 .part 断点文件）——这是"再点一次不是从头开始"的证据
+    private static double DownloadedMb(ModelItem item)
+    {
+        try
+        {
+            if (!Directory.Exists(item.DirectoryPath)) return 0;
+            var bytes = new DirectoryInfo(item.DirectoryPath)
+                .EnumerateFiles("*", SearchOption.AllDirectories)
+                .Sum(file => file.Length);
+            return bytes / 1024d / 1024d;
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     private static ModelDownloadTarget TargetForAsr(AsrModelKind model) =>
