@@ -49,7 +49,7 @@ public static class ModelCatalog
             "tokenizer/merges.txt",
             "tokenizer/vocab.json",
         ],
-        838,
+        990,   // 散装 6 文件解包后的真实总量（838 是 tar.bz2 压缩后的大小）
         [
             new ModelFileSource(
                 "https://modelscope.cn/models/zengshuishui/Qwen3-ASR-onnx/resolve/master/",
@@ -196,17 +196,51 @@ public static class ModelCatalog
     public static bool IsReady(ModelItem item) =>
         item.RequiredFiles.All(relativePath => IsReadyFile(item, relativePath));
 
+    /// 就绪判定失败时，说清是哪个文件、实际多大、期望多大。
+    /// 否则界面只会莫名其妙地"换线路"，排查时完全瞎。
+    public static string DescribeMissing(ModelItem item)
+    {
+        var problems = new List<string>();
+        foreach (var relativePath in item.RequiredFiles)
+        {
+            if (IsReadyFile(item, relativePath)) continue;
+            var path = Path.Combine(item.DirectoryPath, relativePath.Replace('/', Path.DirectorySeparatorChar));
+            var expected = MinimumReadyBytes(item.Kind, relativePath);
+            if (!File.Exists(path))
+            {
+                problems.Add($"{relativePath}: missing");
+                continue;
+            }
+            try
+            {
+                problems.Add($"{relativePath}: {new FileInfo(path).Length:N0} bytes, expected >= {expected:N0}");
+            }
+            catch (Exception exception)
+            {
+                problems.Add($"{relativePath}: unreadable ({exception.GetType().Name})");
+            }
+        }
+        return problems.Count == 0 ? "ready" : string.Join("; ", problems);
+    }
+
+    /// 就绪门槛 = 实测真实大小的 ~95%，用来挡住截断/HTML 假文件，而不是卡合法文件。
+    /// ⚠️ 数值必须来自实测，不能拍脑袋：此前 SileroVad 写成 1_800_000（大概是照 v5 的 2.2MB 猜的），
+    /// 而官方文件只有 643,854 字节 → IsReady 永远为 false → 下载成功也被判失败，一路换源到 GitHub。
+    /// 实测值（2026-07-25，对照本机可正常工作的安装与 ModelScope 源）：
+    ///   conv_frontend 44,148,281 · encoder 182,491,662 · decoder 755,914,231
+    ///   tokenizer_config 12,487 · merges 1,671,853 · vocab 2,776,833
+    ///   silero_vad 643,854 · sense model 239,233,841 · sense tokens 315,894 · punct 75,519,198
     private static long MinimumReadyBytes(ModelComponentKind kind, string relativePath) =>
         (kind, relativePath.Replace('\\', '/')) switch
         {
-            (ModelComponentKind.QwenAsr, "conv_frontend.onnx") => 44_000_000,
-            (ModelComponentKind.QwenAsr, "encoder.int8.onnx") => 182_000_000,
-            (ModelComponentKind.QwenAsr, "decoder.int8.onnx") => 755_000_000,
-            (ModelComponentKind.QwenAsr, "tokenizer/tokenizer_config.json") => 12_000,
-            (ModelComponentKind.QwenAsr, "tokenizer/merges.txt") => 1_600_000,
-            (ModelComponentKind.QwenAsr, "tokenizer/vocab.json") => 2_700_000,
-            (ModelComponentKind.SileroVad, _) => 1_800_000,
-            (ModelComponentKind.SenseVoiceAsr, "model.int8.onnx") => 239_000_000,
+            (ModelComponentKind.QwenAsr, "conv_frontend.onnx") => 41_900_000,
+            (ModelComponentKind.QwenAsr, "encoder.int8.onnx") => 173_300_000,
+            (ModelComponentKind.QwenAsr, "decoder.int8.onnx") => 718_100_000,
+            (ModelComponentKind.QwenAsr, "tokenizer/tokenizer_config.json") => 11_800,
+            (ModelComponentKind.QwenAsr, "tokenizer/merges.txt") => 1_588_000,
+            (ModelComponentKind.QwenAsr, "tokenizer/vocab.json") => 2_637_000,
+            (ModelComponentKind.SileroVad, _) => 611_000,
+            (ModelComponentKind.SenseVoiceAsr, "model.int8.onnx") => 227_200_000,
             (ModelComponentKind.SenseVoiceAsr, "tokens.txt") => 300_000,
             (ModelComponentKind.Punctuation, _) => 60_000_000,
             (ModelComponentKind.Llm, _) => 5_000_000_000,

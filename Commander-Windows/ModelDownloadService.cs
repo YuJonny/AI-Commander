@@ -466,6 +466,12 @@ public sealed class ModelDownloadService : IDisposable
                         sourceCompletedMb += estimatedFileMb;
                     }
                     if (ModelCatalog.IsReady(item)) return true;
+                    // 文件都下完了却判定未就绪——把到底差哪个文件、差多少写清楚，
+                    // 否则用户只会看到进度跑满后莫名其妙开始换线路
+                    AppLog.Error(
+                        nameof(ModelDownloadService),
+                        new InvalidDataException("Validation failed after download."),
+                        $"{item.Kind} incomplete from {source.BaseUrl}: {ModelCatalog.DescribeMissing(item)}");
                 }
                 // ⚠️ TaskCanceledException 继承自 OperationCanceledException，HttpClient 超时抛的正是它。
                 // 只有我们自己的 token 真被取消才算"用户取消"，否则当普通失败继续换源。
