@@ -5,7 +5,7 @@ using System.Windows.Threading;
 
 namespace Commander;
 
-public partial class VoiceHud : Wpf.Ui.Controls.FluentWindow
+public partial class VoiceHud : Window
 {
     private readonly DispatcherTimer _hideTimer;
 
@@ -46,15 +46,24 @@ public partial class VoiceHud : Wpf.Ui.Controls.FluentWindow
     private void ShowTransient(string text, Color color, bool autoHide)
     {
         StateText.Text = text;
-        StateDot.Fill = new SolidColorBrush(color);
-        var workArea = SystemParameters.WorkArea;
-        Left = workArea.Left + (workArea.Width - Width) / 2;
-        Top = workArea.Bottom - Height - 72;
+        var brush = new SolidColorBrush(color);
+        StateDot.Fill = brush;
+        StateHalo.Fill = brush;
 
         if (!IsVisible) Show();
         else NativeMethods.ShowWithoutActivation(new WindowInteropHelper(this).Handle);
 
+        // 宽度随文字自适应（SizeToContent），必须等本次布局算完再定位，否则会偏
+        Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(PositionAtBottomCenter));
+
         if (autoHide) _hideTimer.Start();
+    }
+
+    private void PositionAtBottomCenter()
+    {
+        var workArea = SystemParameters.WorkArea;
+        Left = workArea.Left + (workArea.Width - ActualWidth) / 2;
+        Top = workArea.Bottom - ActualHeight - 64;
     }
 
     private static string ShortText(string value)

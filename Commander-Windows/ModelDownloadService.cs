@@ -454,10 +454,10 @@ public sealed class ModelDownloadService : IDisposable
                         await DownloadFileAsync(
                             uri,
                             destination,
-                            fraction => Emit(
+                            (fraction, detail) => Emit(
                                 target,
                                 item.Kind,
-                                DownloadingText(item.Kind),
+                                DownloadingText(item.Kind, detail),
                                 Math.Clamp(
                                     (completedMb + sourceCompletedMb + estimatedFileMb * fraction) / totalMb,
                                     0,
@@ -524,10 +524,10 @@ public sealed class ModelDownloadService : IDisposable
                     await DownloadFileAsync(
                         new Uri(address),
                         local,
-                        fraction => Emit(
+                        (fraction, detail) => Emit(
                             target,
                             item.Kind,
-                            DownloadingText(item.Kind),
+                            DownloadingText(item.Kind, detail),
                             Math.Clamp((completedMb + item.SizeMb * fraction) / totalMb, 0, 1)),
                         token,
                         preserveCompletedFile: true);
@@ -566,7 +566,7 @@ public sealed class ModelDownloadService : IDisposable
     private async Task DownloadFileAsync(
         Uri uri,
         string destination,
-        Action<double> onProgress,
+        Action<double, string> onProgress,   // (进度, 速度/剩余时间文案)
         CancellationToken token,
         bool preserveCompletedFile = false)
     {
@@ -584,7 +584,7 @@ public sealed class ModelDownloadService : IDisposable
                 ValidateDownloadedFile(partial, destination);
                 File.Move(partial, destination, overwrite: true);
                 ValidateDownloadedFile(destination, destination);
-                onProgress(1);
+                onProgress(1, string.Empty);
                 return;
             }
 
@@ -615,6 +615,7 @@ public sealed class ModelDownloadService : IDisposable
         var buffer = new byte[1024 * 128];
         var received = existing;
         var speedWindow = Stopwatch.StartNew();
+        var totalTimer = Stopwatch.StartNew();
         var speedWindowStart = received;
         while (true)
         {
@@ -637,7 +638,22 @@ public sealed class ModelDownloadService : IDisposable
             await output.WriteAsync(buffer.AsMemory(0, read), token);
             received += read;
             if (expected > 0)
-                onProgress(Math.Clamp((double)received / expected, 0, 0.99));
+            {
+                // 大文件（Qwen 838MB / GGUF 4.7GB）光有百分比，用户看不出到底还动不动。
+                // 给出实时速度和剩余时间，"卡住了"和"在下但慢"才区分得开。
+                var elapsed = totalTimer.Elapsed.TotalSeconds;
+                var detail = string.Empty;
+                if (elapsed > 1.5)
+                {
+                    var bytesPerSecond = (received - existing) / elapsed;
+                    if (bytesPerSecond > 1)
+                    {
+                        var remaining = TimeSpan.FromSeconds((expected - received) / bytesPerSecond);
+                        detail = $"{FormatSpeed(bytesPerSecond)} · {FormatRemaining(remaining)}";
+                    }
+                }
+                onProgress(Math.Clamp((double)received / expected, 0, 0.99), detail);
+            }
 
             if (speedWindow.Elapsed >= TimeSpan.FromSeconds(30))
             {
@@ -656,7 +672,7 @@ public sealed class ModelDownloadService : IDisposable
         ValidateDownloadedFile(partial, destination);
         File.Move(partial, destination, overwrite: true);
         if (!preserveCompletedFile) ValidateDownloadedFile(destination, destination);
-        onProgress(1);
+        onProgress(1, string.Empty);
     }
 
     private static void ValidateDownloadedFile(string path, string destination)
@@ -799,6 +815,27 @@ public sealed class ModelDownloadService : IDisposable
     private static string DownloadingText(ModelComponentKind kind) => kind == ModelComponentKind.LlamaRuntime
         ? PreparingText(kind)
         : T($"正在下载 {DisplayName(kind)}", $"Downloading {DisplayName(kind)}");
+
+    /// 带速度/剩余时间的下载文案：大文件下"还动不动"比百分比更重要
+    private static string DownloadingText(ModelComponentKind kind, string detail) =>
+        string.IsNullOrEmpty(detail) ? DownloadingText(kind) : $"{DownloadingText(kind)} · {detail}";
+
+    private static string FormatSpeed(double bytesPerSecond) =>
+        bytesPerSecond >= 1024 * 1024
+            ? $"{bytesPerSecond / 1024 / 1024:F1} MB/s"
+            : $"{bytesPerSecond / 1024:F0} KB/s";
+
+    private static string FormatRemaining(TimeSpan remaining)
+    {
+        if (remaining.TotalSeconds < 1 || remaining.TotalHours > 24)
+            return T("正在估算", "estimating");
+        if (remaining.TotalMinutes < 1)
+            return T($"约 {remaining.Seconds} 秒", $"~{remaining.Seconds}s left");
+        if (remaining.TotalHours < 1)
+            return T($"约 {remaining.Minutes} 分钟", $"~{remaining.Minutes} min left");
+        return T($"约 {(int)remaining.TotalHours} 小时 {remaining.Minutes} 分",
+                 $"~{(int)remaining.TotalHours}h {remaining.Minutes}m left");
+    }
 
     private static string InstallingText(ModelComponentKind kind) => kind == ModelComponentKind.LlamaRuntime
         ? PreparingText(kind)
