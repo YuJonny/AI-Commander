@@ -206,6 +206,7 @@ public sealed class ModelDownloadService : IDisposable
             _operations[target] = new DownloadOperation(cancellation, reservedMb);
         }
 
+        ModelItem? failingItem = null;
         try
         {
             double totalReservedMb;
@@ -220,6 +221,8 @@ public sealed class ModelDownloadService : IDisposable
             var completedMb = 0d;
             foreach (var item in missing)
             {
+                failingItem = item;   // 出错时好指名道姓：990MB 的主模型下完了却卡在 629KB 的组件上，
+                                      // 只报"下载失败"会让用户以为整包白下了
                 cancellation.Token.ThrowIfCancellationRequested();
                 Emit(target, item.Kind, DownloadingText(item.Kind), completedMb / totalMb);
                 var installed = await FetchItemAsync(
@@ -233,6 +236,7 @@ public sealed class ModelDownloadService : IDisposable
                     throw new InvalidDataException($"Downloaded files for {item.Kind} did not pass validation.");
                 }
                 completedMb += item.SizeMb;
+                failingItem = null;
                 ModelsChanged?.Invoke(this, EventArgs.Empty);
             }
             Emit(target, null, T("下载完成", "Download complete"), 1);
@@ -251,7 +255,7 @@ public sealed class ModelDownloadService : IDisposable
             AppLog.Error(nameof(ModelDownloadService), exception);
             // 失败文案必须给三样东西，否则用户只会觉得"点几次都失败"：
             // ① 到底为什么失败 ② 已经下了多少（证明再点是续传不是重来）③ 下一步做什么
-            Emit(target, null, FailureText(missing, exception), 0, isIndeterminate: true);
+            Emit(target, null, FailureText(missing, failingItem, exception), 0, isIndeterminate: true);
         }
         finally
         {
@@ -899,8 +903,11 @@ public sealed class ModelDownloadService : IDisposable
          });
 
     /// 最终失败文案：说清原因 + 已下多少（证明再点是续传）+ 下一步
-    private static string FailureText(IReadOnlyList<ModelItem> items, Exception exception)
+    private static string FailureText(IReadOnlyList<ModelItem> items, ModelItem? failingItem, Exception exception)
     {
+        var component = failingItem is null
+            ? string.Empty
+            : T($"（{DisplayName(failingItem.Kind)}）", $" ({DisplayName(failingItem.Kind)})");
         var reason = exception switch
         {
             InvalidDataException => T("文件校验未通过", "downloaded files failed validation"),
@@ -920,7 +927,7 @@ public sealed class ModelDownloadService : IDisposable
             : T("再次点击可重试；若一直失败，请检查网络或代理设置。",
                 "Click again to retry; if it keeps failing, check your network or proxy settings.");
 
-        return T($"下载失败（{reason}）。{progress}", $"Download failed ({reason}). {progress}");
+        return T($"下载失败{component}（{reason}）。{progress}", $"Download failed{component} ({reason}). {progress}");
     }
 
     /// 已落盘的字节数（含 .part 断点文件）——这是"再点一次不是从头开始"的证据
