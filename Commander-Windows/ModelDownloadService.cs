@@ -33,6 +33,9 @@ public sealed class ModelDownloadService : IDisposable
     public static ModelDownloadService Shared { get; } = new();
 
     private readonly HttpClient _httpClient;
+    private readonly HttpClient _directClient;      // 绕过系统代理的备用通道
+    private bool _systemProxyConfigured;
+    private bool _preferDirect;                     // 一旦直连成功过，后续直接走直连
     private readonly object _stateLock = new();
     private readonly Dictionary<ModelDownloadTarget, DownloadOperation> _operations = [];
 
@@ -49,15 +52,87 @@ public sealed class ModelDownloadService : IDisposable
 
     private ModelDownloadService()
     {
-        _httpClient = new HttpClient(new SocketsHttpHandler
+        _httpClient = CreateClient(useProxy: true);
+        _directClient = CreateClient(useProxy: false);
+
+        // 所有下载源都是国内可直连的（ModelScope / hf-mirror），本就不需要代理。
+        // 但 .NET 默认走 Windows 系统代理，而 Clash 一类工具退出后常把 127.0.0.1:7890
+        // 留在系统设置里——用户以为"没开代理"，程序却在往一个死端口发请求，表现就是
+        // 每条线路都连不上。这里把检测到的代理记进日志，便于事后定位。
+        try
         {
-            ConnectTimeout = TimeSpan.FromSeconds(40),
+            var proxy = HttpClient.DefaultProxy?.GetProxy(new Uri("https://modelscope.cn"));
+            _systemProxyConfigured = proxy is not null;
+            AppLog.Info(
+                nameof(ModelDownloadService),
+                _systemProxyConfigured
+                    ? $"System proxy detected: {proxy}. Will fall back to a direct connection if it fails."
+                    : "No system proxy detected; using direct connections.");
+        }
+        catch (Exception exception)
+        {
+            AppLog.Error(nameof(ModelDownloadService), exception, "Failed to inspect system proxy settings.");
+        }
+    }
+
+    private static HttpClient CreateClient(bool useProxy)
+    {
+        var client = new HttpClient(new SocketsHttpHandler
+        {
+            ConnectTimeout = TimeSpan.FromSeconds(useProxy ? 20 : 40),   // 走代理时更早失败，好尽快改直连
             AutomaticDecompression = DecompressionMethods.All,
+            UseProxy = useProxy,
         })
         {
             Timeout = Timeout.InfiniteTimeSpan,
         };
-        _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AI-Receptionist-Windows/2.0");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("AI-Receptionist-Windows/2.0");
+        return client;
+    }
+
+    /// 连接类错误：多半是代理死了 / 端口不通，值得换直连再试一次
+    private static bool IsConnectionFailure(Exception exception) =>
+        exception is HttpRequestException { StatusCode: null } ||
+        exception is TaskCanceledException or TimeoutException ||
+        (exception is HttpRequestException http &&
+         http.InnerException is System.Net.Sockets.SocketException or IOException);
+
+    /// 发请求；系统代理连不上时自动改直连重试一次。
+    /// 用户的实际场景就是这个：Windows 上"没开代理"，但系统设置里残留着已停止的代理端口。
+    private async Task<HttpResponseMessage> SendWithProxyFallbackAsync(
+        Uri uri, long existing, CancellationToken token)
+    {
+        HttpRequestMessage Build()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, uri);
+            if (existing > 0) request.Headers.Range = new RangeHeaderValue(existing, null);
+            return request;
+        }
+
+        // 已经确认过直连可用，就别再浪费时间试代理
+        if (_preferDirect || !_systemProxyConfigured)
+        {
+            using var direct = Build();
+            return await _directClient.SendAsync(direct, HttpCompletionOption.ResponseHeadersRead, token);
+        }
+
+        try
+        {
+            using var viaProxy = Build();
+            return await _httpClient.SendAsync(viaProxy, HttpCompletionOption.ResponseHeadersRead, token);
+        }
+        catch (Exception exception) when (!token.IsCancellationRequested && IsConnectionFailure(exception))
+        {
+            AppLog.Error(
+                nameof(ModelDownloadService),
+                exception,
+                $"System proxy failed for {uri.Host}; retrying with a direct connection.");
+            using var direct = Build();
+            var response = await _directClient.SendAsync(direct, HttpCompletionOption.ResponseHeadersRead, token);
+            _preferDirect = true;      // 直连成功，本次会话后续都走直连
+            AppLog.Info(nameof(ModelDownloadService), "Direct connection succeeded; bypassing the system proxy from now on.");
+            return response;
+        }
     }
 
     public bool IsDownloading(ModelDownloadTarget target)
@@ -440,9 +515,7 @@ public sealed class ModelDownloadService : IDisposable
         Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
         var existing = File.Exists(partial) ? new FileInfo(partial).Length : 0;
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, uri);
-        if (existing > 0) request.Headers.Range = new RangeHeaderValue(existing, null);
-        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+        using var response = await SendWithProxyFallbackAsync(uri, existing, token);
 
         if (existing > 0 && response.StatusCode == HttpStatusCode.RequestedRangeNotSatisfiable)
         {
@@ -779,6 +852,7 @@ public sealed class ModelDownloadService : IDisposable
         }
         foreach (var cancellation in cancellations) cancellation.Cancel();
         _httpClient.Dispose();
+        _directClient.Dispose();
     }
 
     private sealed record DownloadOperation(CancellationTokenSource Cancellation, double ReservedMb);
