@@ -22,6 +22,16 @@
 
 **最可能挂的地方**：XAML 里引用了 code-behind 不存在的成员；WPF-UI 4.3.0 的控件命名空间与用法；`ui:ToggleSwitch` 等控件的事件签名。
 
+> **已踩过的坑（2026-07-25）**：`error MSB4018: "GenerateBundle" 任务意外失败` +
+> `IOException: ...publish\Commander.exe because it is being used by another process`。
+> **编译其实是成功的**（看它前面那行 `0 个警告 0 个错误`），倒在最后的单文件打包——
+> 上一版 `Commander.exe` 还在运行（含托盘），覆写不了。构建脚本现在会自动关掉旧进程，
+> 若仍被占用会明确报"文件被锁"而不是甩一串 MSB4018 堆栈。
+>
+> **另外：别在 NAS / 网络路径上构建。** 当时的路径是 `\\VV_NAS\Others\AI接线员\...`，
+> SMB 的文件锁和延迟写入会让单文件打包偶发失败。先 `robocopy` 到本地盘（如 `C:\dev\`）再构建，
+> 脚本检测到 UNC 路径会给出警告。
+
 ---
 
 ## 1. 原生库装载（单文件发布的经典坑）

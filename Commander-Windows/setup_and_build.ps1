@@ -154,6 +154,43 @@ if (-not $restoreSucceeded) {
     exit 1
 }
 
+# --- 打包前清场 ---------------------------------------------------------
+# 单文件打包（GenerateBundle）要覆写 publish\Commander.exe。若上一版还在运行，
+# 或文件被杀软/资源管理器占着，会抛 IOException 变成 MSB4018——编译其实是成功的，
+# 只是最后一步写不进去。这里先关掉旧进程再打包。
+$running = Get-Process -Name "Commander" -ErrorAction SilentlyContinue
+if ($running) {
+    Write-Host "  Closing running Commander.exe ($($running.Count)) ..." -ForegroundColor Yellow
+    $running | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Milliseconds 800
+}
+
+# 目标 exe 仍被占用时明确报出来，别让用户对着 MSB4018 堆栈猜
+$targetExe = Join-Path $scriptDir "publish\Commander.exe"
+if (Test-Path $targetExe) {
+    try {
+        $stream = [System.IO.File]::Open($targetExe, 'Open', 'ReadWrite', 'None')
+        $stream.Close()
+    } catch {
+        Write-Host ""
+        Write-Host "  [ERROR] publish\Commander.exe is locked by another process." -ForegroundColor Red
+        Write-Host "  关掉正在运行的 AI接线员（含托盘图标）、关掉打开该目录的资源管理器窗口，或把杀软的实时扫描排除该目录后重试。" -ForegroundColor Gray
+        Pop-Location
+        Write-Host "  Press any key to exit..."
+        $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        exit 1
+    }
+}
+
+# 网络路径（UNC / 映射盘）上做单文件打包容易踩 SMB 文件锁和延迟写入，强烈建议本地盘构建
+if ($scriptDir -like "\\*") {
+    Write-Host ""
+    Write-Host "  [WARN] 正在从网络路径构建：$scriptDir" -ForegroundColor Yellow
+    Write-Host "         SMB 共享的文件锁与写入延迟会让单文件打包偶发失败（GenerateBundle / MSB4018）。" -ForegroundColor Gray
+    Write-Host "         建议先复制到本地盘再构建，例如：robocopy `"$scriptDir`" C:\dev\Commander-Windows /E" -ForegroundColor Gray
+    Write-Host ""
+}
+
 Write-Host ""
 Write-Host "  Building Commander.exe ..." -ForegroundColor Yellow
 Write-Host ""
