@@ -1,5 +1,7 @@
 # AI 接线员 · 代码架构（配合 HANDOFF.md 读）
 
+> 本文档 macOS 部分为主。**Windows v2 见文末「Windows 版架构」一节。**
+
 面向"要改代码的人"。先读 `HANDOFF.md` 了解全局，本文讲每个模块**做什么、怎么连、改的时候注意什么**。
 
 ---
@@ -71,12 +73,14 @@ VoiceController.toggle()  (isRecording 决定 start/stop)
 - `VoiceController` 严格按 `asrChoiceQwen` 解析 Application Support 中的完整模型目录，不跨模型或回退开发目录；`VoiceEngine.init` 再按传入目录里的文件配置 Qwen3 或 SenseVoice。
 - `transcribeRaw`：Qwen 先用 Silero VAD 按最长约 20 秒切段、逐段 ASR 再拼接；SenseVoice 继续整段 ASR；最后统一走 `Hotwords.correct`。Qwen `max_new_tokens=512`，与官方示例一致。
 - `polish(text, clean)` = `Rules.clean`(可关) + 标点模型(仅SenseVoice)。
-- `llmEnhance(text)` static = 拉起 `LlamaRunner` → POST `/v1/chat/completions` → **prompt 就写死在这个函数里**（⭐ 改润色行为改这里）。当前 prompt 是 `eval/prompts/prompt_v1.txt` 的内容。
+- `llmEnhance(text)` static = 拉起 `LlamaRunner` → 最多等 12 秒就绪 → POST `/v1/chat/completions` → **prompt 就写死在这个函数里**（⭐ 改润色行为改这里）。当前 prompt 是 `eval/prompts/prompt_v1.txt` 的内容。
+- LLM 请求按输入长度使用 **12~25 秒延迟预算**，并以 `min(1024, max(64, 字符数×2+32))` 限制最大输出 token；超时/服务失败返回 `nil`，`VoiceController` 立即回退规则/标点管线，不允许单句一直等到 1 分钟。
 - `llmWarmup()` = 录音开始时预热 llama-server。
 
 ### LlamaRunner.swift —— ⭐ 内嵌 LLM 子进程
 - 把打包的 `Contents/Frameworks/llama/llama-server` 作为子进程拉起（端口 43817），管生命周期：`ensureRunning`(录音时预热) / `waitReady`(等健康检查) / 闲 5 分钟 `stop` / App 退出带走。
-- 参数：`-ngl 99`(全 Metal) `-c 4096` `--jinja`(启用聊天模板→关思考) `--no-webui`。
+- **进程所有权规则**：`process` 句柄为空时，不再仅凭 `/health` 复用 43817 上的服务；启动前用“固定端口 + llama-server 进程名”清理脱离 App 的残留进程。否则 App 被强退一次，残留 server 会让 5 分钟回收永久失效。
+- 参数：`-ngl 99`(全 Metal) `-c 4096` `--prio 1`(交互优先级) `--cache-ram 256`(prompt cache 上限 256MB，不能使用 llama.cpp 默认 8GB) `--jinja`(启用聊天模板→关思考) `--no-webui`。
 - 权重走 mmap → 活动监视器里进程只显示几百 MB，5GB 权重记在系统文件缓存（这是正常的，别以为没加载）。
 
 ### ModelDownloader.swift —— ⭐ 按需下载
@@ -96,7 +100,7 @@ VoiceController.toggle()  (isRecording 决定 start/stop)
 
 ### PipelineDiagnostics.swift —— 开发期全链路诊断
 - 默认关闭；`defaults write com.vvclaw.commander pipelineDiagnosticsEnabled -bool true` 后，每次口述在 `~/Library/Application Support/AI接线员/diagnostics/<会话ID>/` 写 `input.wav + trace.json`，最多保留最近 50 次。
-- 一个会话 ID 贯穿采音格式/信号门、引擎加载、VAD 每段、逐段 ASR、拼接、术语规范、`Rules.clean` 每个子步骤、SenseVoice 标点、LLM prompt/HTTP/原始响应/回退、最终文本和键盘事件。
+- 一个会话 ID 贯穿采音格式/信号门、引擎加载、VAD 每段、逐段 ASR、拼接、术语规范、`Rules.clean` 每个子步骤、SenseVoice 标点、LLM prompt/HTTP/原始响应/回退、最终文本和键盘事件。`llm.http_completed.metrics` 还记录输入/输出 token、缓存命中、prompt/生成耗时与各自 tok/s、延迟预算和最大输出 token。
 - 每个检查点落盘一次，即使后续崩溃或超时，也能看到最后完成的阶段。正式功能不开启时 `begin()` 直接返回 nil，不保存用户音频或正文。
 - 查看：`python3 eval/inspect_pipeline.py`；字段和定位方法见 `eval/README-PIPELINE.md`。
 
@@ -141,3 +145,77 @@ RAMC_PROMPT_FILE=prompts/prompt_v4.txt python3 run_eval.py   # 换 prompt 测
 - `final.jsonl`：56 条真实中文口语(RAMC 挖的) + 人工金标准，5 类(自我更正/重复口吃/口水词/含数字/长句)。
 - 指标：**贴合度**(1-归一化编辑距离 vs 金标准) + **数字保真**。
 - 改 `VoiceEngine.llmEnhance` 里的 prompt 后，先 `run_eval.py` 看涨没涨再改代码。当前回归基线是 92.8%；旧 93.6% 是保护必要指代修复前的结果。
+
+---
+
+# Windows 版架构（`Commander-Windows/`）
+
+> ⚠️ **代码完成，未真机验收**——全部在 macOS 上盲写，WPF 编译不了。验收清单见 `Commander-Windows/VERIFY.md`。
+> 设计原则：**与 macOS 一一对应、命名刻意一致**，方便两边对照排查；已验证的行为参数（VAD 1.5s、
+> 防抖 0.5s、闲置 5 分钟、1000 字符润色上限、prompt、规则表、热词表）直接照搬，不重新发明。
+
+## 技术栈
+
+| 层 | macOS | Windows |
+|---|---|---|
+| UI | SwiftUI + Liquid Glass | WPF + WPF-UI 4.3.0（Fluent 2：主窗口 Mica、HUD Acrylic） |
+| 托盘 | NSStatusItem | H.NotifyIcon.Wpf 2.3.2 |
+| 采音 | AVAudioEngine | NAudio 2.3.0（WASAPI） |
+| ASR | sherpa-onnx C API + Swift 封装 | `org.k2fsa.sherpa.onnx` 1.13.4（NuGet，含 win-x64 原生包） |
+| 键盘钩子 | CGEventTap | `SetWindowsHookEx(WH_KEYBOARD_LL)` |
+| 文字注入 | `keyboardSetUnicodeString` | `SendInput` + `KEYEVENTF_UNICODE` |
+| LLM | llama.cpp **Metal GPU** | llama.cpp **CPU x64**（内嵌 zip，运行时解出） |
+| 打包 | DMG（自带 Frameworks） | 单文件自包含 exe（`IncludeNativeLibrariesForSelfExtract`） |
+
+## 文件对应表
+
+```
+MediaKeyInterceptor.cs   ← 低级键盘钩子；命中媒体键后 return 1 吞掉，不下传给音乐 App
+AudioRecorder.cs         ← WASAPI 采音 → 16k 单声道
+VoiceEngine.cs           ← sherpa-onnx：Qwen3-ASR（+Silero VAD 分段）/ SenseVoice（+CT 标点）
+VoiceController.cs       ← 主流程：录音 → 转写 → 规则 → 润色 → 注入；防抖、20 分钟上限、闲置释放
+Rules.cs / Hotwords.cs   ← 与 macOS 逐条对齐的规则表与术语表
+LlamaRunner.cs           ← 内嵌 llama-server 生命周期（127.0.0.1:43817，闲置 5 分钟退出）
+LlmEnhancer.cs           ← 润色请求；超时预算取自 LlmPerformanceProbe 实测值
+LlmPerformanceProbe.cs   ← ⭐ Windows 独有，见下
+TextInserter.cs          ← SendInput Unicode 注入（逐 UTF-16 单元，代理对安全），不碰剪贴板
+ModelCatalog.cs / ModelDownloadService.cs ← 模型目录与多源下载（续传/校验/取消/磁盘预检）
+PipelineDiagnostics.cs   ← 全链路 trace（与 macOS 同名阶段，便于横向对比）
+Settings.cs              ← 配置持久化（含探测结果）
+```
+
+模型落位：`%LOCALAPPDATA%\AIReceptionist\models`（macOS 是 `~/Library/Application Support/AI接线员/models`）。
+
+## ⭐ `LlmPerformanceProbe`：Windows 独有的性能分级
+
+**为什么 macOS 没有**：Mac 是 Metal GPU，Qwen3-8B Q4 稳定 25-40 tok/s，一个固定的 12~25 秒超时预算对所有 Apple Silicon 机器都成立。Windows 是 CPU 推理，从 4 核笔记本到 16 核桌面能差一个数量级——照搬固定预算的结果是：慢机器上每次润色都跑到超时回退，用户下了 4.7GB 却永远看不到润色结果。
+
+**怎么做**：用户第一次打开润色开关时实测一次。
+
+1. 发一个**与真实请求同规模**的负载（长 prompt + 生成 64 token）
+   —— 关键：不能用短句探测，短 prompt 的 prefill 几乎免费，会把慢机器误判成快机器
+2. 读 llama.cpp 返回的 `timings.prompt_per_second` / `predicted_per_second`
+   （若服务未返回 timings，按墙钟兜底估算，避免整个探测失效）
+3. 按典型工作量（约 740 prompt token + 70 输出 token）折算**预计单句耗时**，分三档：
+
+   | 预计耗时 | 判定 | 行为 |
+   |---|---|---|
+   | ≤ 12s | Good | 正常开启 |
+   | 12~30s | Slow | 开启，但明确告知"每句约 N 秒"，用户自行决定 |
+   | > 30s | TooSlow | 不开启，弹窗说明原因并强调语音识别不受影响 |
+
+4. 结果存 `Settings`（只测一次）；`LlmEnhancer` 的**超时预算按实测吞吐计算**而非硬编码
+   （`RequestTimeoutSeconds`：按输入长度估算耗时 × 1.6 余量，夹在 12~90 秒之间）
+
+**边界处理**：探测失败（服务起不来等）不拦用户，按未知处理、交给运行时超时兜底——探测本身不该成为新的失败点。
+
+## 构建
+
+```powershell
+cd Commander-Windows
+.\setup_and_build.ps1     # 自检 .NET 8 SDK → dotnet publish -r win-x64 --self-contained
+                          #   -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+                          # 产物：publish\Commander.exe
+```
+
+模型不进 exe，仍按需下载；llama.cpp CPU 运行时以 zip 形式内嵌（约 17MB），首次用润色时解出。

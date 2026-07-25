@@ -3,131 +3,357 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    FontFamily="Microsoft YaHei UI">
+    FontFamily="Segoe UI Variable Text, Microsoft YaHei UI">
 
-    <StackPanel>
+    <StackPanel Margin="4,4,4,12">
+        <!-- Product identity and master state -->
+        <Grid Margin="0,4,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="LblTitle"
+                               Text="AI接线员"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <TextBlock x:Name="LblSubtitle"
+                               Text="AI Commander"
+                               Margin="10,0,0,5"
+                               VerticalAlignment="Bottom"
+                               FontSize="13"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="2,5,0,0">
+                    <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="#16A248" Margin="0,0,7,0" />
+                    <TextBlock x:Name="LblAppStatus"
+                               Text="已就绪"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </StackPanel>
+            <ui:ToggleSwitch x:Name="SwEnabled"
+                             Grid.Column="1"
+                             VerticalAlignment="Center"
+                             Checked="SwEnabled_Checked"
+                             Unchecked="SwEnabled_Unchecked" />
+        </Grid>
 
-        <!-- Hero title -->
-        <StackPanel Orientation="Horizontal" Margin="4,8,0,12">
-            <TextBlock x:Name="LblTitle"
-                       Text="AI接线员"
-                       FontSize="28"
-                       FontWeight="Bold"
-                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-            <TextBlock x:Name="LblSubtitle"
-                       Text="Commander"
-                       FontSize="14"
-                       VerticalAlignment="Bottom"
-                       Margin="10,0,0,6"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+        <!-- Input method -->
+        <TextBlock x:Name="LblInputMethodTitle" Text="输入方式" Style="{StaticResource SectionTitle}" />
+        <ComboBox x:Name="CmbInputMethod"
+                  Height="38"
+                  Margin="0,8,0,5"
+                  DisplayMemberPath="DisplayName"
+                  SelectionChanged="CmbInputMethod_SelectionChanged" />
+        <TextBlock x:Name="LblInputMethodDescription"
+                   Style="{StaticResource SecondaryText}"
+                   Margin="2,0,0,18"
+                   Text="全程本地识别并直接输入" />
+
+        <!-- Local voice settings -->
+        <StackPanel x:Name="LocalVoicePanel">
+            <TextBlock x:Name="LblAsrTitle" Text="语音识别模型" Style="{StaticResource SectionTitle}" />
+
+            <Border x:Name="QwenCard"
+                    Style="{StaticResource ModelOptionCard}"
+                    Margin="0,8,0,8"
+                    MouseLeftButtonDown="QwenCard_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <RadioButton x:Name="RbQwen"
+                                 GroupName="AsrModel"
+                                 VerticalAlignment="Center"
+                                 Checked="RbQwen_Checked" />
+                    <StackPanel Grid.Column="1" Margin="11,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="Qwen3 · 高精度" FontSize="14" FontWeight="SemiBold" />
+                        <TextBlock x:Name="LblQwenDescription"
+                                   Text="约 840MB · 适合 16GB 以上机型"
+                                   Style="{StaticResource SecondaryText}"
+                                   Margin="0,4,0,0" />
+                        <TextBlock x:Name="LblQwenState"
+                                   Text="未下载"
+                                   FontSize="11"
+                                   Margin="0,3,0,0"
+                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        <Grid x:Name="QwenProgressPanel" Margin="0,7,0,0" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ProgressBar x:Name="QwenProgress" Height="4" Minimum="0" Maximum="100" />
+                            <TextBlock x:Name="LblQwenProgress"
+                                       Grid.Column="1"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       Text="0%" />
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="BtnQwenDownload"
+                                Style="{StaticResource CompactButton}"
+                                Click="BtnQwenDownload_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowDownload20" Margin="0,0,6,0" />
+                                <TextBlock x:Name="LblQwenDownload" Text="下载" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnQwenCancel"
+                                Style="{StaticResource IconButton}"
+                                ToolTip="取消下载"
+                                Visibility="Collapsed"
+                                Click="BtnQwenCancel_Click">
+                            <ui:SymbolIcon Symbol="Dismiss20" />
+                        </Button>
+                        <Button x:Name="BtnQwenDelete"
+                                Style="{StaticResource IconButton}"
+                                Margin="6,0,0,0"
+                                ToolTip="删除模型"
+                                Visibility="Collapsed"
+                                Click="BtnQwenDelete_Click">
+                            <ui:SymbolIcon Symbol="Delete20" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border x:Name="SenseCard"
+                    Style="{StaticResource ModelOptionCard}"
+                    Margin="0,0,0,18"
+                    MouseLeftButtonDown="SenseCard_MouseLeftButtonDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <RadioButton x:Name="RbSense"
+                                 GroupName="AsrModel"
+                                 VerticalAlignment="Center"
+                                 Checked="RbSense_Checked" />
+                    <StackPanel Grid.Column="1" Margin="11,0,12,0" VerticalAlignment="Center">
+                        <TextBlock Text="SenseVoice · 轻量" FontSize="14" FontWeight="SemiBold" />
+                        <TextBlock x:Name="LblSenseDescription"
+                                   Text="约 220MB · 适合 8GB 机型"
+                                   Style="{StaticResource SecondaryText}"
+                                   Margin="0,4,0,0" />
+                        <TextBlock x:Name="LblSenseState"
+                                   Text="未下载"
+                                   FontSize="11"
+                                   Margin="0,3,0,0"
+                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        <Grid x:Name="SenseProgressPanel" Margin="0,7,0,0" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ProgressBar x:Name="SenseProgress" Height="4" Minimum="0" Maximum="100" />
+                            <TextBlock x:Name="LblSenseProgress"
+                                       Grid.Column="1"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       Text="0%" />
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="BtnSenseDownload"
+                                Style="{StaticResource CompactButton}"
+                                Click="BtnSenseDownload_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowDownload20" Margin="0,0,6,0" />
+                                <TextBlock x:Name="LblSenseDownload" Text="下载" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnSenseCancel"
+                                Style="{StaticResource IconButton}"
+                                ToolTip="取消下载"
+                                Visibility="Collapsed"
+                                Click="BtnSenseCancel_Click">
+                            <ui:SymbolIcon Symbol="Dismiss20" />
+                        </Button>
+                        <Button x:Name="BtnSenseDelete"
+                                Style="{StaticResource IconButton}"
+                                Margin="6,0,0,0"
+                                ToolTip="删除模型"
+                                Visibility="Collapsed"
+                                Click="BtnSenseDelete_Click">
+                            <ui:SymbolIcon Symbol="Delete20" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <TextBlock x:Name="LblPolishTitle" Text="口述整理" Style="{StaticResource SectionTitle}" />
+            <Grid Margin="2,12,0,11">
+                <StackPanel>
+                    <TextBlock x:Name="LblCleanFillersTitle" Text="口语词优化" FontSize="14" FontWeight="SemiBold" />
+                    <TextBlock x:Name="LblCleanFillersDescription"
+                               Text="自动过滤嗯、呃、啊等停顿词"
+                               Style="{StaticResource SecondaryText}"
+                               Margin="0,3,0,0" />
+                </StackPanel>
+                <ui:ToggleSwitch x:Name="SwCleanFillers"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Center"
+                                 Checked="SwCleanFillers_Changed"
+                                 Unchecked="SwCleanFillers_Changed" />
+            </Grid>
+            <Border Style="{StaticResource Divider}" Margin="0,0,0,11" />
+            <Grid Margin="2,0,0,10">
+                <StackPanel>
+                    <TextBlock x:Name="LblLlmTitle" Text="本地大模型润色" FontSize="14" FontWeight="SemiBold" />
+                    <TextBlock x:Name="LblLlmDescription"
+                               Text="随口说，出成稿"
+                               Style="{StaticResource SecondaryText}"
+                               Margin="0,3,0,0" />
+                </StackPanel>
+                <ui:ToggleSwitch x:Name="SwLlm"
+                                 HorizontalAlignment="Right"
+                                 VerticalAlignment="Center"
+                                 Checked="SwLlm_Changed"
+                                 Unchecked="SwLlm_Changed" />
+            </Grid>
+
+            <Border x:Name="LlmModelPanel" Style="{StaticResource SubtlePanel}" Margin="0,0,0,18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Width="32" Height="32" CornerRadius="16"
+                            Background="{DynamicResource SubtleFillColorTertiaryBrush}">
+                        <ui:SymbolIcon Symbol="BrainSparkle20" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="10,0,12,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="LblLlmModelTitle"
+                                   Text="语义增强大模型 · 约 4.7GB"
+                                   FontSize="13"
+                                   FontWeight="SemiBold" />
+                        <TextBlock x:Name="LblLlmModelState"
+                                   Text="未下载"
+                                   Style="{StaticResource SecondaryText}"
+                                   Margin="0,2,0,0" />
+                        <Grid x:Name="LlmProgressPanel" Margin="0,7,0,0" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ProgressBar x:Name="LlmProgress" Height="4" Minimum="0" Maximum="100" />
+                            <TextBlock x:Name="LblLlmProgress"
+                                       Grid.Column="1"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       Text="0%" />
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button x:Name="BtnLlmDownload"
+                                Style="{StaticResource CompactButton}"
+                                Click="BtnLlmDownload_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <ui:SymbolIcon Symbol="ArrowDownload20" Margin="0,0,6,0" />
+                                <TextBlock x:Name="LblLlmDownload" Text="下载" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnLlmCancel"
+                                Style="{StaticResource IconButton}"
+                                ToolTip="取消下载"
+                                Visibility="Collapsed"
+                                Click="BtnLlmCancel_Click">
+                            <ui:SymbolIcon Symbol="Dismiss20" />
+                        </Button>
+                        <Button x:Name="BtnLlmDelete"
+                                Style="{StaticResource IconButton}"
+                                Margin="6,0,0,0"
+                                ToolTip="删除模型"
+                                Visibility="Collapsed"
+                                Click="BtnLlmDelete_Click">
+                            <ui:SymbolIcon Symbol="Delete20" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
         </StackPanel>
 
-        <!-- Settings card -->
-        <Border Style="{StaticResource GlassCard}" Margin="0,0,0,12">
+        <!-- Custom mapping -->
+        <Border x:Name="CustomPanel" Style="{StaticResource GlassCard}" Visibility="Collapsed" Margin="0,0,0,18">
             <StackPanel>
-                <!-- Master switch row -->
-                <Grid Margin="0,4,0,8">
-                    <StackPanel HorizontalAlignment="Left">
-                        <TextBlock x:Name="LblToggleTitle"
-                                   Text="总开关"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                        <TextBlock x:Name="LblToggleDesc"
-                                   Text="开启后耳机播放键将映射为目标按键"
-                                   FontSize="11"
-                                   Margin="0,2,0,0"
-                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    </StackPanel>
-                    <ui:ToggleSwitch x:Name="SwEnabled"
-                                     HorizontalAlignment="Right"
-                                     VerticalAlignment="Center"
-                                     Checked="SwEnabled_Checked"
-                                     Unchecked="SwEnabled_Unchecked" />
-                </Grid>
-
-                <!-- Divider -->
-                <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
-
-                <!-- Launch at login row -->
-                <Grid Margin="0,8,0,4">
-                    <StackPanel HorizontalAlignment="Left">
-                        <TextBlock x:Name="LblLaunchTitle"
-                                   Text="开机自启动"
-                                   FontSize="14"
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                        <TextBlock x:Name="LblLaunchDesc"
-                                   Text="登录时自动启动AI接线员"
-                                   FontSize="11"
-                                   Margin="0,2,0,0"
-                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                    </StackPanel>
-                    <ui:ToggleSwitch x:Name="SwLaunch"
-                                     HorizontalAlignment="Right"
-                                     VerticalAlignment="Center"
-                                     Checked="SwLaunch_Checked"
-                                     Unchecked="SwLaunch_Unchecked" />
-                </Grid>
-            </StackPanel>
-        </Border>
-
-        <!-- Mapping card -->
-        <Border Style="{StaticResource GlassCard}">
-            <StackPanel>
-                <TextBlock x:Name="LblMappingTitle"
-                           Text="映射目标"
-                           FontSize="11"
-                           FontWeight="SemiBold"
-                           Margin="0,0,0,12"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-
-                <Grid>
+                <TextBlock x:Name="LblCustomTitle" Text="自定义快捷键" Style="{StaticResource SectionTitle}" />
+                <Grid Margin="0,12,0,0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Border Style="{StaticResource TagPill}"
-                                Background="#1A0078D4">
-                            <TextBlock x:Name="LblSource"
-                                       Text="播放/暂停"
-                                       FontSize="13"
-                                       Foreground="#0078D4" />
+                        <Border Style="{StaticResource TagPill}" Background="#1A0078D4">
+                            <TextBlock x:Name="LblSource" Text="播放 / 暂停" Foreground="#0078D4" />
                         </Border>
-                        <TextBlock Text="→"
-                                   Margin="10,0"
-                                   VerticalAlignment="Center"
-                                   FontSize="14"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                        <Border x:Name="TargetTag"
-                                Style="{StaticResource TagPill}"
-                                Background="#1A16A248">
-                            <TextBlock x:Name="LblTarget"
-                                       Text="Right Alt"
-                                       FontSize="13"
-                                       FontWeight="SemiBold"
-                                       Foreground="#16A248" />
+                        <TextBlock Text="→" Margin="10,0" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                        <Border x:Name="TargetTag" Style="{StaticResource TagPill}" Background="#1A16A248">
+                            <TextBlock x:Name="LblTarget" Text="Right Alt" FontWeight="SemiBold" Foreground="#16A248" />
                         </Border>
                     </StackPanel>
-                    <ui:Button x:Name="BtnChangeKey"
-                               Content="更改按键"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center"
-                               Click="BtnChangeKey_Click" />
+                    <Button x:Name="BtnChangeKey"
+                            Style="{StaticResource CompactButton}"
+                            HorizontalAlignment="Right"
+                            Click="BtnChangeKey_Click">
+                        <TextBlock x:Name="LblChangeKey" Text="更改" />
+                    </Button>
                 </Grid>
-
+                <Grid Margin="0,12,0,0">
+                    <TextBlock x:Name="LblTriggerMode" Text="触发方式" VerticalAlignment="Center" />
+                    <ComboBox x:Name="CmbTriggerMode"
+                              Width="124"
+                              Height="34"
+                              HorizontalAlignment="Right"
+                              SelectionChanged="CmbTriggerMode_SelectionChanged" />
+                </Grid>
                 <Button x:Name="BtnReset"
                         HorizontalAlignment="Left"
                         Margin="0,12,0,0"
+                        Padding="0"
                         Background="Transparent"
                         BorderThickness="0"
-                        Padding="0"
-                        Cursor="Hand"
                         Click="BtnReset_Click">
-                    <TextBlock x:Name="LblReset"
-                               Text="↻  恢复默认 (Right Alt)"
-                               FontSize="11"
+                    <TextBlock x:Name="LblReset" Text="恢复默认 (Right Alt)" FontSize="11"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                 </Button>
             </StackPanel>
         </Border>
 
+        <!-- Preset mapping summary -->
+        <Border x:Name="PresetPanel" Style="{StaticResource SubtlePanel}" Visibility="Collapsed" Margin="0,0,0,18">
+            <Grid>
+                <ui:SymbolIcon Symbol="ArrowSwap20" VerticalAlignment="Center" />
+                <StackPanel Margin="42,0,0,0">
+                    <TextBlock x:Name="LblPresetMapping" Text="播放 / 暂停 → Right Alt" FontWeight="SemiBold" />
+                    <TextBlock x:Name="LblPresetHint" Text="使用该工具的官方 Windows 默认快捷键"
+                               Style="{StaticResource SecondaryText}" Margin="0,3,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Style="{StaticResource Divider}" Margin="0,0,0,4" />
+        <Grid Margin="2,12,0,2">
+            <StackPanel>
+                <TextBlock x:Name="LblLaunchTitle" Text="开机自启动" FontSize="14" FontWeight="SemiBold" />
+                <TextBlock x:Name="LblLaunchDescription" Text="登录 Windows 后自动运行"
+                           Style="{StaticResource SecondaryText}" Margin="0,3,0,0" />
+            </StackPanel>
+            <ui:ToggleSwitch x:Name="SwLaunch"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Center"
+                             Checked="SwLaunch_Checked"
+                             Unchecked="SwLaunch_Unchecked" />
+        </Grid>
     </StackPanel>
 </UserControl>

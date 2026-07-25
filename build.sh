@@ -1,9 +1,9 @@
 #!/bin/bash
-# Build AI接线员.app (v2.0) — Apple Silicon (arm64) macOS app with on-device voice
+# Build AI接线员.app (v2.1) — Apple Silicon (arm64) macOS app with on-device voice
 # input (sherpa-onnx ASR). sign.sh uses a stable Apple Development identity when
 # available so Accessibility/Microphone grants survive rebuilds, with ad-hoc fallback.
 #
-# NOTE: v2.0 是 arm64-only —— 本地语音用的 sherpa-onnx 库为 arm64。
+# NOTE: v2.1 是 arm64-only —— 本地语音用的 sherpa-onnx 库为 arm64。
 # Requirements: Xcode command-line tools.
 # Usage: ./build.sh
 set -e

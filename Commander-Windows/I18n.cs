@@ -62,6 +62,18 @@ namespace Commander
             ["status.key.down"] = "播放键按下 ↓",
             ["status.key.up"] = "播放键松开 ↑",
 
+            // Local voice pipeline
+            ["voice.model.downloading"] = "模型正在下载",
+            ["voice.model.missing"] = "请先下载所选模型",
+            ["voice.microphone.error"] = "无法使用麦克风",
+            ["voice.listening"] = "正在听",
+            ["voice.transcribing"] = "正在转写…",
+            ["voice.enhancing"] = "大模型润色中…",
+            ["voice.no_audio"] = "没有听到声音",
+            ["voice.no_transcript"] = "没有识别到文字",
+            ["voice.cancelled"] = "听写已取消",
+            ["voice.pipeline.error"] = "听写失败，请重试",
+
             // Other
             ["app.already_running"] = "AI接线员已在运行中",
         };
@@ -119,6 +131,18 @@ namespace Commander
             ["status.stopped"] = "Stopped",
             ["status.key.down"] = "Play key pressed ↓",
             ["status.key.up"] = "Play key released ↑",
+
+            // Local voice pipeline
+            ["voice.model.downloading"] = "Model is downloading",
+            ["voice.model.missing"] = "Download the selected model first",
+            ["voice.microphone.error"] = "Microphone is unavailable",
+            ["voice.listening"] = "Listening",
+            ["voice.transcribing"] = "Transcribing…",
+            ["voice.enhancing"] = "Polishing…",
+            ["voice.no_audio"] = "No sound detected",
+            ["voice.no_transcript"] = "No speech recognized",
+            ["voice.cancelled"] = "Dictation cancelled",
+            ["voice.pipeline.error"] = "Dictation failed. Try again",
 
             // Other
             ["app.already_running"] = "Commander is already running",

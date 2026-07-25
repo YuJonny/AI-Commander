@@ -2,6 +2,7 @@ import Foundation
 import CoreGraphics
 import AppKit
 import MediaPlayer
+import Carbon.HIToolbox
 
 private func L(_ key: String) -> String {
     guard let lang = UserDefaults.standard.string(forKey: "appLanguage") else {
@@ -198,8 +199,18 @@ final class MediaKeyInterceptor {
             e.post(tap: .cghidEventTap)
         } else {
             // 组合键（如 ⌘⇧Space）：按下时先压修饰键→主键；松开时先放主键→修饰键
+            // Fn 是例外：部分 App（微信输入法）按真实键码 63+49 检测组合，
+            // 只在 Space 事件上附加 maskSecondaryFn 会被当成普通空格。
+            let containsFn = modifierFlag.contains(.maskSecondaryFn)
             if down {
-                if let f = CGEvent(source: source) { f.type = .flagsChanged; f.flags = modifierFlag; f.post(tap: .cghidEventTap) }
+                if let f = CGEvent(source: source) {
+                    f.type = .flagsChanged
+                    if containsFn {
+                        f.setIntegerValueField(.keyboardEventKeycode, value: Int64(kVK_Function))
+                    }
+                    f.flags = modifierFlag
+                    f.post(tap: .cghidEventTap)
+                }
                 if let e = CGEvent(keyboardEventSource: source, virtualKey: targetKeyCode, keyDown: true) {
                     e.flags = modifierFlag; e.post(tap: .cghidEventTap)
                 }
@@ -207,7 +218,14 @@ final class MediaKeyInterceptor {
                 if let e = CGEvent(keyboardEventSource: source, virtualKey: targetKeyCode, keyDown: false) {
                     e.flags = modifierFlag; e.post(tap: .cghidEventTap)
                 }
-                if let f = CGEvent(source: source) { f.type = .flagsChanged; f.flags = []; f.post(tap: .cghidEventTap) }
+                if let f = CGEvent(source: source) {
+                    f.type = .flagsChanged
+                    if containsFn {
+                        f.setIntegerValueField(.keyboardEventKeycode, value: Int64(kVK_Function))
+                    }
+                    f.flags = []
+                    f.post(tap: .cghidEventTap)
+                }
             }
         }
     }

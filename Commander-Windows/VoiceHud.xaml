@@ -1,0 +1,56 @@
+<ui:FluentWindow
+    x:Class="Commander.VoiceHud"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Width="208"
+    Height="48"
+    ResizeMode="NoResize"
+    WindowStyle="None"
+    ShowActivated="False"
+    ShowInTaskbar="False"
+    Topmost="True"
+    Focusable="False"
+    WindowBackdropType="Acrylic"
+    WindowCornerPreference="Round"
+    ExtendsContentIntoTitleBar="True"
+    Background="Transparent">
+
+    <Border
+        Padding="18,0"
+        Background="Transparent"
+        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+        BorderThickness="1"
+        CornerRadius="8"
+        IsHitTestVisible="False">
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+            <Ellipse x:Name="StateDot" Width="8" Height="8" Fill="#E53935">
+                <Ellipse.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="1"
+                                    To="0.3"
+                                    Duration="0:0:0.6" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Ellipse.Triggers>
+            </Ellipse>
+            <TextBlock
+                x:Name="StateText"
+                Margin="10,0,0,0"
+                MaxWidth="154"
+                VerticalAlignment="Center"
+                FontSize="14"
+                FontWeight="SemiBold"
+                Text="Listening"
+                TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+    </Border>
+</ui:FluentWindow>

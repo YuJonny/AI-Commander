@@ -3,27 +3,36 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <UseWPF>true</UseWPF>
     <AssemblyName>Commander</AssemblyName>
     <RootNamespace>Commander</RootNamespace>
     <AssemblyTitle>AI接线员 Commander</AssemblyTitle>
     <Company>Jonny Yu</Company>
     <Product>AI接线员 Commander</Product>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WPF-UI" Version="3.0.5" />
-    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.1.0" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
+    <PackageReference Include="H.NotifyIcon.Wpf" Version="2.3.2" />
+    <PackageReference Include="NAudio.Core" Version="2.3.0" />
+    <PackageReference Include="NAudio.Wasapi" Version="2.3.0" />
+    <PackageReference Include="org.k2fsa.sherpa.onnx" Version="1.13.4" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\app.ico" Condition="Exists('Resources\app.ico')" />
     <Resource Include="Resources\tray.ico" Condition="Exists('Resources\tray.ico')" />
     <Resource Include="Resources\app_logo.png" Condition="Exists('Resources\app_logo.png')" />
+    <EmbeddedResource Include="Resources\llama-b9873-bin-win-cpu-x64.zip"
+                      LogicalName="Commander.Bundled.llama-runtime.zip"
+                      Condition="Exists('Resources\llama-b9873-bin-win-cpu-x64.zip')" />
+    <EmbeddedResource Include="Resources\llama.cpp-LICENSE.txt"
+                      LogicalName="Commander.Bundled.llama-license.txt" />
   </ItemGroup>
 
   <PropertyGroup Condition="Exists('Resources\app.ico')">

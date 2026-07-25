@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import Darwin
 
 /// v2.1 内嵌 LLM 运行时：按需把打包的 llama-server 拉起为子进程，闲时退出。
 /// 权重走 mmap（活动监视器里只显示几百 MB 私有内存），生命周期与 ASR 引擎同节奏。
@@ -43,7 +44,9 @@ final class LlamaRunner {
         lock.lock(); defer { lock.unlock() }
         scheduleIdleStop()
         if let p = process, p.isRunning { return }
-        if healthOK(timeout: 0.3) { return }   // 复用上次残留的 server（如上次 App 异常退出）
+        // App 被强制退出时，子进程可能脱离所有权并长期占着固定端口。
+        // 不能只凭 /health 复用：那会让 5 分钟闲置回收失效，prompt cache 也持续膨胀。
+        terminateResidualServers()
         guard let bin = Self.serverBinary, let model = Self.modelPath else { return }
         let p = Process()
         p.executableURL = URL(fileURLWithPath: bin)
@@ -52,8 +55,11 @@ final class LlamaRunner {
                        "--port", String(Self.port),
                        "-ngl", "99",        // 全部层跑 Metal
                        "-c", "4096",
+                       "--prio", "1",       // 听写是交互任务，避免后台调度长期降速
+                       "--cache-ram", "256",// 固定 prompt 可复用，但不让默认 8GB 缓存挤压统一内存
                        "--jinja",           // 启用聊天模板 → chat_template_kwargs 关思考
                        "--no-webui"]
+        p.qualityOfService = .userInitiated
         p.standardOutput = FileHandle.nullDevice
         p.standardError = FileHandle.nullDevice
         try? p.run()
@@ -65,6 +71,7 @@ final class LlamaRunner {
         idleStop?.cancel(); idleStop = nil
         process?.terminate()
         process = nil
+        terminateResidualServers()
     }
 
     private func scheduleIdleStop() {
@@ -95,5 +102,33 @@ final class LlamaRunner {
         }.resume()
         sem.wait()
         return ok
+    }
+
+    /// 找出占用本 App 固定端口的 llama-server。这里只处理同名监听进程，避免碰到其他服务。
+    private func terminateResidualServers() {
+        let task = Process()
+        let output = Pipe()
+        task.executableURL = URL(fileURLWithPath: "/usr/sbin/lsof")
+        task.arguments = [
+            "-nP", "-a", "-c", "llama-server",
+            "-iTCP:\(Self.port)", "-sTCP:LISTEN", "-t",
+        ]
+        task.standardOutput = output
+        task.standardError = FileHandle.nullDevice
+        guard (try? task.run()) != nil else { return }
+        task.waitUntilExit()
+        guard task.terminationStatus == 0 else { return }
+        let data = output.fileHandleForReading.readDataToEndOfFile()
+        guard let text = String(data: data, encoding: .utf8) else { return }
+        let pids = text.split(whereSeparator: \.isWhitespace).compactMap { pid_t($0) }
+        guard !pids.isEmpty else { return }
+        for pid in pids where pid != getpid() { kill(pid, SIGTERM) }
+
+        // 给端口一个很短的释放窗口；失败时后续启动会自然报错并走规则回退。
+        let deadline = Date().addingTimeInterval(1.0)
+        while Date() < deadline {
+            if !healthOK(timeout: 0.05) { return }
+            usleep(50_000)
+        }
     }
 }

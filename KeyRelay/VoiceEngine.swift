@@ -272,7 +272,7 @@ final class VoiceEngine {
     /// 失败（模型未下载/加载超时）返回 nil，调用方回退常规管线。
     static func llmEnhance(
         _ text: String,
-        timeout: TimeInterval = 90,
+        timeout: TimeInterval? = nil,
         diagnosticsSessionID: String? = nil
     ) -> String? {
         let diagnostics = PipelineDiagnostics.shared
@@ -287,7 +287,7 @@ final class VoiceEngine {
         let runner = LlamaRunner.shared
         let readyStarted = Date()
         runner.ensureRunning()
-        guard runner.waitReady(seconds: 45) else {
+        guard runner.waitReady(seconds: 12) else {
             diagnostics.record(
                 diagnosticsSessionID,
                 stage: "llm.failure",
@@ -345,9 +345,12 @@ final class VoiceEngine {
             stage: "llm.prompt",
             text: prompt,
             details: ["temperature": "0", "thinking": "false"])
+        let maxTokens = min(1024, max(64, text.count * 2 + 32))
+        let requestTimeout = timeout ?? min(25, max(12, 10 + Double(text.count) / 20))
         let body: [String: Any] = [
             "messages": [["role": "user", "content": prompt]],
             "temperature": 0,
+            "max_tokens": maxTokens,
             "chat_template_kwargs": ["enable_thinking": false],   // Qwen3 关思考
         ]
         guard let data = try? JSONSerialization.data(withJSONObject: body) else {
@@ -361,19 +364,24 @@ final class VoiceEngine {
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         req.httpBody = data
-        req.timeoutInterval = timeout
+        req.timeoutInterval = requestTimeout
         let sem = DispatchSemaphore(value: 0)
         let requestStarted = Date()
         var rawOutput: String?
         var failureReason: String?
         var statusCode = 0
         var responseBytes = 0
+        var performanceMetrics: [String: Double] = [:]
         URLSession.shared.dataTask(with: req) { d, r, error in
             defer { sem.signal() }
             statusCode = (r as? HTTPURLResponse)?.statusCode ?? 0
             responseBytes = d?.count ?? 0
             if let error {
-                failureReason = "network_error:\(error.localizedDescription)"
+                if (error as? URLError)?.code == .timedOut {
+                    failureReason = "request_timeout"
+                } else {
+                    failureReason = "network_error:\(error.localizedDescription)"
+                }
                 return
             }
             guard let d else {
@@ -392,21 +400,40 @@ final class VoiceEngine {
                 failureReason = "invalid_response_json"
                 return
             }
+            func metric(_ value: Any?) -> Double? {
+                (value as? NSNumber)?.doubleValue
+            }
+            if let usage = obj["usage"] as? [String: Any] {
+                performanceMetrics["promptTokens"] = metric(usage["prompt_tokens"])
+                performanceMetrics["completionTokens"] = metric(usage["completion_tokens"])
+            }
+            if let timings = obj["timings"] as? [String: Any] {
+                performanceMetrics["cachedPromptTokens"] = metric(timings["cache_n"])
+                performanceMetrics["promptMs"] = metric(timings["prompt_ms"])
+                performanceMetrics["promptTokensPerSecond"] = metric(timings["prompt_per_second"])
+                performanceMetrics["generationMs"] = metric(timings["predicted_ms"])
+                performanceMetrics["generationTokensPerSecond"] = metric(timings["predicted_per_second"])
+            }
             rawOutput = content
         }.resume()
         sem.wait()
+        var httpMetrics: [String: Double] = [
+            "statusCode": Double(statusCode),
+            "responseBytes": Double(responseBytes),
+            "timeoutSeconds": requestTimeout,
+            "maxTokens": Double(maxTokens),
+        ]
+        for (key, value) in performanceMetrics { httpMetrics[key] = value }
         diagnostics.record(
             diagnosticsSessionID,
             stage: "llm.http_completed",
             durationMs: Date().timeIntervalSince(requestStarted) * 1000,
-            metrics: [
-                "statusCode": Double(statusCode),
-                "responseBytes": Double(responseBytes),
-            ])
+            metrics: httpMetrics)
         guard let rawOutput else {
             diagnostics.record(
                 diagnosticsSessionID,
                 stage: "llm.failure",
+                metrics: ["timeoutSeconds": requestTimeout],
                 details: ["reason": failureReason ?? "unknown"])
             return nil
         }

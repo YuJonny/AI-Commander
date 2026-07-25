@@ -1,227 +1,269 @@
-using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace Commander
+namespace Commander;
+
+public enum MediaKeyActionMode
 {
-    public class MediaKeyInterceptor : IDisposable
+    Shortcut,
+    LocalVoice,
+}
+
+public sealed class MediaKeyInterceptor : IDisposable
+{
+    private const int WhKeyboardLowLevel = 13;
+    private const int WmKeyDown = 0x0100;
+    private const int WmKeyUp = 0x0101;
+    private const int WmSysKeyDown = 0x0104;
+    private const int WmSysKeyUp = 0x0105;
+    private const uint InputKeyboard = 1;
+    private const uint KeyEventKeyUp = 0x0002;
+    private const uint KeyEventExtendedKey = 0x0001;
+
+    private delegate nint LowLevelKeyboardProc(int code, nint message, nint data);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern nint SetWindowsHookEx(
+        int hookId,
+        LowLevelKeyboardProc callback,
+        nint moduleHandle,
+        uint threadId);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool UnhookWindowsHookEx(nint hookHandle);
+
+    [DllImport("user32.dll")]
+    private static extern nint CallNextHookEx(nint hookHandle, int code, nint message, nint data);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+    private static extern nint GetModuleHandle(string? moduleName);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern uint SendInput(uint numberOfInputs, INPUT[] inputs, int sizeOfInput);
+
+    private nint _hookHandle;
+    private LowLevelKeyboardProc? _hookCallback;
+    private bool _mediaKeyIsDown;
+    private bool _shortcutIsDown;
+    private KeyStroke _shortcut = new(
+        VirtualKeys.RightAlt,
+        KeyModifiers.None,
+        ShortcutTriggerMode.Hold,
+        "Right Alt");
+
+    public MediaKeyActionMode Mode { get; set; } = MediaKeyActionMode.Shortcut;
+
+    public KeyStroke Shortcut
     {
-        // Windows API constants
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
-        private const int WM_KEYUP = 0x0101;
-        private const int WM_SYSKEYDOWN = 0x0104;
-        private const int WM_SYSKEYUP = 0x0105;
-        private const int VK_MEDIA_PLAY_PAUSE = 0xB3;
-        private const int VK_MEDIA_NEXT_TRACK = 0xB0;
-        private const int VK_MEDIA_PREV_TRACK = 0xB1;
-        private const int VK_MEDIA_STOP = 0xB2;
-        private const uint INPUT_KEYBOARD = 1;
-        private const uint KEYEVENTF_KEYUP = 0x0002;
-        private const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
+        get => _shortcut;
+        set => _shortcut = value;
+    }
 
-        // P/Invoke
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+    // Compatibility for the v1 settings page while the v2 page is being initialized.
+    public int TargetKeyCode
+    {
+        get => _shortcut.KeyCode;
+        set => _shortcut = new KeyStroke(value, KeyModifiers.None, ShortcutTriggerMode.Hold, GetKeyName(value));
+    }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+    public event Action? MediaKeyPressed;
+    public event Action? MediaKeyDetected;
+    public event Action<string>? OnStatusChange;
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+    public void Start()
+    {
+        Stop();
+        _hookCallback = HookCallback;
+        using var process = Process.GetCurrentProcess();
+        using var module = process.MainModule;
+        _hookHandle = SetWindowsHookEx(
+            WhKeyboardLowLevel,
+            _hookCallback,
+            GetModuleHandle(module?.ModuleName),
+            0);
+        if (_hookHandle == 0)
+            throw new Win32Exception(Marshal.GetLastWin32Error(), "Unable to install the media-key hook.");
+        OnStatusChange?.Invoke(I18n.Get("status.started"));
+    }
 
-        [DllImport("user32.dll")]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetModuleHandle(string? lpModuleName);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct KBDLLHOOKSTRUCT
+    public void Stop()
+    {
+        if (_shortcutIsDown)
         {
-            public int vkCode;
-            public int scanCode;
-            public int flags;
-            public int time;
-            public IntPtr dwExtraInfo;
+            try { SendShortcut(isDown: false); }
+            catch { }
         }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct INPUT
+        _mediaKeyIsDown = false;
+        _shortcutIsDown = false;
+        if (_hookHandle != 0)
         {
-            public uint type;
-            public INPUTUNION u;
+            UnhookWindowsHookEx(_hookHandle);
+            _hookHandle = 0;
         }
+        _hookCallback = null;
+    }
 
-        // Union must include MOUSEINPUT so its size matches Windows' INPUT union (32 bytes on x64).
-        // Without it, Marshal.SizeOf<INPUT>() is too small and SendInput silently fails.
-        [StructLayout(LayoutKind.Explicit)]
-        private struct INPUTUNION
+    private nint HookCallback(int code, nint message, nint data)
+    {
+        if (code >= 0)
         {
-            [FieldOffset(0)] public KEYBDINPUT ki;
-            [FieldOffset(0)] public MOUSEINPUT mi;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct KEYBDINPUT
-        {
-            public ushort wVk;
-            public ushort wScan;
-            public uint dwFlags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MOUSEINPUT
-        {
-            public int dx;
-            public int dy;
-            public uint mouseData;
-            public uint dwFlags;
-            public uint time;
-            public IntPtr dwExtraInfo;
-        }
-
-        private IntPtr _hookId = IntPtr.Zero;
-        private LowLevelKeyboardProc? _hookProc;
-
-        public int TargetKeyCode { get; set; } = 0xA3; // VK_RCONTROL
-        public event Action<string>? OnStatusChange;
-
-        public void Start()
-        {
-            Stop();
-            _hookProc = HookCallback;
-            using var curProcess = Process.GetCurrentProcess();
-            using var curModule = curProcess.MainModule!;
-            _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _hookProc, GetModuleHandle(curModule.ModuleName), 0);
-
-            if (_hookId == IntPtr.Zero)
+            var value = Marshal.PtrToStructure<KeyboardHookData>(data);
+            if (value.VirtualKey == VirtualKeys.MediaPlayPause)
             {
-                OnStatusChange?.Invoke(I18n.Get("status.hook.failed"));
-            }
-            else
-            {
-                OnStatusChange?.Invoke(I18n.Get("status.started"));
-            }
-        }
-
-        public void Stop()
-        {
-            if (_hookId != IntPtr.Zero)
-            {
-                UnhookWindowsHookEx(_hookId);
-                _hookId = IntPtr.Zero;
-            }
-            _hookProc = null;
-        }
-
-        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            if (nCode >= 0)
-            {
-                var hookStruct = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
-                int msg = wParam.ToInt32();
-
-                if (hookStruct.vkCode == VK_MEDIA_PLAY_PAUSE)
+                var keyDown = message == WmKeyDown || message == WmSysKeyDown;
+                var keyUp = message == WmKeyUp || message == WmSysKeyUp;
+                if (keyDown && !_mediaKeyIsDown)
                 {
-                    if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN)
+                    _mediaKeyIsDown = true;
+                    OnStatusChange?.Invoke(I18n.Get("status.key.down"));
+                    MediaKeyDetected?.Invoke();
+                    if (Mode == MediaKeyActionMode.LocalVoice)
                     {
-                        OnStatusChange?.Invoke(I18n.Get("status.key.down"));
-                        SimulateKey(true);
+                        _ = Task.Run(() => MediaKeyPressed?.Invoke());
                     }
-                    else if (msg == WM_KEYUP || msg == WM_SYSKEYUP)
+                    else if (_shortcut.TriggerMode == ShortcutTriggerMode.Tap)
                     {
-                        OnStatusChange?.Invoke(I18n.Get("status.key.up"));
-                        SimulateKey(false);
+                        SendShortcut(isDown: true);
+                        SendShortcut(isDown: false);
                     }
-                    // Block the media key by not calling CallNextHookEx
-                    return (IntPtr)1;
-                }
-            }
-            return CallNextHookEx(_hookId, nCode, wParam, lParam);
-        }
-
-        private void SimulateKey(bool down)
-        {
-            var input = new INPUT
-            {
-                type = INPUT_KEYBOARD,
-                u = new INPUTUNION
-                {
-                    ki = new KEYBDINPUT
+                    else
                     {
-                        wVk = (ushort)TargetKeyCode,
-                        wScan = 0,
-                        dwFlags = (down ? 0u : KEYEVENTF_KEYUP) | (IsExtendedKey(TargetKeyCode) ? KEYEVENTF_EXTENDEDKEY : 0u),
-                        time = 0,
-                        dwExtraInfo = IntPtr.Zero
+                        SendShortcut(isDown: true);
+                        _shortcutIsDown = true;
                     }
                 }
-            };
-
-            SendInput(1, new[] { input }, Marshal.SizeOf<INPUT>());
+                else if (keyUp)
+                {
+                    _mediaKeyIsDown = false;
+                    OnStatusChange?.Invoke(I18n.Get("status.key.up"));
+                    if (Mode == MediaKeyActionMode.Shortcut && _shortcutIsDown)
+                    {
+                        SendShortcut(isDown: false);
+                        _shortcutIsDown = false;
+                    }
+                }
+                return 1;
+            }
         }
+        return CallNextHookEx(_hookHandle, code, message, data);
+    }
 
-        private static bool IsExtendedKey(int vk)
-        {
-            // Extended keys: right ctrl, right alt, arrow keys, insert, delete, home, end, page up/down, numpad enter, etc.
-            return vk is 0xA3 or 0xA5 or 0x25 or 0x26 or 0x27 or 0x28
-                or 0x2D or 0x2E or 0x24 or 0x23 or 0x21 or 0x22
-                or 0x5B or 0x5C; // Win keys
-        }
+    private void SendShortcut(bool isDown)
+    {
+        var keyCodes = ModifierKeyCodes(_shortcut.Modifiers);
+        IEnumerable<int> ordered;
+        if (isDown)
+            ordered = keyCodes.Append(_shortcut.KeyCode);
+        else
+            ordered = new[] { _shortcut.KeyCode }.Concat(keyCodes.Reverse());
 
-        public void Dispose()
-        {
-            Stop();
-        }
+        var inputs = ordered.Select(keyCode => KeyboardEvent(keyCode, isDown)).ToArray();
+        var sent = SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<INPUT>());
+        if (sent != inputs.Length)
+            throw new Win32Exception(Marshal.GetLastWin32Error(), "Windows blocked the mapped shortcut.");
+    }
 
-        // Map virtual key code to display name
-        public static string GetKeyName(int vk)
+    private static IReadOnlyList<int> ModifierKeyCodes(KeyModifiers modifiers)
+    {
+        var keys = new List<int>(4);
+        if (modifiers.HasFlag(KeyModifiers.Control)) keys.Add(VirtualKeys.LeftControl);
+        if (modifiers.HasFlag(KeyModifiers.Shift)) keys.Add(VirtualKeys.LeftShift);
+        if (modifiers.HasFlag(KeyModifiers.Alt)) keys.Add(VirtualKeys.LeftAlt);
+        if (modifiers.HasFlag(KeyModifiers.Windows)) keys.Add(VirtualKeys.LeftWindows);
+        return keys;
+    }
+
+    private static INPUT KeyboardEvent(int keyCode, bool isDown) => new()
+    {
+        Type = InputKeyboard,
+        Union = new InputUnion
         {
-            return vk switch
+            Keyboard = new KeyboardInput
             {
-                0xA2 => "Left Ctrl",
-                0xA3 => "Right Ctrl",
-                0xA0 => "Left Shift",
-                0xA1 => "Right Shift",
-                0xA4 => "Left Alt",
-                0xA5 => "Right Alt",
-                0x5B => "Left Win ⊞",
-                0x5C => "Right Win ⊞",
-                0x14 => "Caps Lock",
-                0x09 => "Tab",
-                0x1B => "Escape",
-                0x0D => "Enter ↩",
-                0x20 => "Space",
-                0x08 => "Backspace ⌫",
-                0x2E => "Delete",
-                0x2D => "Insert",
-                0x24 => "Home",
-                0x23 => "End",
-                0x21 => "Page Up",
-                0x22 => "Page Down",
-                0x25 => "←",
-                0x26 => "↑",
-                0x27 => "→",
-                0x28 => "↓",
-                0x70 => "F1", 0x71 => "F2", 0x72 => "F3", 0x73 => "F4",
-                0x74 => "F5", 0x75 => "F6", 0x76 => "F7", 0x77 => "F8",
-                0x78 => "F9", 0x79 => "F10", 0x7A => "F11", 0x7B => "F12",
-                >= 0x30 and <= 0x39 => ((char)vk).ToString(),
-                >= 0x41 and <= 0x5A => ((char)vk).ToString(),
-                >= 0x60 and <= 0x69 => $"Numpad {vk - 0x60}",
-                0x6A => "Numpad *",
-                0x6B => "Numpad +",
-                0x6D => "Numpad -",
-                0x6E => "Numpad .",
-                0x6F => "Numpad /",
-                _ => $"Key {vk:X2}"
-            };
-        }
+                VirtualKey = (ushort)keyCode,
+                Flags = (isDown ? 0u : KeyEventKeyUp) | (IsExtendedKey(keyCode) ? KeyEventExtendedKey : 0),
+            },
+        },
+    };
+
+    private static bool IsExtendedKey(int keyCode) => keyCode is
+        VirtualKeys.RightControl or VirtualKeys.RightAlt or
+        VirtualKeys.Left or VirtualKeys.Up or VirtualKeys.Right or VirtualKeys.Down or
+        VirtualKeys.Delete or VirtualKeys.LeftWindows or VirtualKeys.RightWindows;
+
+    public static string GetKeyName(int keyCode) => keyCode switch
+    {
+        VirtualKeys.LeftControl => "Left Ctrl",
+        VirtualKeys.RightControl => "Right Ctrl",
+        VirtualKeys.LeftShift => "Left Shift",
+        VirtualKeys.RightShift => "Right Shift",
+        VirtualKeys.LeftAlt => "Left Alt",
+        VirtualKeys.RightAlt => "Right Alt",
+        VirtualKeys.LeftWindows => "Left Win",
+        VirtualKeys.RightWindows => "Right Win",
+        VirtualKeys.CapsLock => "Caps Lock",
+        VirtualKeys.Tab => "Tab",
+        VirtualKeys.Escape => "Escape",
+        VirtualKeys.Enter => "Enter",
+        VirtualKeys.Space => "Space",
+        VirtualKeys.Backspace => "Backspace",
+        VirtualKeys.Delete => "Delete",
+        VirtualKeys.Left => "Left Arrow",
+        VirtualKeys.Up => "Up Arrow",
+        VirtualKeys.Right => "Right Arrow",
+        VirtualKeys.Down => "Down Arrow",
+        >= 0x30 and <= 0x39 => ((char)keyCode).ToString(),
+        >= 0x41 and <= 0x5A => ((char)keyCode).ToString(),
+        >= 0x70 and <= 0x7B => $"F{keyCode - 0x6F}",
+        _ => $"Key {keyCode:X2}",
+    };
+
+    public void Dispose() => Stop();
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct KeyboardHookData
+    {
+        public int VirtualKey;
+        public int ScanCode;
+        public int Flags;
+        public int Time;
+        public nint ExtraInfo;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct INPUT
+    {
+        public uint Type;
+        public InputUnion Union;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    private struct InputUnion
+    {
+        [FieldOffset(0)] public KeyboardInput Keyboard;
+        [FieldOffset(0)] public MouseInput Mouse;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct KeyboardInput
+    {
+        public ushort VirtualKey;
+        public ushort ScanCode;
+        public uint Flags;
+        public uint Time;
+        public nint ExtraInfo;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MouseInput
+    {
+        public int X;
+        public int Y;
+        public uint MouseData;
+        public uint Flags;
+        public uint Time;
+        public nint ExtraInfo;
     }
 }

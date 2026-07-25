@@ -1,114 +1,79 @@
-using System;
-using System.IO;
 using System.Threading;
 using System.Windows;
-using System.Windows.Threading;
 
-namespace Commander
+namespace Commander;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    private Mutex? _mutex;
+
+    protected override void OnStartup(StartupEventArgs e)
     {
-        private Mutex? _mutex;
-        private static readonly string LogPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Commander",
-            "error.log");
-
-        protected override void OnStartup(StartupEventArgs e)
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
         {
-            // Global exception handlers — catch silent crashes
-            AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+            var exception = args.ExceptionObject as Exception;
+            AppLog.Error(nameof(AppDomain), exception, "Unhandled exception");
+            ShowError("非托管异常", exception);
+        };
+        DispatcherUnhandledException += (_, args) =>
+        {
+            AppLog.Error("Dispatcher", args.Exception, "UI thread exception");
+            ShowError("UI 线程异常", args.Exception);
+            args.Handled = true;
+        };
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            AppLog.Error(nameof(TaskScheduler), args.Exception, "Unobserved task exception");
+            args.SetObserved();
+        };
+
+        try
+        {
+            base.OnStartup(e);
+            AppLog.Info(nameof(App), "Starting v2.0");
+            _mutex = new Mutex(true, "Commander_AI接线员_Mutex", out var createdNew);
+            if (!createdNew)
             {
-                Log("AppDomain", args.ExceptionObject as Exception);
-                ShowError("非托管异常", args.ExceptionObject as Exception);
-            };
-            DispatcherUnhandledException += (s, args) =>
-            {
-                Log("Dispatcher", args.Exception);
-                ShowError("UI 线程异常", args.Exception);
-                args.Handled = true;
-            };
-            TaskScheduler.UnobservedTaskException += (s, args) =>
-            {
-                Log("Task", args.Exception);
-                args.SetObserved();
-            };
-
-            try
-            {
-                base.OnStartup(e);
-                Log("Startup", null, "Starting up...");
-
-                // Single instance check
-                _mutex = new Mutex(true, "Commander_AI接线员_Mutex", out bool createdNew);
-                if (!createdNew)
-                {
-                    MessageBox.Show(
-                        "AI接线员已经在运行中",
-                        "AI接线员",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-                    Shutdown();
-                    return;
-                }
-
-                Log("Startup", null, "Initializing I18n");
-                I18n.Init();
-
-                Log("Startup", null, "Creating MainWindow");
-                var window = new MainWindow();
-
-                Log("Startup", null, "Showing MainWindow");
-                window.Show();
-
-                Log("Startup", null, "Started successfully");
-            }
-            catch (Exception ex)
-            {
-                Log("OnStartup", ex);
-                ShowError("启动失败", ex);
+                MessageBox.Show(
+                    "AI接线员已经在运行中",
+                    "AI接线员",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
                 Shutdown();
+                return;
             }
-        }
 
-        protected override void OnExit(ExitEventArgs e)
-        {
-            _mutex?.ReleaseMutex();
-            _mutex?.Dispose();
-            base.OnExit(e);
+            I18n.Init();
+            var window = new MainWindow();
+            MainWindow = window;
+            window.Show();
+            AppLog.Info(nameof(App), "Started successfully");
         }
+        catch (Exception exception)
+        {
+            AppLog.Error(nameof(App), exception, "Startup failed");
+            ShowError("启动失败", exception);
+            Shutdown();
+        }
+    }
 
-        private static void Log(string source, Exception? ex, string? message = null)
-        {
-            try
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
-                using var w = new StreamWriter(LogPath, append: true);
-                w.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {source}: {message ?? ex?.GetType().Name + ": " + ex?.Message}");
-                if (ex != null)
-                {
-                    w.WriteLine(ex.StackTrace);
-                    if (ex.InnerException != null)
-                    {
-                        w.WriteLine($"  Inner: {ex.InnerException.GetType().Name}: {ex.InnerException.Message}");
-                        w.WriteLine(ex.InnerException.StackTrace);
-                    }
-                }
-                w.WriteLine();
-            }
-            catch { }
-        }
+    protected override void OnExit(ExitEventArgs e)
+    {
+        try { _mutex?.ReleaseMutex(); } catch (ApplicationException) { }
+        _mutex?.Dispose();
+        base.OnExit(e);
+    }
 
-        private static void ShowError(string title, Exception? ex)
+    private static void ShowError(string title, Exception? exception)
+    {
+        try
         {
-            try
-            {
-                string msg = ex?.Message ?? "Unknown error";
-                if (ex?.InnerException != null) msg += $"\n\n内部异常：{ex.InnerException.Message}";
-                msg += $"\n\n日志位置：{LogPath}";
-                MessageBox.Show(msg, $"AI接线员 - {title}", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch { }
+            var message = exception?.Message ?? "Unknown error";
+            if (exception?.InnerException is not null)
+                message += $"\n\n内部异常：{exception.InnerException.Message}";
+            message += $"\n\n日志位置：{AppPaths.LogPath}";
+            MessageBox.Show(message, $"AI接线员 - {title}", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+        catch { }
     }
 }

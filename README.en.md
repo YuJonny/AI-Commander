@@ -15,7 +15,7 @@
 [![Release](https://img.shields.io/github/v/release/YuJonny/AI-Commander)](https://github.com/YuJonny/AI-Commander/releases)
 ![On-device](https://img.shields.io/badge/speech%20processing-fully%20on--device-3b82f6)
 
-<img src="assets/demo.gif" width="300" alt="Demo" />
+<img src="assets/screenshot-v2.jpg" width="440" alt="AI Commander v2 main window" />
 
 ⭐ **If it helps, a Star means a lot.**
 
@@ -44,6 +44,8 @@ Now, we use one to talk to the future.
 ---
 
 ## What It Does
+
+AI Commander v2 has two independent modes. On an Apple-silicon Mac, it can provide complete on-device voice input by itself; alternatively, it can act only as a headset-key mapper for an existing voice tool. The local voice mode does not require Typeless, WeType, or any other third-party input method.
 
 - **One press to talk**: press the play / pause key to start, press again to stop — the words land right at your cursor.
 - **Fully on-device, free forever**: recognition, cleanup and polish all run locally. Nothing is uploaded; the code is open source and auditable.
@@ -74,7 +76,7 @@ Get the latest build from [Releases](https://github.com/YuJonny/AI-Commander/rel
 
 | Platform | File | Capability |
 |---|---|---|
-| **macOS** (Apple silicon) | `AI.Commander_Mac_v2.0.dmg` | On-device voice input **＋** headset-key mapping |
+| **macOS** (Apple silicon) | `AI.Commander_Mac_v2.1.dmg` | On-device voice input **＋** headset-key mapping |
 | **Windows** | `AI.Commander_Win.exe` | Headset-key mapping |
 
 ### First launch on macOS
@@ -94,6 +96,26 @@ On first launch you'll be guided to grant **Accessibility** and **Microphone**, 
 - SmartScreen: click "More info → Run anyway".
 - Antivirus may flag the keyboard hook — add to the allowlist.
 - Single portable file, x64, Windows 10/11, no admin rights or .NET required.
+
+## Common Questions
+
+### Will the headset button trigger voice input and pause or resume music at the same time?
+
+No. While AI Commander is enabled, it takes over and consumes the play / pause event. In local voice mode, the button controls recording only. In key-mapping mode, it sends only the selected tool's hotkey. It will not launch Typeless and pause music at the same time, nor will it automatically resume music when dictation ends.
+
+This also means the headset button no longer controls media while AI Commander is enabled. Turn off the main switch and the listener is fully released, restoring the button's normal play / pause behavior. This is deliberate, exclusive key handling—not a double-trigger conflict.
+
+### Will mapping the headset button to Fn for Typeless conflict with other shortcuts?
+
+No. Fn is Typeless's default voice hotkey. AI Commander simulates Fn only when you press the headset button; it does not change Fn's normal behavior or occupy other shortcuts. Select the Typeless preset directly, or use Custom only if you have changed Typeless's default hotkey.
+
+### Does WeType require an additional automation script?
+
+No. WeType for Mac provides a hands-free mode triggered by `Fn + Space`, and AI Commander's WeType preset maps directly to that official shortcut. Press the headset button once to start and once again to stop, with no need for Keyboard Maestro, BetterTouchTool, or another automation script.
+
+### Does first-time setup require a lot of configuration?
+
+No. Open the app, follow the permission guide, and choose an input mode—there is no configuration file or script to install. Existing voice tools need no model download; local voice input only adds one on-demand speech model.
 
 ---
 

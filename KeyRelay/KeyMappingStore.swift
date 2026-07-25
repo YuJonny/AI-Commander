@@ -139,8 +139,11 @@ enum InputMethodKind: String, CaseIterable, Identifiable {
         switch self {
         case .localLLM, .custom:
             return nil
-        case .doubao, .wechat, .typeless:
+        case .doubao, .typeless:
             return fnKey()
+        case .wechat:                                         // 免提模式：fn+Space 按一下开始/再按结束（2026-07-18 真机验证）
+            return TargetKeyInfo(keyCode: UInt16(kVK_Space), displayName: "fn Space",
+                                 isModifier: false, modifierFlag: .maskSecondaryFn)
         case .wisprflow:                                      // Hands-free：fn+Space 按一下开始/再按结束
             return TargetKeyInfo(keyCode: UInt16(kVK_Space), displayName: "fn Space",
                                  isModifier: false, modifierFlag: .maskSecondaryFn)

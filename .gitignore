@@ -9,6 +9,7 @@
 *.dmg
 *.exe
 *.zip
+!Commander-Windows/Resources/llama-b9873-bin-win-cpu-x64.zip
 终版分发/
 
 # ───────── Swift / Xcode ─────────
@@ -51,3 +52,8 @@ dmg-build/bg@2x.png
 Commander.iconset/
 Commander_Icon_1024.png
 Commander_Logo*.png
+
+# ───────── 本地协作文档（不公开）─────────
+MARKETING-TODO.md
+XHS-01-主发布.md
+assets/redbook/

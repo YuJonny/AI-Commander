@@ -13,6 +13,8 @@
 
 ## 1. 构建 · 签名 · 分发
 
+- [2026-07-19] (用户反馈，Windows v2) Windows 首次编译长时间卡在“正在确定要还原的项目” → 定位为 `dotnet publish` 隐式 NuGet restore 不透明，且仓库同时启用官方源与华为镜像时会并行访问，任一异常源都可能拖住还原。改造 `setup_and_build.ps1`：华为云中国大陆镜像/官方源各做 15 秒连通性预检，**优先镜像、失败回退官方源**，只对可用源逐个执行显式 `dotnet restore -r win-x64 --disable-parallel --verbosity normal --tl:off`，成功后 `publish --no-restore`；双源均不可达时提示本地代理参数并停止，不再无限等待。默认 `nuget.config` 只启用华为云镜像，避免手动还原时并行等待；README 增加 Ctrl+C、缓存、代理和故障定位说明。Windows 真机随后顺利越过还原并进入编译，暴露 `AboutPage` 的 `Directory` 与 `VoiceController` 的 `Path` 缺少显式 `System.IO` 引用，已补齐并扫描全部 IO 类型使用点无同类遗漏。✅ 用户 Windows x64 真机重新编译通过，NuGet 镜像与 WPF 发布链路已打通。
+
 - [2026-06] (用户要求) v1 DMG 背景在 macOS 26 不渲染 → 用原生 `URL.bookmarkData` 全路径书签注入 pBBk + HiDPI 双分辨率背景图 → ✅ 修复。
 - [2026-06] (自发) 每次重编译辅助功能授权丢失 → 发现根因：ad-hoc 签名按 cdhash 记授权，一编译就变。改用本机 **Apple Development 证书**签名（`sign.sh`，hash `67926F55…`，team `Q55P36RVFD`），DR 稳定 → ✅ 授权跨重编译保留。换机器要改 `sign.sh` 的 `DEV_ID`。
 - [2026-07-05] (自发) v2 = **arm64-only**：sherpa-onnx / llama.cpp 库仅 arm64，`build.sh` 去掉 universal。
@@ -23,6 +25,8 @@
 - [2026-07-11] (用户定稿) README「缘起」多轮迭代定稿：Claude 三版（伪个人叙事被否"莫名其妙创造奇怪需求"→按键传记→诚实怀旧版），最终**用户亲笔重写**——"以前打电话，是一件很具体的事…现在，我们用它，和未来说话"。教训入档：**品牌故事的情感锚点必须是作者自己的，AI 只能供结构和备选表达，不能代拟"我"的经历**。
 - [2026-07-12] (用户实测通过+要求) 换机三测全部通过，进入发布准备；用户嫌 README（Codex 重构版）啰嗦 → Claude 整篇脱水：保留 Codex 的结构（主要能力/模型与语言表/折叠开发者信息）与用户亲笔「缘起」，砍掉解释性尾巴和形容词堆叠（Liquid Glass 段从 90 字压到 40 字、能力五条每条砍一半、表格单元格短语化、删与平台表重复的说明行），正文约 -35%。事实零删减。
 - ✅🚀 [2026-07-12] (用户拍板"A 就这么发") **v2.0.0 正式发布**：push `f15e247→c15bbec` 4 个 commit → tag `v2.0.0` → GitHub Release 挂 `AI.Commander_Mac_v2.0.dmg`(23MB) + `AI.Commander_Win.exe`(77MB, v1.0.1 功能)。发布说明含新增/稳定性/下载表/未公证绕过。README 中英双版（`README.en.md` 新增互链）。gh 认证走 device flow（用户浏览器确认），`gh auth setup-git` 接管 git 凭据。⚠️ 已知遗留：demo.gif/截图仍是 v1 界面（用户选 A：先发后补）。Release: https://github.com/YuJonny/AI-Commander/releases/tag/v2.0.0
+- [2026-07-18] (用户要求) 开发 **Windows v2.0**，先复盘 Claude 的 Windows v1 规范再按同一套最新版规范推进 → 保留 `.NET 8 + WPF + WPF-UI + 系统托盘 + 单实例 + 关闭隐藏 + 自包含单文件 win-x64` 的产品边界；Windows 视觉遵循当前 Fluent 2：主窗口 Mica、临时 HUD Acrylic，不照搬 macOS Liquid Glass。依赖锁定为 WPF-UI 4.3.0、H.NotifyIcon.Wpf 2.3.2（2.4.1 的现代目标已升到 .NET 10，故选仍正式支持 net8 的最新稳定版）、sherpa-onnx 1.13.4、NAudio 2.3.0。⚠️ 本轮只开发/验证，不 commit、不打包、不发布。
+- [2026-07-18] (用户要求，Windows v2) Windows 构建边界收口：`setup_and_build.ps1` 保持 `win-x64 + self-contained + PublishSingleFile + native self-extract`，最终用户无需预装 .NET，ASR/LLM 模型仍按需下载，不塞进 EXE。核心模块独立 `net8.0` 工程两次编译均为 **0 warning / 0 error**，规则与热词冒烟测试通过；24 个 C# 文件语法解析零错误、全部 XAML 通过 XML 校验、图标枚举与事件绑定已核对、`git diff --check` 通过。⚠️ 当前开发机是 macOS，SDK 缺 `Microsoft.NET.Sdk.WindowsDesktop.targets`，因此完整 WPF 编译、WASAPI 录音、耳机媒体键、Unicode 注入和真机模型下载必须在 Windows x64 做最终验收；这属于平台验证门槛，不往业务代码里猜。仍未 commit / 打包 / 发布。
 - ⚠️ Apple 公证需 $99 账号，用户暂不办（README 已教绕过）。
 
 ## 2. 语音输入核心（ASR 管线）
@@ -45,7 +49,21 @@
 - ❌ [2026-07-10] (用户拍板不做) Qwen 档不开润色时的标点重排（过 CT 标点模型）→ 用户实测观察"目前标点处理得还可以"，段末句号降级逗号的现状可接受；先不加，观察真实体验。
 - [2026-07-10] (外部审查→Claude 核实→用户拍板) 外部 Agent 审查 10 条"P0"，逐条对码裁定：**4 修 / 2 半对采纳低成本版 / 2 驳回 / 2 待拍板**。已修（本模块相关）：①`AudioRecorder` 跨线程状态（isRecording/nativeSR 主写队列读）统一入 `sampleLock`——TSan 级真问题，实际危害低；②按键**防抖 0.5s**（用户拍板语义：**连按两次=一次**，第一次立即生效、窗口内后续忽略——治"停止后手抖开出幽灵录音"+线控键电气抖动；"两下抵消"不可行，会让每次正常按键都延迟等待）；③**录音 20 分钟自动停止**（用户拍板：到点=正常按停，照常转写插入一个字不丢；推翻 07-07"不做时长上限"——语境已变：超 1000 字润色已自动跳过）。**驳回**：MPRemoteCommandCenter"抢占音乐"指控——审查者误读，注册严格跟随总开关（stop 时完整释放），开关开着时接管耳机键**就是产品本身**；"快速连按 tap 竞态"指控不成立（toggle 在主线程 runloop 串行）。✅ 编译重启。
 
+- [2026-07-18] (用户要求，Windows v2) 复刻 macOS 已验证的本地语音链路到 C#：WASAPI 原生采音→NAudio 转 16k 单声道→静音门限→Qwen3-ASR/SenseVoice→热词规范→规则/标点→Unicode `SendInput` 写回原窗口，全程不碰剪贴板。Qwen 严格绑定 Silero VAD（1.5s 停顿、最长 20s 段、无段时整段兜底，防轻声被 VAD 漏掉），SenseVoice 严格绑定 CT 标点；选择未下载模型时明确失败，绝不跨模型静默回退。保留 0.5s 防抖、20 分钟自动停止、5 分钟引擎释放。核心模块已用独立 `net8.0` 检查工程编译通过。✅
+- TODO [2026-07-18] (Windows v2 真机阶段) 当前 Windows 已在录音开始预加载引擎，停止后对完整音频做 VAD 分段与逐段识别，内容链路完整；macOS 已验证的 Qwen “录音中提前解码闭合 VAD 段”伪流式优化尚未移植。原因是本机无法运行 WASAPI/WPF，盲写增量重采样与 sherpa 会话风险高；先在 Windows x64 验收批式基线和 trace，再用同一真实音频实现/对照伪流式，目标只缩短按停后等待、不改变分段与识别结果。
+
 ## 3. 大模型润色（LLM）
+
+- [2026-07-19] (用户反馈) 本地润色从原先数秒突然恶化到约 1 分钟 → 🔬 逐层 trace 定位：连续两次 Qwen ASR 分段合计 18~19s，LLM 对 92/122 字输入分别耗时 72.2s/84.3s；模型和 server 均已缓存，不是冷启动。真实请求含固定 prompt 共 737 input token + 67 output token，干净单实例 Metal 37/37 层实测仍需 68.5s（prompt 20.1 tok/s、生成 2.1 tok/s），确认是当前整机推理吞吐异常，非 M4/16GB 正常能力；历史同 prompt 在 07-10~11 通常 2~6s。另发现 llama-server 已脱离 App 残留 12 天，现有 `/health` 复用逻辑使 5 分钟闲置回收失效，且 llama.cpp 默认 prompt cache 上限达 8GB。修复：不再复用无所有权的固定端口进程，启动前按端口+进程名清理残留；交互优先级提升，prompt cache 限为 256MB；模型就绪最多等 12s，润色按文本长度设 12~25s 延迟预算并限制最大输出 token，失败自动回退规则结果，杜绝单句卡 1 分钟；trace 新增 prompt/生成 token、耗时、缓存命中和 tok/s，后续可直接区分冷加载/预填充/生成慢。修复逻辑同步到 `HANDOFF.md`、`ARCHITECTURE.md` 和 `eval/README-PIPELINE.md`。⚠️ 当前机器 Metal 虽正常全层卸载，但新进程仍只有约 2 tok/s，建议重启 macOS 后用新 trace 复测，以判断是否为长时间运行后的系统/Metal 状态异常。
+- [2026-07-19] (用户要求) Claude 复核上条修复思路 → 🔬 **裁定：四项修复全对、全保留，但定性要改——它们是"防复发+止损"，不是当场慢的解药**。当场复测（干净新进程 + 现行参数）：生成仍 **3.0 tok/s**、prefill 12.7 tok/s（正常 M4 应为 25-40 / 数百），与 Codex 的 2.1 一致——残留已清、新进程照样慢，说明瓶颈在**系统层**。整机指纹：**uptime 14 天、swap 3.14/4GB 打满、WindowServer 60% CPU、load 7.4**——prefill/生成同步慢 10 倍是统一内存带宽被换页蚕食的典型特征；因果链推定：12 天僵尸 server（默认 8GB prompt cache）把系统压入深度 swap，杀进程后 swap/系统状态不自动回弹。**处方：重启 macOS 后用新 trace 复测**（预期生成回 25-40 tok/s、润色回 2-6s；若重启后仍慢再另查）。代码抽查合格：SIGTERM 按端口清理不伤自己、动态 max_tokens（字数×2+32，封顶 1024）不会截断正常润色、超时即断连且 llama.cpp 随断连终止生成不留后台负载。Codex 在同步 Windows 修复后再次用 187 input + 24 output token 复测，仍耗时 **20.90s / 2.06 tok/s**；此时 OpenClaw >100% CPU、WindowServer 约 70%、两个长期 WebKit 进程各约 60%，再次证明当前失败点是未重启的整机负载，不是 server 冷启动或 App 代码。测试 server 已当场关闭，等待重启后最终复测。
+
+- [2026-07-19] (用户真机复测) 系统状态恢复后，用户确认本地润色速度已恢复正常 → ✅ 产品自身的复发链路已封住：残留 server 不再复用、缓存受限、闲时退出，异常慢时有明确延迟预算并回退。边界结论：**长时间不关机本身不会必然变慢**；若其他程序再次把 CPU、统一内存、swap 或 WindowServer/GPU 压满，本地 ASR/LLM 仍会随整机降速，但 App 不应再自行制造 12 天僵尸 server 或让单句无限等待。
+
+- [2026-07-25] (用户要求 Claude 复审 Windows 工作) 🔴 **发现产品级硬伤并按用户拍板的方案 B 修复**：Windows 内嵌的是 llama.cpp **CPU** 运行时（3-8 tok/s），却照搬了 macOS **Metal GPU**（25-40 tok/s）调出来的 12~25 秒固定超时预算 → 典型机器上每次润色必然超时回退，**用户下载 4.7GB 换一个永远不出结果的功能**（比不做更糟）。用户选方案 B「先探测再决定」→ 新增 `LlmPerformanceProbe.cs`：首次开启润色时用**与真实请求同规模**的负载实测本机吞吐（关键：短 prompt 的 prefill 几乎免费，会把慢机器误判成快机器），按预计单句耗时分三档 Good≤12s / Slow≤30s / TooSlow>30s——TooSlow 直接关掉开关并弹窗说明（强调语音识别不受影响），Slow 告知"每句约 N 秒"由用户定夺；结果存 Settings 只测一次，`LlmEnhancer` 超时预算改为按实测吞吐计算（估算×1.6，夹 12~90s）而非硬编码；探测失败不拦人。✅ 验证：探测器独立 net8.0 编译 0 warning/0 error、25 个 C# 文件 Roslyn 语法零错误、`org.k2fsa.sherpa.onnx` 1.13.4 已对 NuGet 实包核验（确有 `Qwen3Asr`，net8.0 依赖组含 win-x64 原生包）。⚠️ 仍未真机验收。
+- [2026-07-25] (用户要求) 文档与现实严重脱节，Claude 全面刷新 → HANDOFF 停留在 07-08、仍写着"v2 尚未 commit 未发布""Windows 是 v1"、§6 整章（第一优先级=提交 git）已作废、ARCHITECTURE **零 Windows 内容**、Windows 5700 行代码**没有任何验收清单**。修：HANDOFF §0 换成三版本状态表（macOS v2.0 已发布 / Windows v2 代码完成未验收）、新第一优先级=Windows 真机验收、§6 改为发布流程、backlog 勾掉已完成项、新增 **§10 Windows v2** 全章；ARCHITECTURE 新增「Windows 版架构」（技术栈对照表、文件对应表、`LlmPerformanceProbe` 设计与为什么 macOS 不需要）；新建 **`Commander-Windows/VERIFY.md`** 真机验收清单（8 组：构建/原生库装载/耳机键/录音识别/文字注入/润色分级/裸网下载/收尾，把散落在 DEVLOG 各条 ⚠️ 里的验证项收成一页）。⚠️ README/CHANGELOG 仍写"Windows 仅耳机键映射"——**等真机验收通过、确定发布时再改**，现在改就是提前撒谎。
+- [2026-07-18] (用户要求，Windows v2) 把可选本地润色链路移植到 Windows：模型管理同时下载 Qwen3-8B-Q4_K_M 与官方 llama.cpp Windows CPU x64 运行时；`LlamaRunner` 仅监听 `127.0.0.1:43817`，录音开始预热、5 分钟闲置退出，调用 OpenAI 兼容接口并关闭 Qwen3 思考。沿用现行中文生产 prompt、1000 字符上限、标签逃逸和失败回退普通规则/标点链路；HUD 会明确进入“润色中”。✅ 核心编译通过，⚠️ 待 Windows 真机测 llama-server DLL 装载和 8GB/16GB 性能。
+
+- [2026-07-19] (用户要求，Claude/Codex 协作同步) Mac 慢响应复盘结论同步到 Windows，目标不是承诺所有硬件都能高速跑 8B，而是**绝不让一次听写因本地润色卡住约 1 分钟** → Windows 不再复用固定端口上的无所有权健康进程，启动前只清理由本 App 运行时目录拉起的残留 `llama-server.exe`；子进程加入 `KILL_ON_JOB_CLOSE` Job Object，App 崩溃/强退时由 Windows 回收；交互优先级上调、prompt cache 限 256MB。录音开始仍并行预热，但就绪等待封顶 12 秒；生成按文本长度给 12~25 秒预算并动态限制 `max_tokens`，超时立即回退规则/标点结果。诊断新增 prompt/completion token、缓存命中、prefill/生成耗时与 tok/s，可在 Windows 真机区分冷加载、CPU 推理慢和异常进程。✅ 跨平台核心检查工程编译 0 warning / 0 error；⚠️ 完整 WPF 编译和真实 8B 延迟必须在 Windows x64 最终验收。
 
 - [2026-07-10] (用户要求) 下载 Qwen3-14B-Q4_K_M，与现行 Qwen3-8B-Q4_K_M 做真实润色 A/B → ✅ 官方 14B（9.00GB）已放入外接盘稀疏 APFS 容器；建立 `eval/run_llm_ab.py`，自动收集诊断会话 `llm.input`（无则回退规则/术语阶段）、产品场景草稿和 RAMC，两个模型同 prompt、temperature=0、关思考、串行加载，逐条断点保存。首轮 **19 条真实口述 + 56 条 RAMC = 75 条，150 次调用全部成功**；并排报告为 `eval/llm_ab/Qwen3-8B-vs-14B.md`，逐条含原文、两输出、差异高亮、红线/数字/金标指标、耗时和人工 Review 复选框。自动汇总：输出完全一致 29/75（真实口述 9/19）；既有金标贴合 8B **92.0%** vs 14B **88.3%**，自动暂判 8B 20 / 14B 6 / 持平或无金标 49；平均延迟 1.83s vs 3.28s，P95 4.94s vs 10.83s，冷加载 2.6s vs 24.9s（14B 位于外接盘）。🔬 初步质性结论：14B 更保守，个别自我更正和忠实保留明显胜出；8B 更积极整理、更贴现有金标，但存在删开场信息风险；最长的去重复难例两者同样失败。**不据自动分直接换默认模型，待用户完成报告中的人工 Review；现有 RAMC 金标带既有 prompt 偏好。**
 - [2026-07-10] (用户要求) Claude 对 8B vs 14B 做独立复核（不采信自动分，逐条人读 19 条真实口述差异 + 抽查 RAMC 最大差距条目）→ 🔬 **结论：维持 8B 默认，且暂不做 14B 可选档**。①真实口述上 14B 赢在**语义判断**：自我更正真正执行（"请你把这个，不是，不是这样的。你可以把这一版…"→合并成单指令，8B 原样保留）、不删开场白、不猜测改写；但 ②RAMC 抽查证实 14B 的落后**大部分是真实的不是金标偏袒**：留口水词（"啊是啊"）、数字不转（七十二行没转 72）、去重复更差（抑郁症案例比 8B 还糟）、甚至语序错乱（"对我都是"→"我对都是"）——14B 对 v1 清理指令的执行力反而弱（v1 是 8B 特调的）；③8B 暴露两个真实风险进评测集：**删整句开场白**（数字样本 meta 句被吞，违反禁省略铁律）、**猜测性改写**（"尾流试"→"尾流测试"）；④硬约束一票否决默认位：14B-Q4 权重 9GB → 16GB 机型不可行，平均延迟 3.28s vs 1.83s，冷加载 24.9s；⑤**真正行动项：把 14B 赢的自我更正案例做成 few-shot 反哺 8B prompt**（14B 证明了可解性），连同 8B 的删开场/猜测两风险，一起进下一轮 prompt 打磨的靶子集。**1000 字符**（约 3~4 分钟连续口述）时自动跳过 LLM、降级规则清理（`VoiceController.llmInputMaxCharacters`），埋点记 `llm.skipped_input_too_long`；跳过时不闪"LLM 优化中"。原因：llama-server 上下文 4096 token ≈ prompt(~800)+输入+等长输出，超限会静默截断吐半截。10~30 分钟长录音场景（分块润色/进度条）留待另做设计。✅ 编译重启。
@@ -65,6 +83,14 @@
 
 ## 4. 模型管理（下载 / 存储 / 生命周期）
 
+- [2026-07-25] (用户 Windows 真机反馈) Qwen3 / SenseVoice 均无法下载，语义增强权重到 100% 后又提示“网络波动，正在重试” → 定位并修复两组独立问题：① **源失效**：原 SenseVoice ModelScope 归档已实际返回 404，改为已验证可 Range 下载的 `fengge2024` ModelScope 散装直链优先、HF 镜像与 GitHub 归档后备；标点模型新增已验证的 ModelScope 64,717,756-byte int8 归档主路与 ModelScope fp32 直链兜底。Qwen3 六个文件、Silero VAD、SenseVoice、标点和 Qwen3-8B GGUF 均逐项校验了真实二进制头、总长度与 Range 支持。② **下载边界**：旧逻辑在校验/落位前即可显示 100%，完整 `.part` 再续传时 CDN 返回 `416 bytes */total` 会被当成失败；现改为组件安装完成前进度封顶 99%，416 且本地长度等于远端总长时直接校验并转正，CDN 发送完最后字节后断开可正常收尾，提前 EOF 则拒绝落位并保留断点。就绪判断从“文件大于 1KB”收紧为各已知模型的合理最小体积，旧版遗留的截断文件会被删除重下；重试提示区分下载中断、文件校验失败与本地模型准备失败，不再一律误报“网络波动”。🔬 独立 `net8.0` 核心编译 0 warning / 0 error；本机回环测试覆盖正常完成、完整断点 416、截断 EOF、100% 门控，全部通过。⚠️ 完整 WPF 构建仍需 Windows x64（macOS SDK 无 WindowsDesktop targets），待用户重新编译后做三模型真机下载验收。
+
+- [2026-07-20] (用户实测反馈，Windows v2) 点击“语义增强大模型”后 UI 显示“语义增强运行时”，随后 GitHub 镜像重试并失败 → 拆成两个独立问题处理：① **显示层**不再暴露内部 `LlamaRuntime` 名称，本地解压阶段统一显示“正在准备语义增强大模型”，权重阶段显示“正在下载语义增强大模型”；② **下载层**取消最终用户对 GitHub 运行组件的依赖，将官方 `llama-b9873-bin-win-cpu-x64.zip`（17,482,604 bytes，解压约 45MB）作为 EmbeddedResource 随单文件 EXE 分发，安装前校验 GitHub Release 官方 SHA-256 `18994b4b…70b7bff`，并内置/落位 MIT LICENSE；只有资源缺失或损坏才回退旧镜像。运行组件完整性判断从 3 个文件扩充到 server/common/llama/ggml/CPU/OpenMP 共 8 个关键文件，防残缺目录误判就绪。此后按钮联网阶段只下载约 4.7GB Qwen3 权重，ModelScope 国内源优先、HF 镜像后备。🔬 独立 `net8.0` 下载模块编译通过；干净临时目录模拟完整流程，内嵌资源无联网安装成功、8/8 关键文件就绪，随后正确切入权重下载；ModelScope 主源 Range 实测返回合法 `GGUF` 文件头；嵌入资源 SHA-256 与官方发布元数据一致。⚠️ 待 Windows 真机重新 publish 后做同流程验收。（原“Windows 运行时仍走 GitHub 镜像”，改为随 EXE 内置，因用户裸网实测失败且该组件仅 16.7MB 压缩体积。）
+
+- [2026-07-19] (用户实测反馈，Windows v2) Windows 三类模型无法同时下载、共享进度归属不清且偶发网络异常 → 下载器从单一全局任务改为 **Qwen / SenseVoice / 语义增强三条独立通道**，可并发、分别取消、分别保留 `.part` 续传；并发启动时合并计算磁盘预留，避免各自检查通过后共同写满磁盘。每条源增加 2 次重试、45 秒无数据超时、30 秒低于 30KB/s 的假活看门狗与自动切源；Qwen/LLM 继续 ModelScope 优先，SenseVoice 新增 ModelScope 国内归档主路，HF/GitHub 镜像后备。模型权重源策略与 Mac 基本一致；Windows `llama.cpp` 运行组件的分发策略已在 07-20 根据裸网实测改为随 EXE 内置。✅ 跨平台核心检查工程编译 0 warning / 0 error，⚠️ 待 Windows 真机三任务并发与裸网切源复测。
+
+- [2026-07-18] (用户要求，Windows v2) 新增 Windows 原生模型目录与下载器：模型统一放 `%LOCALAPPDATA%\AIReceptionist\models`，Qwen/SenseVoice/标点/VAD 复用已验证的 ModelScope、HF 镜像和 GitHub 多源；支持 Range 续传、45 秒读停滞超时、HTML/GGUF 文件头检查、磁盘预检查、zip/tar.bz2 解压、`.installing` 原子换目录、取消与删除。就绪判断按完整组件组执行（Qwen+VAD / SenseVoice+标点 / llama runtime+GGUF），选中缺失模型时严格失败，不跨模型静默回退。✅ 核心编译通过；⚠️ 各网络源与 Windows `tar.exe` 待裸网真机下载验证。
+
 - [2026-07-05] (用户要求) 模型按需下载 → `ModelDownloader`：多源(ghfast镜像→gh-proxy→GitHub；GGUF 走 ModelScope→hf-mirror→HF)，失败换源，HTTP 200 + 文件头/体积校验防假文件。落位 `~/Library/Application Support/AI接线员/models/`。✅
 - [2026-07-06] (用户要求) 不要静默下载 → 改成**显式下载按钮 + 进度条 + 百分比**；模型未下时开关禁用。✅
 - [2026-07-07] (用户要求) GGUF 断点续传 → Range + `.part` 中间态 + GGUF magic 校验。✅
@@ -76,9 +102,16 @@
 
 ## 5. 界面与交互（UI / HUD / 菜单栏）
 
+- [2026-07-25] (用户要求，Windows v2) “关于”页内容与 Mac 保持一致，平台存在的内容不要漏 → 核对 Mac `AboutTabView` 后，为 Windows 补回产品说明、「为爱发电 永久免费」、推荐搭配 App 与推荐硬件；Typeless 官方帮助及 Windows 2.0 发布记录明确支持 Windows，默认快捷键为 Right Alt，因此不是因缺少 Windows 版而省略，继续保留同一 `?via=jonny` 推荐链接；Native Union 名称、说明与既有淘宝客链接也完整同步。Windows 自身的「全程本地」和语音链路诊断入口保留，不用平台差异文案占 About。XAML XML、控件名称/本地化绑定与 WPF UI `Mic20` / `PhoneDesktop20` 图标枚举已静态核对。⚠️ 待 Windows 真机编译后检查滚动高度与链接点击。
+
+- [2026-07-19] (用户实测反馈，Windows v2) 共享下载进度固定在本地模型区、语言页地球图标退化成字母 `G`、输入方式数量偏少 → 删除共享进度卡，将状态、线性进度、百分比和取消按钮放回 Qwen/SenseVoice/语义增强各自行，互不覆盖；语言页 `Globe28` 改为稳定的“中 | EN”标识，规避 Windows 图标字体差异。平台复核后确认旧清单过于保守：豆包官网仍为 Windows 敬请期待；Wispr Flow、Superwhisper、AutoGLM、闪电说已有 Windows 版，其中先补入有官方明确固定默认免提键的 **Wispr Flow `Ctrl+Win+Space`**；随后用户追问并复核到微信 Windows 全局语音输入已有固定入口，补入 **微信语音输入：按住 `Ctrl+Win` 说话**，按住/松开与耳机播放键完整对应。其余工具允许或要求用户配置 Windows 键位，继续使用“自定义”以免伪造默认值。✅ 核心编译通过，⚠️ 待 Windows 真机视觉与两项快捷键验证。
+
+- [2026-07-18] (用户要求，Windows v2) 按 Windows 最新 Fluent 2 重做 v2 主界面：主窗口 Mica、听写短时反馈 Acrylic，不机械复制 macOS Liquid Glass；模型改成两行常驻可比较的 radio 卡，下载/删除按钮固定尺寸对齐，缺失的当前档用橙色边框与顶部“需要下载 X”共同提示。保留总开关、输入方式、两档 ASR、口语词优化、从属于润色开关的 4.7GB 模型管理、开机自启；不在主页保存或展示用户转写历史。HUD 覆盖 Listening / 转写 / 润色 / 空音频 / 空文本 / 错误且不抢目标 App 焦点；主窗口继续单实例、关闭隐藏、托盘开关和退出时完整释放录音/引擎/热键。Windows 预设只保留平台可用项：系统语音输入、Typeless、Claude Code、Codex 与自定义组合键。✅ 静态检查通过，⚠️ 待 Windows 真机截图与 DPI/深浅色/窄窗口视觉验收。
+
 - [2026-07-01] (用户要求) 第一页重构为三模块：总开关(去介绍) / **输入方式**(下拉) / 开机自启。✅
 - [2026-07-01] (用户要求) 输入方式=10 项预设（本地大模型/自定义/豆包/微信/Typeless/闪电说/Wispr/Superwhisper/Claude Code/Codex），选中即映射到该工具默认热键；支持组合键(⌘⇧Space)/双击(⌘⌘)。热键均调研查证。✅（[07-11] 用户要求增补第 11 项 **AutoGLM**（智谱 AI 输入法）：默认热键 ⌥Space 按一下开始/再按结束（官方另有“按住右 Ctrl、松开即停”，现有按下/松开链路原则上能映射，但不如切换式快捷键适合耳机单击，故未采用）；官方图标取自 autoglm.zhipuai.cn favicon 256px → `ToolIcons/autoglm.png`；README 预设清单同步。✅）
 - [2026-07-11] (用户要求，Codex 复核输入方式预设) ✅ 用户裁定并落地：①Codex 从已过期的双击 ⌘ 改为当前 App 内直接启动 composer 听写的 `⌃⇧D`（Codex 需在前台）；②Wispr Flow 从按住 `fn` 的 PTT 改为 Hands-free `fn+Space`，按一次开始、再按一次结束，更符合耳机播放键；③Claude Caps Lock 方案用户认为没有问题，保持“Claude Code”名称与实现；④Superwhisper ⌥Space 暂不动；⑤预设只按各家官方默认，不适配本机用户自行改过的快捷键；⑥本轮不再增加 Aqua Voice、Willow、VoiceInk、MacWhisper 等输入法。交互边界：豆包和微信的语音主入口确实属于按住快捷键说话；Wispr 等同时提供 PTT 与切换式模式，本项目优先选适合耳机单击的切换式快捷键。
+- [2026-07-18] (用户真机验证，微信输入法预设) 原预设映射长按 `fn`，实际测试未通过；确认微信输入法 Mac 版另有 `fn+Space` 免提模式，操作为按一次开始、再按一次结束。首版组合键模拟只给 Space 附加 `.maskSecondaryFn`，实测只输入空格；进一步读取微信输入法本地配置，确认其实际监听 `voiceToggleShortcut_keyCodes=[63,49]`、`modifiers=0`，即 Fn 与 Space 两个真实键码。组合键模拟已补发 keyCode 63 的 `flagsChanged` 按下/松开事件，再发送 keyCode 49；中英文 README FAQ 同步修正。无需 Keyboard Maestro、BetterTouchTool 或其他自动化脚本。✅ 新构建包已通过耳机键端到端真机验证，可正常启动微信输入法免提听写并输入文字。
 - [2026-07-01] (用户要求) 官方图标 → 先动态读本机已装 app 图标，后改为**内置图标**(assets/ToolIcons，装没装都显示)；本地大模型用接线员透明 logo。✅
 - [2026-06-28] (用户要求) HUD 简化为 Listening 胶囊 + 真 Liquid Glass(macOS26 NSGlassEffectView)。✅
 - [2026-07-05] (用户要求) HUD 三段陪跑：Listening→识别中→LLM优化中。✅
@@ -104,13 +137,13 @@
 - [2026-07-10] (用户拍板"做警告就行") 低内存机型警告 → 物理内存 <12GB 时（即 8GB 机型），「本地大模型润色」开关下方亮橙色小字"本机内存较小：开启后出字会明显变慢"——**警告不禁止**，保留用户选择权（外部审查原建议"低于12GB禁止LLM"被否，太粗暴）。本机 16GB 不显示，8GB 机型可见。✅ 编译签名通过。
 - [2026-07-10] (外部审查第二批→Claude 核实→用户拍板) 8 条新发现裁定：**4 修 / 1 入 backlog / 3 驳回**。已修：①prompt 标签逃逸一行防御（输入中字面 `</口述>` 替换为全角——威胁模型其实不成立：ASR 不会从语音产出尖括号、本地无权限边界，纯顺手加固）；②`isQwen` 判定从单文件改为 encoder+decoder+tokenizer 三件套（防残缺目录误判）；③`resampleTo16k` 失败不再静默返回错采样率样本（会让 ASR 吐乱码），改为记日志+空返回走"没听到声音"；④`observeWindow` 先摘旧观察者再挂新（block 型观察者泄漏 + 同一窗口重复触发）。**backlog**：`L()` 十文件重复定义——纯代码洁癖，等顺手重构。**驳回**：⑤"快速 toggle 引擎被释放"——engineRelease 是 300 秒闲时定时器不是立即释放，且新录音预加载第一步就 cancel，加上 0.5s 防抖后场景不存在；⑥"healthOK semaphore 永久阻塞"——`URLRequest.timeoutInterval` 就是超时保护，超时必回调必 signal；⑦"删除后保持选中缺失模型=状态不一致"——这正是设计好的未下载态（橙色 radio+下载按钮+顶部提示）。✅ 编译重启。
 - ❌ (用户明确不做) 光标焦点找回——处理期间切走 App 文字落别处是合成键入天性，用户知情接受。
-
 ## 6. 文案 · 命名 · 本地化
 
 - [2026-07-05] (用户要求) 润色功能 slogan 定"**随口说，出成稿**"。
 - [2026-07-06] (用户要求) 命名定案：模型叫「**语义增强大模型**」、开关叫「**本地大模型润色**」、状态"AI接线员已就绪"。
 - [2026-07-06] (用户要求) 新 UI 全英文化：~50 个本地化 key，`{zh-Hans,en}.lproj`，L() 每文件一份 private 副本。✅
 - [2026-07-06] (用户要求) 删除确认文案分模型（"删除后语音转文字/本地大模型润色无法使用"）。
+- [2026-07-18] (用户要求，Windows v2) 补齐 Windows v2 中英文状态：模型下载/安装/取消/失败、Listening/转写/润色/无声音/无文本/模型缺失及托盘状态均随界面语言切换；About 改为 v2 本地隐私说明，并加入默认关闭的语音链路诊断开关与本地目录入口。✅
 
 ## 7. 评测与调优
 
@@ -121,6 +154,7 @@
 - [2026-07-08] (用户要求) Codex 扩展 prompt 评测：新增 `eval/multilingual.jsonl`（中文 ASR 易错/中英混说/英文/日文/韩文/粤语，含 `must_keep`/`must_not_include` 红线字段），`run_eval.py` 支持 `--cases`/`--prompt` 和红线字段统计，新增 `run_prompt_matrix.py` 批量跑 prompt×case 矩阵。🔬 v5/v6 实测均未超过 v1，结果已写入 `eval/README-EVAL.md`。
 - TODO [2026-07-08] (用户要求) 补真实产品场景评测集 → 当前 `final.jsonl` 来自 RAMC 真实对话 + 人工金标，适合测中文口语清理，但不完全代表 AI 接线员的实际使用场景；后续新增 `product_scenarios.jsonl` 或同类文件，覆盖用户真实口述的代码、AI 指令、日常消息、长段创作、数字/地址/专名红线。
 - [2026-07-10] (用户要求) 为后续持续调试识别准确性，把每个中间环节埋好诊断点 → 新增默认关闭的 `PipelineDiagnostics`：显式开启后，一次口述对应一个本地会话目录，保存实际送入 ASR 的 `input.wav` 与原子更新的 `trace.json`；同一会话 ID 贯穿原生采音参数/信号门、引擎预加载、VAD 汇总与每段时长、逐段 ASR 原文、拼接、术语规范、`Rules.clean` 每个子规则、SenseVoice 标点输入/输出、LLM 输入/完整 prompt/HTTP/原始响应/清理/失败回退、最终文本、目标 App 与键盘事件。最多保留 50 次，正式默认不留存；新增 `eval/inspect_pipeline.py` 展示最新会话及逐层字符增删，完整说明见 `eval/README-PIPELINE.md`。结构化 JSON/WAV 写盘测试通过，完整 App 编译签名通过。✅ 🔬
+- [2026-07-18] (用户要求，Windows v2) C# 管线同步同粒度诊断：一次听写贯穿采音参数/16k WAV、信号门、引擎就绪、VAD 每段、逐段 ASR、拼接、热词、规则子步骤、SenseVoice 标点、LLM prompt/HTTP/回退、最终文本和目标进程/SendInput 事件；默认关闭、仅本机保存、原子写 trace、最多 50 次，About 可显式开启并打开目录。✅ 核心编译通过，待 Windows 真机生成首条 trace 反查全链路。
 
 ## 8. 文档与交接
 

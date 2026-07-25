@@ -1,6 +1,6 @@
 # AI 接线员 · 项目交接文档（v2.0，给接力开发者）
 
-> 最后更新：2026-07-08 · 由前一位 AI 助手（Claude）整理，交给 Codex 接力。
+> 最后更新：2026-07-25 · 由 AI 助手（Claude / Codex 接力）维护。
 > 这份文档假设你**没看过之前的对话**。读完它 + `ARCHITECTURE.md` 就能上手。
 
 ---
@@ -8,13 +8,17 @@
 ## 0. 一句话现状
 
 一个 macOS + Windows 工具：把**有线耳机的「播放/暂停」键**变成 AI 的「接通键」。
-- **v1（已发布，Windows + 老 mac）**：纯按键映射——耳机键 → 任意快捷键。
-- **v2（本仓库当前状态，仅 macOS / Apple Silicon，⚠️ 尚未 commit、未发布）**：在 v1 基础上加了**纯本地语音输入**——耳机键 → 录音 → 本地 ASR 转写 → 规则清理 → （可选）本地大模型润色 → 合成键入到当前 App。全程离线。
 
-**你接手时最重要的三件事**（详见 §6）：
-1. v2 的所有代码**都还没提交到 git**（`git status` 里一堆 `??` 和 ` M`）。
-2. 项目能编译能跑（`./build.sh` 一键出签名 app），但**没发布**（DMG 待终刷、GitHub Release 待发）。
-3. 语音/大模型的**模型文件不在仓库里**，靠运行时按需下载或开发期本地目录，见 §4。
+| 版本 | 状态 |
+|---|---|
+| **v1** | 已发布。纯按键映射——耳机键 → 任意快捷键。 |
+| **macOS v2.0** | ✅ **已发布**（2026-07-12，GitHub Release `v2.0`）。纯本地语音输入：耳机键 → 录音 → 本地 ASR → 规则清理 →（可选）本地大模型润色 → 合成键入。全程离线。 |
+| **Windows v2** | ⚠️ **代码完成、未验收**。整条语音链路已用 C# 复刻（约 5700 行，见 §10），但**从未在 Windows 机器上编译或运行过**——全部在 macOS 上盲写。真机验收清单见 `Commander-Windows/VERIFY.md`。 |
+
+**你接手时最重要的三件事**：
+1. **Windows v2 的真机验收是当前第一优先级**（§10）。macOS 上编译不了 WPF，所有 Windows 断言都还是"应该能行"，不是"验过能行"。
+2. macOS v2 已上线，代码全部在 git 里；日常改动照常 `./build.sh` → 测 → commit。
+3. 语音/大模型的**模型文件不在仓库里**，靠运行时按需下载，见 §4。
 
 ---
 
@@ -63,7 +67,7 @@ open AI接线员.app
 │   ├── Info.plist / *.entitlements
 │   ├── {zh-Hans,en}.lproj/Localizable.strings   ← 双语文案
 │   └── ToolIcons/*.png            输入法预设的官方图标
-├── vendor/                 ← ⭐ 第三方运行时（arm64，已在 .gitignore？见 §6）
+├── vendor/                 ← ⭐ 第三方运行时（arm64，已进仓库，见 §6）
 │   ├── sherpa-onnx/lib/     libsherpa-onnx-c-api.dylib + libonnxruntime（ASR/标点）
 │   └── llama.cpp/llama-b9873/  llama-server + 全套 dylib（LLM 润色）
 ├── eval/                   ← ⭐ 语音润色评测集 + 回归套件（本次交接新收拢）
@@ -75,10 +79,12 @@ open AI接线员.app
 │   └── scripts/             ramc_mine.py(挖数据) / bench_asr.py(选ASR) / …
 ├── dmg-build/              ← DMG 打包（build.py + 背景图 + 安装指南）
 ├── 终版分发/               ← 打好的 DMG 产物
-├── Commander-Windows/      ← Windows 版（C#/WPF，v1，未随 v2 更新）
-├── assets/                 ← logo / 截图 / demo.gif / 小红书营销素材
-├── README.md               ← 面向用户（中英双语，已含 v2 功能+选型对比表）
-├── CHANGELOG.md            ← ⚠️ 还停在 v1，需补 v2
+├── Commander-Windows/      ← ⭐ Windows v2（C#/WPF，~5700 行，⚠️ 未真机验收，见 §10）
+│   ├── VERIFY.md            ⭐ Windows 真机验收清单（跑通它才算数）
+│   └── setup_and_build.ps1  一键构建（自检 .NET 8 → 单文件自包含）
+├── assets/                 ← logo / 截图 / demo.gif（⚠️ 仍是 v1 界面）/ 小红书素材
+├── README.md               ← 面向用户，中英双版（README.md / README.en.md）
+├── CHANGELOG.md            ← 已更新至 v2.0（2026-07-12 发布）
 └── KeyRelay.xcodeproj/     ← ⚠️ 存在但不用它构建，build.sh 才是真构建
 ```
 
@@ -108,6 +114,8 @@ open AI接线员.app
 - **不碰剪贴板**：文字用 `keyboardSetUnicodeString` 合成键盘事件插入，避免污染用户剪贴板历史。
 - **闲时卸载**：ASR 引擎和 llama-server 都是**用后闲置 5 分钟自动释放**（`engineIdleSeconds`/`idleSeconds`=300）。内存只在最近用过语音的 5 分钟内占用。
 - **预加载藏延迟**：按下键开始录音时就并行加载模型，用户说话的几秒盖住冷加载。
+- **LLM 延迟有硬边界**：模型最多等 12 秒就绪，实际润色按文本长度最多等 12~25 秒；超时立即走规则/标点结果，不能为了润色让整次听写卡到一分钟。请求同时限制最大输出 token。
+- **只复用自己启动的 LLM 进程**：43817 上若存在 App 已失去句柄的 `llama-server`，下次启动前会先清理再重建；prompt cache 固定上限 256MB，防止强退后的残留服务长期积累缓存和内存压力。
 
 ---
 
@@ -138,29 +146,28 @@ open AI接线员.app
    ```bash
    ~/Downloads/接线员/AI接线员.app/Contents/Frameworks/llama/llama-server \
      -m "~/Library/Application Support/AI接线员/models/llm/Qwen3-8B-Q4_K_M.gguf" \
-     --host 127.0.0.1 --port 43817 -ngl 99 -c 4096 --jinja --no-webui &
+     --host 127.0.0.1 --port 43817 -ngl 99 -c 4096 \
+     --prio 1 --cache-ram 256 --jinja --no-webui &
    ```
+
+   手动服务只用于独立评测；App 自己开始润色时会把没有所有权的 43817 监听进程视为残留并重建。
 
 ---
 
-## 6. ⭐ 你接手的第一优先级：提交 v2 到 git
-
-现状：`git log` 最新是 v1，**v2 的 10 个新 Swift 文件 + vendor/ + eval/ 全是未跟踪状态**。建议：
+## 6. 发布流程（macOS v2.0 已按此发过一次）
 
 ```bash
-cd ~/Downloads/接线员
-git status                    # 先看清楚
-# 检查 .gitignore 是否排除了 vendor/（27+72MB dylib）—— 决定 dylib 进不进仓库
-cat .gitignore
+./build.sh                       # 编译 + 签名
+python3 dmg-build/build.py       # 出 DMG → 终版分发/
+# 换一台 Mac 实测新用户全流程（这一步救过一次命，见 §5.4）
+gh release create v2.x --title "…" --notes-file <说明> 终版分发/*.dmg 终版分发/*.exe
 ```
 
-决策点（需要你/用户拍板）：
-- **DMG 分发原则已定**：最终给用户的 `.app` 必须自带 sherpa-onnx / llama.cpp 运行时，用户下载 DMG 后不需要装开发依赖即可运行。`build.sh` 当前已经把这些运行时打进 `Contents/Frameworks/`。
-- **vendor/ 的 dylib（~100MB）进不进仓库？** 这只影响“别人 clone 源码后怎么编译”：进 → clone 即可编译，但仓库变大；不进 → 要写脚本让开发者自己下载 sherpa-onnx/llama.cpp release。无论哪种，DMG 都应保持自带运行时。
-- **eval/ 的评测集要进仓库**（纯文本 112KB，是 README"诚实工程"叙事的硬料）。
-- **模型文件绝不进仓库**（太大，靠下载）。
-
-提交后就是发布三件套：终刷 DMG（`python3 dmg-build/build.py`）+ 审核 CHANGELOG + GitHub Release 挂 DMG。**发布是对外动作，务必先问用户再发。**
+已定原则：
+- **DMG 必须自带运行时**：用户下载即可运行，不装任何开发依赖。`build.sh` 已把 sherpa-onnx / llama.cpp 打进 `Contents/Frameworks/`。
+- **vendor/ 进仓库**（~100MB dylib）：clone 即可编译，用户侧不受影响。
+- **eval/ 进仓库**（纯文本），**模型文件绝不进仓库**（靠下载）。
+- **发布是对外动作，务必先问用户再发。**
 
 ---
 
@@ -177,12 +184,14 @@ cat .gitignore
 ## 8. 待办 backlog（按优先级，用户已表态的标注）
 
 **P0 发布（就差这一步）**
-- [ ] 提交 v2 到 git（§6）
-- [ ] 终刷 DMG + 审核 CHANGELOG v2 + GitHub Release（**发布前问用户**）
-- [ ] 用户自测 DMG 走一遍新用户流程（装 /Applications → 授权 → 下载 → 说话）
+- [x] 提交 v2 到 git ——2026-07-11 完成（含 vendor/、eval/）
+- [x] 终刷 DMG + CHANGELOG v2 + GitHub Release ——2026-07-12 发布 `v2.0`
+- [x] 换机自测新用户全流程 ——2026-07-12 通过（暴露并修掉了中国网络下载全灭的问题）
+- [ ] **Windows v2 真机验收**（§10，当前第一优先级）
+- [ ] 重录 demo.gif / 截图（现挂的仍是 v1 界面）
 
 **P1 打磨（用户暂缓，非阻塞）**
-- [ ] Windows 版对齐 v2 语音（现在 Windows 只有 v1 按键映射）
+- [x] Windows 版对齐 v2 语音 ——代码 2026-07-18~20 完成，⚠️ 未真机验收（§10）
 - [x] ASR/标点移除开发目录回退；`LlamaRunner.serverBinary` 的源码开发回退仍使用当前用户 `~/Downloads/...`
 - [ ] Sparkle 自动更新框架
 - [x] 伪流式转写：录音中 VAD 每闭合一段就后台先转写，按停只剩尾段+润色（同模型零精度损失）——2026-07-10 已上线，详见 DEVLOG 模块 2
@@ -205,3 +214,50 @@ cat .gitignore
 - 项目还有一份 `调研-MKT-agent产出.md`（营销调研）和 `assets/redbook/`（小红书素材）。
 
 **联盟链接勿删**：README 里 Typeless(`?via=jonny`) 和 Native Union(淘宝客) 是有效的推广位。
+
+---
+
+## 10. ⭐ Windows v2（当前第一优先级：真机验收）
+
+**状态：代码完成，从未在 Windows 上编译或运行过。** 全部在 macOS 上盲写——macOS 的 .NET SDK 缺 `Microsoft.NET.Sdk.WindowsDesktop.targets`，WPF 编不了。已做的验证只有：核心模块（不含 WPF）独立 `net8.0` 工程编译通过、25 个 C# 文件 Roslyn 语法零错误、依赖版本与 API 已对 NuGet 实包核验。**这些都不等于能跑。**
+
+### 代码结构（`Commander-Windows/`，约 5700 行）
+
+与 macOS 一一对应，命名刻意保持一致，便于对照：
+
+| Windows | macOS 对应 | 说明 |
+|---|---|---|
+| `MediaKeyInterceptor.cs` | 同名 .swift | 低级键盘钩子拦截媒体键，`return 1` 吞掉不下传 |
+| `AudioRecorder.cs` | 同名 | WASAPI 采音（NAudio）→ 16k 单声道 |
+| `VoiceEngine.cs` | 同名 | sherpa-onnx C#：Qwen3-ASR / SenseVoice + VAD |
+| `VoiceController.cs` | 同名 | 主流程：录音→转写→清理→润色→注入 |
+| `Rules.cs` / `Hotwords.cs` | 同名 | 规则与热词表（逐条对齐 macOS） |
+| `LlamaRunner.cs` / `LlmEnhancer.cs` | 同名 | 内嵌 llama-server（**CPU 版**）+ 润色 |
+| `LlmPerformanceProbe.cs` | — | **Windows 独有**，见下 |
+| `TextInserter.cs` | VoiceController.insertText | `SendInput` + `KEYEVENTF_UNICODE`，不碰剪贴板 |
+| `ModelDownloadService.cs` / `ModelCatalog.cs` | ModelDownloader.swift | 多源下载、续传、校验 |
+| `PipelineDiagnostics.cs` | 同名 | 全链路 trace |
+
+### ⚠️ Windows 与 macOS 的根本差异：润色跑在 CPU 上
+
+macOS 走 Metal GPU（Qwen3-8B Q4 约 25-40 tok/s），Windows 内嵌的是 **llama.cpp CPU x64 运行时**，普通笔记本上可能只有 3-8 tok/s——**差一个数量级**。直接照搬 macOS 的固定超时预算，慢机器上会每次都超时回退：用户下了 4.7GB，看着"润色中"转十几秒，最后什么也没得到。
+
+**解法（已实现）**：`LlmPerformanceProbe` —— 用户第一次打开润色开关时，用与真实请求同规模的负载实测一次本机吞吐（长 prompt 触发真实 prefill 成本，短 prompt 会把慢机器误判成快机器），按预计单句耗时分三档：
+
+| 预计耗时 | 判定 | 行为 |
+|---|---|---|
+| ≤ 12s | Good | 正常开启 |
+| 12~30s | Slow | 开启，但明确告知"每句约 N 秒" |
+| > 30s | TooSlow | **不开启**，说明原因并告知语音识别不受影响 |
+
+结果存进 Settings（只测一次），运行时超时预算也按实测吞吐算，不再拍脑袋。探测失败不拦人，交给运行时超时兜底。
+
+### 真机验收
+
+**照 `Commander-Windows/VERIFY.md` 一条条过。** 那份清单是这套代码唯一的真相来源——在它跑通之前，本节所有描述都只是设计意图。
+
+构建：
+```powershell
+cd Commander-Windows
+.\setup_and_build.ps1          # 自检 .NET 8 SDK → publish 单文件自包含 win-x64
+```

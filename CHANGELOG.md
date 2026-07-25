@@ -3,6 +3,10 @@
 本项目所有值得记录的改动都写在这里。
 格式参考 [Keep a Changelog](https://keepachangelog.com/)，版本遵循 [语义化版本](https://semver.org/)。
 
+## [2.1] · 2026-07-18
+
+- 修复了微信输入法的适配问题。
+
 ## [2.0] · 2026-07-12
 
 macOS 版从「按键映射工具」升级成一条**本地语音输入链路**：
@@ -52,5 +56,6 @@ macOS 版从「按键映射工具」升级成一条**本地语音输入链路**�
 - 🚀 开机自启。
 - 🍎 macOS 通用二进制（Intel + Apple 芯片）；Windows 自包含单文件版（x64）。
 
+[2.1]: https://github.com/YuJonny/AI-Commander/compare/v2.0...v2.1
 [2.0]: https://github.com/YuJonny/AI-Commander/compare/v1.0.0...v2.0
 [1.0.0]: https://github.com/YuJonny/AI-Commander/releases/tag/v1.0.0

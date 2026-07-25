@@ -51,7 +51,7 @@ python3 eval/inspect_pipeline.py --full-prompt
 | `terms.normalized` | 内置术语规范后的文本 | 专名大小写/分词误改 |
 | `rules.*` | 每条确定性口语规则执行后的文本 | “这个”等词被规则误删 |
 | `punctuation.*` | SenseVoice 标点模型输入、剥标点、模型输出、去重结果 | 错误断句、重复标点 |
-| `llm.*` | LLM 输入、完整 prompt、HTTP、原始响应、清理后响应 | 润色误删、超时、服务失败 |
+| `llm.*` | LLM 输入、完整 prompt、HTTP、原始响应、清理后响应；HTTP 指标含 token、缓存、预填充/生成速度 | 润色误删、超时、服务失败、推理突然降速 |
 | `pipeline.*` | 使用哪条分支、是否发生 LLM 回退、最终文本 | 实际输出与预期管线不一致 |
 | `insertion.*` | 目标 App、UTF-16 长度、键盘事件是否已发出 | 文本正确但没有写进输入框 |
 
@@ -61,6 +61,18 @@ python3 eval/inspect_pipeline.py --full-prompt
 2. ASR 有、`terms.normalized` 或 `rules.*` 开始缺：查确定性规则。
 3. 规则后仍有、`llm.output` 缺：查 prompt 或 8B 模型。
 4. `pipeline.final_text` 正确、目标输入框不对：查 `insertion.*` 和目标 App。
+
+### LLM 延迟怎么读
+
+重点看 `llm.server_ready` 和 `llm.http_completed`：
+
+- `llm.server_ready.durationMs` 高：模型冷加载或服务启动异常；当前最多等待 12 秒。
+- `promptTokensPerSecond` 低、`promptMs` 高：固定 prompt/输入的预填充慢；`cachedPromptTokens` 可判断是否命中缓存。
+- `generationTokensPerSecond` 低、`generationMs` 高：逐 token 生成吞吐慢，优先排查系统内存压力、Metal/温控状态和其他本地模型任务。
+- `llm.failure.details.reason=request_timeout`：触发 12~25 秒延迟预算，随后应出现 `pipeline.llm_fallback`；这是保护性降级，不是文字丢失。
+- `timeoutSeconds` / `maxTokens`：本次请求实际使用的延迟与输出上限。
+
+2026-07-19 的异常样本中，server 与 ASR 模型都已缓存，但 LLM 对 737 input token + 67 output token 仍耗时 68~84 秒；干净进程确认 37/37 层运行在 M4 Metal，吞吐却只有约 20 prompt tok/s、2.1 generation tok/s。历史同 prompt 通常 2~6 秒，因此不要把这种结果归因为“8B 本来就这么慢”。
 
 ## 自动化测试
 
