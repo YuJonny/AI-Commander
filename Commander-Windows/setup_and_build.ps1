@@ -1,4 +1,4 @@
-# AI接线员 Commander v2.0 - Windows x64 build script
+﻿# AI接线员 Commander v2.0 - Windows x64 build script
 # Run: right-click -> Run with PowerShell
 
 param(
