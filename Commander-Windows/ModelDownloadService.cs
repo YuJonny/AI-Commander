@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Commander;
 
@@ -607,6 +608,14 @@ public sealed class ModelDownloadService : IDisposable
                         preserveCompletedFile: true);
                     Emit(target, item.Kind, InstallingText(item.Kind), completedMb / totalMb, true);
                     if (await InstallArchiveAsync(local, item, token)) return true;
+                    // 解压/校验没过 = 这个包本身是坏的。必须删掉，否则下次续传又拿它接着用，
+                    // 永远"3 秒下完然后失败"。
+                    AppLog.Error(nameof(ModelDownloadService),
+                        new InvalidDataException("Archive failed to install."),
+                        $"Discarding bad archive for {item.Kind}: {address}");
+                    TryDelete(local);
+                    TryDelete(local + ".part");
+                    TryDelete(local + ".part.src");
                 }
                 // ⚠️ TaskCanceledException 继承自 OperationCanceledException，HttpClient 超时抛的正是它。
                 // 只有我们自己的 token 真被取消才算"用户取消"，否则当普通失败继续换源。
@@ -620,6 +629,10 @@ public sealed class ModelDownloadService : IDisposable
                         nameof(ModelDownloadService),
                         exception,
                         $"Archive source {address} failed for {item.Kind}, attempt {attempt}");
+                    if (exception is InvalidDataException or EndOfStreamException)
+                    {
+                        TryDelete(local); TryDelete(local + ".part"); TryDelete(local + ".part.src");
+                    }
                     if (IsPermanentFailure(exception)) break;
                     if (attempt < 2)
                     {
@@ -646,7 +659,27 @@ public sealed class ModelDownloadService : IDisposable
     {
         var partial = destination + ".part";
         Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+
+        // ⚠️ 断点文件必须与来源 URL 绑定。
+        // 此前 .part 只按组件名命名（如 QwenAsr.tar.bz2.part），而同一组件的不同源
+        // 可能是**完全不同的文件**（ZhaoChaoqun 的 Qwen3-ASR-0.6B.tar.bz2 875MB
+        // vs GitHub 官方 tar.bz2）。换源后带着旧偏移去续传，会拼出"前半段来自 A、
+        // 后半段来自 B"的怪物文件：字节数对得上、不报截断，解压时才炸——
+        // 表现就是"下载到 100% 突然失败"，且坏文件永不清除，重装程序也没用。
+        var sourceMarker = partial + ".src";
+        var sourceId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(uri.AbsoluteUri)))[..16];
+        if (File.Exists(partial))
+        {
+            var previous = File.Exists(sourceMarker) ? File.ReadAllText(sourceMarker).Trim() : null;
+            if (!string.Equals(previous, sourceId, StringComparison.Ordinal))
+            {
+                AppLog.Info(nameof(ModelDownloadService),
+                    $"Discarding partial download from a different source: {Path.GetFileName(partial)}");
+                TryDelete(partial);
+            }
+        }
         var existing = File.Exists(partial) ? new FileInfo(partial).Length : 0;
+        File.WriteAllText(sourceMarker, sourceId);
 
         using var response = await SendWithProxyFallbackAsync(uri, existing, token);
 
@@ -746,7 +779,13 @@ public sealed class ModelDownloadService : IDisposable
         ValidateDownloadedFile(partial, destination);
         File.Move(partial, destination, overwrite: true);
         if (!preserveCompletedFile) ValidateDownloadedFile(destination, destination);
+        TryDelete(sourceMarker);
         onProgress(1, string.Empty);
+    }
+
+    private static void TryDelete(string path)
+    {
+        try { if (File.Exists(path)) File.Delete(path); } catch { }
     }
 
     private static void ValidateDownloadedFile(string path, string destination)
