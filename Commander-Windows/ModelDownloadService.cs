@@ -275,6 +275,10 @@ public sealed class ModelDownloadService : IDisposable
         double totalMb,
         CancellationToken token)
     {
+        // 离线导入优先：网络实在不通时，用户可以用浏览器/下载工具自行拿到官方压缩包，
+        // 丢进 models\_import\ 即可安装。网络下载不是唯一出路。
+        if (await TryImportLocalArchiveAsync(target, item, completedMb, totalMb, token))
+            return true;
         if (item.Kind == ModelComponentKind.LlamaRuntime &&
             await TryInstallBundledLlamaRuntimeAsync(target, item, completedMb, totalMb, token))
             return true;
@@ -287,6 +291,66 @@ public sealed class ModelDownloadService : IDisposable
         if (await TryFileSourcesAsync(target, item, completedMb, totalMb, token)) return true;
         return !item.PreferArchives &&
                await TryArchivesAsync(target, item, completedMb, totalMb, token);
+    }
+
+    /// 离线导入：扫描 models\_import\，找到匹配该组件的压缩包就地安装。
+    /// 存在的理由很实在——中国网络下总有一部分用户怎么换源都下不动（实测有人卡了两天），
+    /// 但他们用浏览器或下载工具拿这个文件毫无问题。不该让 App 的下载器成为唯一入口。
+    private async Task<bool> TryImportLocalArchiveAsync(
+        ModelDownloadTarget target,
+        ModelItem item,
+        double completedMb,
+        double totalMb,
+        CancellationToken token)
+    {
+        try
+        {
+            var importRoot = Path.Combine(AppPaths.ModelsRoot, "_import");
+            if (!Directory.Exists(importRoot)) return false;
+
+            // 用官方压缩包文件名里的关键字匹配组件，避免装错模型
+            var keyword = item.Kind switch
+            {
+                ModelComponentKind.QwenAsr => "qwen3-asr",
+                ModelComponentKind.SenseVoiceAsr => "sense-voice",
+                ModelComponentKind.Punctuation => "punct-ct-transformer",
+                ModelComponentKind.SileroVad => "silero_vad",
+                ModelComponentKind.LlamaRuntime => "llama-b",
+                ModelComponentKind.Llm => "qwen3-8b",
+                _ => null,
+            };
+            if (keyword is null) return false;
+
+            var candidate = Directory
+                .EnumerateFiles(importRoot, "*", SearchOption.TopDirectoryOnly)
+                .FirstOrDefault(path =>
+                    Path.GetFileName(path).Contains(keyword, StringComparison.OrdinalIgnoreCase));
+            if (candidate is null) return false;
+
+            AppLog.Info(nameof(ModelDownloadService), $"Importing {item.Kind} from {candidate}");
+            Emit(target, item.Kind, InstallingText(item.Kind), completedMb / totalMb, true);
+
+            // 单文件模型（VAD / GGUF）直接落位；压缩包走既有的解压安装流程
+            if (item.RequiredFiles.Count == 1 &&
+                Path.GetExtension(candidate).Equals(Path.GetExtension(item.RequiredFiles[0]), StringComparison.OrdinalIgnoreCase))
+            {
+                Directory.CreateDirectory(item.DirectoryPath);
+                var destination = Path.Combine(item.DirectoryPath, item.RequiredFiles[0]);
+                File.Copy(candidate, destination, overwrite: true);
+                return ModelCatalog.IsReady(item);
+            }
+
+            return await InstallArchiveAsync(candidate, item, token) && ModelCatalog.IsReady(item);
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            AppLog.Error(nameof(ModelDownloadService), exception, $"Local import failed for {item.Kind}; falling back to network.");
+            return false;
+        }
     }
 
     /// 从内嵌资源装 Silero VAD。此前它唯一的国内源是 hf-mirror，一旦那条线路在用户网络上
@@ -892,15 +956,14 @@ public sealed class ModelDownloadService : IDisposable
         return Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri.Host : url;
     }
 
-    /// 永久性错误（404、DNS 查不到）重试第二次纯属浪费用户的时间，直接换下一条线路
+    /// 永久性错误（这条 URL 本身就不存在）才值得跳过重试，直接换线路。
+    /// ⚠️ 不要把 DNS 失败算成永久错误：家庭宽带 / 运营商 DNS 抖动非常常见，
+    /// 一次解析失败就放弃整条线路，等于把最快的国内源判了死刑（实测日志里 ModelScope
+    /// 只失败一次就再没被重试过，用户因此永远下不到 Qwen）。
     private static bool IsPermanentFailure(Exception exception) =>
-        exception is HttpRequestException http &&
-        (http.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.Forbidden or HttpStatusCode.Gone ||
-         http.InnerException is System.Net.Sockets.SocketException
-         {
-             SocketErrorCode: System.Net.Sockets.SocketError.HostNotFound
-                           or System.Net.Sockets.SocketError.NoData
-         });
+        exception is HttpRequestException { StatusCode: HttpStatusCode.NotFound
+                                                     or HttpStatusCode.Forbidden
+                                                     or HttpStatusCode.Gone };
 
     /// 最终失败文案：说清原因 + 已下多少（证明再点是续传）+ 下一步
     private static string FailureText(IReadOnlyList<ModelItem> items, ModelItem? failingItem, Exception exception)
