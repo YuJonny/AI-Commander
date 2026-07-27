@@ -13,6 +13,8 @@
 
 ## 1. 构建 · 签名 · 分发
 
+- ✅ [2026-07-27] (v2.1 正式发布) 已将 `main` 推送至 GitHub，并创建正式、非预发布且标记为 Latest 的 `v2.1` Release：<https://github.com/YuJonny/AI-Commander/releases/tag/v2.1>。Release 标签固定在提交 `2c3daa4`，包含 `AI.Commander_Mac_v2.1.dmg`（24,282,268 bytes，SHA-256 `127c24a7a7cc9cf0723734ca15fe95d02441397e09d832c09933c7aac7c15447`）与用户确认沿用的 `AI.Commander_Win_v2.1.exe`（108,626,791 bytes，SHA-256 `4737fa94a6aacd1950be5757a8ff796c0e4fb5942c3610b2103aa79ea941465d`）。上传后已通过 GitHub API 复核两个资产的名称、大小、哈希与 `uploaded` 状态，Latest Release 也正确指向 v2.1；Windows 按用户决定从 v1 直接进入 v2.1。
+
 - [2026-07-27] (用户拍板，v2.1 正式发布) 发布前校验再次确认 `终版分发/AI.Commander_Win_v2.1.exe` 的文件名为 v2.1、但其程序集与 About 仍显示 2.0；用户明确决定不再重新编译，接受该显示差异并要求直接发布现有 EXE → 发布资产固定为该文件（108,626,791 bytes，SHA-256 `4737fa94a6aacd1950be5757a8ff796c0e4fb5942c3610b2103aa79ea941465d`）。源码仍保持已统一的 v2.1 版本号，后续重新构建会自然消除差异；面向用户的 Release 文案不描述这一内部版本显示问题。
 
 - [2026-07-27] (用户要求，Windows v2.1 发布准备) 用户确认 Windows 真机测试通过，并将终版 EXE 放入 `终版分发/AI.Commander_Win_v2.1.exe`，要求正式发布 GitHub、但更新文档须先审阅 → 本地起草完整 v2.1 CHANGELOG 与 GitHub Release 正文，同时刷新中英文 README 的 Windows 能力和下载文件名；发布主线定为“Windows 从耳机键映射升级为完整本地语音输入”，并纳入 macOS 微信输入法与 LLM 卡顿保护。发布前校验发现现有 EXE 虽命名 v2.1，程序集、About、日志和 User-Agent 仍为 **2.0**（文件内可检出 `Commander/2.0.0`），最初暂停上传并把 Windows 源码可见版本与程序集版本统一升为 2.1；用户随后接受现有 EXE 的显示差异并拍板直接发布，见上条。外接盘 `一键编译.bat` 同步升级：后续编译成功会自动把 `Commander.exe` 复制并改名为 `终版分发/AI.Commander_Win_v2.1.exe`，免去跨系统手工搬运。GitHub CLI 中 Claude 先前的 `YuJonny` token 已失效，真正上传时重新走浏览器授权。
