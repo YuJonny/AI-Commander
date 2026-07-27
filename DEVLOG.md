@@ -13,6 +13,10 @@
 
 ## 1. 构建 · 签名 · 分发
 
+- [2026-07-27] (用户拍板，v2.1 正式发布) 发布前校验再次确认 `终版分发/AI.Commander_Win_v2.1.exe` 的文件名为 v2.1、但其程序集与 About 仍显示 2.0；用户明确决定不再重新编译，接受该显示差异并要求直接发布现有 EXE → 发布资产固定为该文件（108,626,791 bytes，SHA-256 `4737fa94a6aacd1950be5757a8ff796c0e4fb5942c3610b2103aa79ea941465d`）。源码仍保持已统一的 v2.1 版本号，后续重新构建会自然消除差异；面向用户的 Release 文案不描述这一内部版本显示问题。
+
+- [2026-07-27] (用户要求，Windows v2.1 发布准备) 用户确认 Windows 真机测试通过，并将终版 EXE 放入 `终版分发/AI.Commander_Win_v2.1.exe`，要求正式发布 GitHub、但更新文档须先审阅 → 本地起草完整 v2.1 CHANGELOG 与 GitHub Release 正文，同时刷新中英文 README 的 Windows 能力和下载文件名；发布主线定为“Windows 从耳机键映射升级为完整本地语音输入”，并纳入 macOS 微信输入法与 LLM 卡顿保护。发布前校验发现现有 EXE 虽命名 v2.1，程序集、About、日志和 User-Agent 仍为 **2.0**（文件内可检出 `Commander/2.0.0`），最初暂停上传并把 Windows 源码可见版本与程序集版本统一升为 2.1；用户随后接受现有 EXE 的显示差异并拍板直接发布，见上条。外接盘 `一键编译.bat` 同步升级：后续编译成功会自动把 `Commander.exe` 复制并改名为 `终版分发/AI.Commander_Win_v2.1.exe`，免去跨系统手工搬运。GitHub CLI 中 Claude 先前的 `YuJonny` token 已失效，真正上传时重新走浏览器授权。
+
 - [2026-07-19] (用户反馈，Windows v2) Windows 首次编译长时间卡在“正在确定要还原的项目” → 定位为 `dotnet publish` 隐式 NuGet restore 不透明，且仓库同时启用官方源与华为镜像时会并行访问，任一异常源都可能拖住还原。改造 `setup_and_build.ps1`：华为云中国大陆镜像/官方源各做 15 秒连通性预检，**优先镜像、失败回退官方源**，只对可用源逐个执行显式 `dotnet restore -r win-x64 --disable-parallel --verbosity normal --tl:off`，成功后 `publish --no-restore`；双源均不可达时提示本地代理参数并停止，不再无限等待。默认 `nuget.config` 只启用华为云镜像，避免手动还原时并行等待；README 增加 Ctrl+C、缓存、代理和故障定位说明。Windows 真机随后顺利越过还原并进入编译，暴露 `AboutPage` 的 `Directory` 与 `VoiceController` 的 `Path` 缺少显式 `System.IO` 引用，已补齐并扫描全部 IO 类型使用点无同类遗漏。✅ 用户 Windows x64 真机重新编译通过，NuGet 镜像与 WPF 发布链路已打通。
 
 - [2026-06] (用户要求) v1 DMG 背景在 macOS 26 不渲染 → 用原生 `URL.bookmarkData` 全路径书签注入 pBBk + HiDPI 双分辨率背景图 → ✅ 修复。
@@ -84,6 +88,10 @@
 - TODO ⭐ [2026-07-10] (用户要求，**下一轮就做**) 重新打磨润色 prompt + 标点/分段逻辑 + 去重复 → 用户当天用产品口述的真实消息再次暴露三个问题：**标点乱断句**（"下一轮我要做的是。这个大模型的提示词"——句中被点断）、**重复表达未合并**、分段逻辑欠打磨。注意：新基线是 92.8%（保护指代修复后）；按上条 TODO 先补产品场景评测集再动 prompt，用户的真实口述消息本身就是最好的测试样本。
 
 ## 4. 模型管理（下载 / 存储 / 生命周期）
+
+- [2026-07-27] (用户反馈 Windows 未看到新增脚本) 用户只找到原有 `一键编译.bat` → 将原入口升级为同一套自动流程：从外接盘启动时先把源码更新到 `%USERPROFILE%\Downloads\Commander-Windows`，排除 `bin/obj/publish` 后在本地盘编译；从本地副本启动时直接编译。保留新增的说明性入口，但用户无需寻找新文件，继续双击原来的“一键编译”即可。
+
+- [2026-07-27] (用户 Windows 真机诊断) Qwen3 在多轮换源、断点和门槛修复后仍下载失败 → 用户按一条 PowerShell 指令导出完整报告，终于取得决定性证据：①正常下载写完后，`DownloadFileAsync` 的输出 `FileStream` 仍在 `await using var` 生命周期内，便调用 `ValidateDownloadedFile` 重新打开同一个 `.part`；Windows 的对称文件共享检查因此稳定报“文件正被另一进程使用”，这解释了 decoder、merges、Qwen 整包和标点模型全部在完成点失败。改为显式作用域，关闭写入流后再校验。②报告中的系统 `bsdtar 3.5.2` 只列出 zlib、没有 bz2lib，`.tar.bz2` 兜底线路下载成功也必然解压失败；改用 SharpCompress 在进程内解压，不再依赖 Windows 可选压缩能力。③日志里的 unobserved network task 证明 `ReadAsync().WaitAsync(45s)` 超时只放弃等待、没有取消底层读取；改成关联取消令牌真正终止读取。同步兼容 ModelScope 的非标准 `HTTP 200 + Content-Range`、补 bzip2 文件头检查和安装后缺失文件明细。🔬 同一报告排除代理（关闭）、磁盘不足（余 21.1GB）和 tar 缺失；Qwen 整包远端头实测为合法 `BZh9`；下载核心独立编译为 0 warning / 0 error，真实 `.tar.bz2` 样本解压通过，并用全新缓存确认华为云大陆 NuGet 镜像可恢复 SharpCompress 依赖。为避免用户在 Mac / Windows 间逐文件搬运，外接盘 Windows 工程新增双击脚本，自动更新本地副本后编译，且保留已有模型和断点。⚠️ 待 Windows 重新 publish 后，用现有完整/近完整断点做真机验证。
 
 - [2026-07-25] (用户 Windows 真机反馈) Qwen3 / SenseVoice 均无法下载，语义增强权重到 100% 后又提示“网络波动，正在重试” → 定位并修复两组独立问题：① **源失效**：原 SenseVoice ModelScope 归档已实际返回 404，改为已验证可 Range 下载的 `fengge2024` ModelScope 散装直链优先、HF 镜像与 GitHub 归档后备；标点模型新增已验证的 ModelScope 64,717,756-byte int8 归档主路与 ModelScope fp32 直链兜底。Qwen3 六个文件、Silero VAD、SenseVoice、标点和 Qwen3-8B GGUF 均逐项校验了真实二进制头、总长度与 Range 支持。② **下载边界**：旧逻辑在校验/落位前即可显示 100%，完整 `.part` 再续传时 CDN 返回 `416 bytes */total` 会被当成失败；现改为组件安装完成前进度封顶 99%，416 且本地长度等于远端总长时直接校验并转正，CDN 发送完最后字节后断开可正常收尾，提前 EOF 则拒绝落位并保留断点。就绪判断从“文件大于 1KB”收紧为各已知模型的合理最小体积，旧版遗留的截断文件会被删除重下；重试提示区分下载中断、文件校验失败与本地模型准备失败，不再一律误报“网络波动”。🔬 独立 `net8.0` 核心编译 0 warning / 0 error；本机回环测试覆盖正常完成、完整断点 416、截断 EOF、100% 门控，全部通过。⚠️ 完整 WPF 构建仍需 Windows x64（macOS SDK 无 WindowsDesktop targets），待用户重新编译后做三模型真机下载验收。
 
@@ -167,6 +175,8 @@
 - [2026-07-18] (用户要求，Windows v2) C# 管线同步同粒度诊断：一次听写贯穿采音参数/16k WAV、信号门、引擎就绪、VAD 每段、逐段 ASR、拼接、热词、规则子步骤、SenseVoice 标点、LLM prompt/HTTP/回退、最终文本和目标进程/SendInput 事件；默认关闭、仅本机保存、原子写 trace、最多 50 次，About 可显式开启并打开目录。✅ 核心编译通过，待 Windows 真机生成首条 trace 反查全链路。
 
 ## 8. 文档与交接
+
+- [2026-07-27] (用户审阅 v2.1 发布文案) 用户要求 macOS / Windows 升级说明分开，并明确发布文案只讲用户能获得的功能和好处，不暴露文件锁、解压、代理、下载失败等开发过程；同时确认 Windows 不发布 v2.0，直接从 v1 跳到 v2.1 → 重写 CHANGELOG 与 GitHub Release 草稿：Windows v2.1 单独作为完整本地语音输入的大版本升级，macOS v2.1 单独说明微信免提与润色等待体验；删除所有底层修复叙述，将模型下载改写为“可同时准备、独立管理、状态清楚”等用户可感知能力。
 
 - [2026-06] (用户要求) README 中英双语（缘起故事 + 两个理由 + 推荐搭配含联盟链接）。
 - [2026-07-06] (用户要求) README 补 v2：功能介绍 + **模型选型章节**(为什么 SenseVoice+Qwen3) + 三管线对比表 + 候选模型对比表；隐私章节如实改为"唯一联网=你点下载"。

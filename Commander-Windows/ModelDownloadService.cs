@@ -7,6 +7,9 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using SharpCompress.Readers;
 
 namespace Commander;
 
@@ -90,7 +93,7 @@ public sealed class ModelDownloadService : IDisposable
         {
             Timeout = Timeout.InfiniteTimeSpan,
         };
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("AI-Receptionist-Windows/2.0");
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("AI-Receptionist-Windows/2.1");
         return client;
     }
 
@@ -691,6 +694,7 @@ public sealed class ModelDownloadService : IDisposable
                 ValidateDownloadedFile(partial, destination);
                 File.Move(partial, destination, overwrite: true);
                 ValidateDownloadedFile(destination, destination);
+                TryDelete(sourceMarker);
                 onProgress(1, string.Empty);
                 return;
             }
@@ -700,7 +704,10 @@ public sealed class ModelDownloadService : IDisposable
             return;
         }
 
-        if (existing > 0 && response.StatusCode == HttpStatusCode.OK)
+        var contentRange = response.Content.Headers.ContentRange;
+        if (existing > 0 &&
+            response.StatusCode == HttpStatusCode.OK &&
+            contentRange?.From != existing)
         {
             existing = 0;
             File.Delete(partial);
@@ -708,74 +715,94 @@ public sealed class ModelDownloadService : IDisposable
         response.EnsureSuccessStatusCode();
 
         var incoming = response.Content.Headers.ContentLength ?? 0;
-        var expected = response.Content.Headers.ContentRange?.Length ??
+        var expected = contentRange?.Length ??
                        (incoming > 0 ? existing + incoming : 0);
         await using var input = await response.Content.ReadAsStreamAsync(token);
-        await using var output = new FileStream(
-            partial,
-            existing > 0 ? FileMode.Append : FileMode.Create,
-            FileAccess.Write,
-            FileShare.Read,
-            1024 * 128,
-            useAsync: true);
 
         var buffer = new byte[1024 * 128];
         var received = existing;
         var speedWindow = Stopwatch.StartNew();
         var totalTimer = Stopwatch.StartNew();
         var speedWindowStart = received;
-        while (true)
+        using var readTimeout = CancellationTokenSource.CreateLinkedTokenSource(token);
+        await using (var output = new FileStream(
+                         partial,
+                         existing > 0 ? FileMode.Append : FileMode.Create,
+                         FileAccess.Write,
+                         FileShare.Read,
+                         1024 * 128,
+                         useAsync: true))
         {
-            int read;
-            try
+            while (true)
             {
-                read = await input.ReadAsync(buffer, token)
-                    .AsTask()
-                    .WaitAsync(TimeSpan.FromSeconds(45), token);
-            }
-            catch (Exception exception) when (
-                exception is IOException or TimeoutException &&
-                expected > 0 &&
-                received == expected)
-            {
-                // Some CDNs reset a ranged connection after sending the final byte.
-                break;
-            }
-            if (read == 0) break;
-            await output.WriteAsync(buffer.AsMemory(0, read), token);
-            received += read;
-            if (expected > 0)
-            {
-                // 大文件（Qwen 838MB / GGUF 4.7GB）光有百分比，用户看不出到底还动不动。
-                // 给出实时速度和剩余时间，"卡住了"和"在下但慢"才区分得开。
-                var elapsed = totalTimer.Elapsed.TotalSeconds;
-                var detail = string.Empty;
-                if (elapsed > 1.5)
+                int read;
+                readTimeout.CancelAfter(TimeSpan.FromSeconds(45));
+                try
                 {
-                    var bytesPerSecond = (received - existing) / elapsed;
-                    if (bytesPerSecond > 1)
-                    {
-                        var remaining = TimeSpan.FromSeconds((expected - received) / bytesPerSecond);
-                        detail = $"{FormatSpeed(bytesPerSecond)} · {FormatRemaining(remaining)}";
-                    }
+                    read = await input.ReadAsync(buffer, readTimeout.Token);
                 }
-                onProgress(Math.Clamp((double)received / expected, 0, 0.99), detail);
-            }
+                catch (OperationCanceledException) when (
+                    !token.IsCancellationRequested &&
+                    expected > 0 &&
+                    received == expected)
+                {
+                    // Some CDNs leave a completed ranged response open.
+                    break;
+                }
+                catch (OperationCanceledException exception) when (!token.IsCancellationRequested)
+                {
+                    throw new TimeoutException("No download data was received for 45 seconds.", exception);
+                }
+                catch (IOException) when (expected > 0 && received == expected)
+                {
+                    // Some CDNs reset a ranged connection after sending the final byte.
+                    break;
+                }
+                finally
+                {
+                    if (!readTimeout.IsCancellationRequested)
+                        readTimeout.CancelAfter(Timeout.InfiniteTimeSpan);
+                }
 
-            if (speedWindow.Elapsed >= TimeSpan.FromSeconds(30))
-            {
-                var bytesInWindow = received - speedWindowStart;
-                if (bytesInWindow < 900_000)
-                    throw new IOException("Download source stayed below 30 KB/s for 30 seconds.");
-                speedWindow.Restart();
-                speedWindowStart = received;
+                if (read == 0) break;
+                await output.WriteAsync(buffer.AsMemory(0, read), token);
+                received += read;
+                if (expected > 0)
+                {
+                    // 大文件（Qwen 838MB / GGUF 4.7GB）光有百分比，用户看不出到底还动不动。
+                    // 给出实时速度和剩余时间，"卡住了"和"在下但慢"才区分得开。
+                    var elapsed = totalTimer.Elapsed.TotalSeconds;
+                    var detail = string.Empty;
+                    if (elapsed > 1.5)
+                    {
+                        var bytesPerSecond = (received - existing) / elapsed;
+                        if (bytesPerSecond > 1)
+                        {
+                            var remaining = TimeSpan.FromSeconds((expected - received) / bytesPerSecond);
+                            detail = $"{FormatSpeed(bytesPerSecond)} · {FormatRemaining(remaining)}";
+                        }
+                    }
+                    onProgress(Math.Clamp((double)received / expected, 0, 0.99), detail);
+                }
+
+                if (speedWindow.Elapsed >= TimeSpan.FromSeconds(30))
+                {
+                    var bytesInWindow = received - speedWindowStart;
+                    if (bytesInWindow < 900_000)
+                        throw new IOException("Download source stayed below 30 KB/s for 30 seconds.");
+                    speedWindow.Restart();
+                    speedWindowStart = received;
+                }
             }
+            await output.FlushAsync(token);
         }
-        await output.FlushAsync(token);
+
         if (expected > 0 && received != expected)
             throw new EndOfStreamException(
                 $"Download ended at {received} of {expected} bytes.");
 
+        // Windows enforces symmetric file sharing. Close the writer before
+        // ValidateDownloadedFile opens the same .part file for reading.
         ValidateDownloadedFile(partial, destination);
         File.Move(partial, destination, overwrite: true);
         if (!preserveCompletedFile) ValidateDownloadedFile(destination, destination);
@@ -803,6 +830,10 @@ public sealed class ModelDownloadService : IDisposable
         if (destination.EndsWith(".gguf", StringComparison.OrdinalIgnoreCase) &&
             !head[..4].SequenceEqual("GGUF"u8))
             throw new InvalidDataException("Invalid GGUF file header.");
+
+        if (destination.EndsWith(".tar.bz2", StringComparison.OrdinalIgnoreCase) &&
+            (head[0] != (byte)'B' || head[1] != (byte)'Z' || head[2] != (byte)'h'))
+            throw new InvalidDataException("Invalid bzip2 archive header.");
     }
 
     private static async Task<bool> InstallArchiveAsync(
@@ -827,16 +858,19 @@ public sealed class ModelDownloadService : IDisposable
             }
             else if (archivePath.EndsWith(".tar.bz2", StringComparison.OrdinalIgnoreCase))
             {
-                var process = Process.Start(new ProcessStartInfo
+                // Some Windows bsdtar builds omit bz2lib. Extract in-process so
+                // model installation does not depend on optional OS codecs.
+                await Task.Run(() =>
                 {
-                    FileName = "tar.exe",
-                    ArgumentList = { "-xjf", archivePath, "-C", extractionRoot },
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                });
-                if (process is null) throw new InvalidOperationException("Unable to start Windows tar.exe.");
-                await process.WaitForExitAsync(token);
-                if (process.ExitCode != 0) throw new InvalidDataException("Model archive extraction failed.");
+                    using var archive = ArchiveFactory.OpenArchive(archivePath, new ReaderOptions());
+                    foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        entry.WriteToDirectory(
+                            extractionRoot,
+                            new ExtractionOptions { ExtractFullPath = true, Overwrite = true });
+                    }
+                }, token);
             }
             else
             {
@@ -844,7 +878,9 @@ public sealed class ModelDownloadService : IDisposable
             }
 
             var found = FindInstallRoot(extractionRoot, item.RequiredFiles);
-            if (found is null) return false;
+            if (found is null)
+                throw new InvalidDataException(
+                    $"Archive does not contain the required files for {item.Kind}.");
 
             Directory.CreateDirectory(AppPaths.ModelsRoot);
             var staging = item.DirectoryPath + ".installing";
@@ -852,7 +888,10 @@ public sealed class ModelDownloadService : IDisposable
             Directory.Move(found, staging);
             if (Directory.Exists(item.DirectoryPath)) Directory.Delete(item.DirectoryPath, recursive: true);
             Directory.Move(staging, item.DirectoryPath);
-            return ModelCatalog.IsReady(item);
+            if (!ModelCatalog.IsReady(item))
+                throw new InvalidDataException(
+                    $"Installed files for {item.Kind} failed validation: {ModelCatalog.DescribeMissing(item)}");
+            return true;
         }
         finally
         {

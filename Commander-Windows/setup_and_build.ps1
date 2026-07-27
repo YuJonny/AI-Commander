@@ -1,4 +1,4 @@
-﻿# AI接线员 Commander v2.0 - Windows x64 build script
+﻿# AI接线员 Commander v2.1 - Windows x64 build script
 # Run: right-click -> Run with PowerShell
 
 param(
@@ -8,7 +8,7 @@ param(
 chcp 65001 | Out-Null
 Write-Host ""
 Write-Host "  ================================" -ForegroundColor Cyan
-Write-Host "    AI接线员 Commander v2.0 - Windows Build" -ForegroundColor Cyan
+Write-Host "    AI接线员 Commander v2.1 - Windows Build" -ForegroundColor Cyan
 Write-Host "  ================================" -ForegroundColor Cyan
 Write-Host ""
 

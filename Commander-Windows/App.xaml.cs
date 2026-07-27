@@ -30,7 +30,7 @@ public partial class App : Application
         try
         {
             base.OnStartup(e);
-            AppLog.Info(nameof(App), "Starting v2.0");
+            AppLog.Info(nameof(App), "Starting v2.1");
             _mutex = new Mutex(true, "Commander_AI接线员_Mutex", out var createdNew);
             if (!createdNew)
             {

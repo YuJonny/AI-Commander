@@ -24,7 +24,7 @@
                 Margin="0,4,0,0"
                 HorizontalAlignment="Center"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Text="AI Commander · 2.0" />
+                Text="AI Commander · 2.1" />
             <TextBlock
                 x:Name="LblHeroDescription"
                 Margin="0,8,0,0"

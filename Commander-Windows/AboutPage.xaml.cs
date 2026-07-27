@@ -21,7 +21,7 @@ public partial class AboutPage : UserControl
     public void RefreshLocalization()
     {
         LblAppName.Text = I18n.Get("title.app");
-        LblVersion.Text = I18n.IsChinese ? "AI Commander · 2.0" : "AI接线员 · 2.0";
+        LblVersion.Text = I18n.IsChinese ? "AI Commander · 2.1" : "AI接线员 · 2.1";
         LblHeroDescription.Text = I18n.Get("about.description");
         LblFree.Text = T("为爱发电 永久免费", "Made with love · Free forever");
         LblProductTitle.Text = T("关于", "About");

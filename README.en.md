@@ -45,7 +45,7 @@ Now, we use one to talk to the future.
 
 ## What It Does
 
-AI Commander v2 has two independent modes. On an Apple-silicon Mac, it can provide complete on-device voice input by itself; alternatively, it can act only as a headset-key mapper for an existing voice tool. The local voice mode does not require Typeless, WeType, or any other third-party input method.
+AI Commander v2.1 has two independent modes. On an Apple-silicon Mac or Windows x64 PC, it can provide complete on-device voice input by itself; alternatively, it can act only as a headset-key mapper for an existing voice tool. The local voice mode does not require Typeless, WeType, or any other third-party input method.
 
 - **One press to talk**: press the play / pause key to start, press again to stop — the words land right at your cursor.
 - **Fully on-device, free forever**: recognition, cleanup and polish all run locally. Nothing is uploaded; the code is open source and auditable.
@@ -53,16 +53,16 @@ AI Commander v2 has two independent modes. On an Apple-silicon Mac, it can provi
 - **Speak casually, get clean prose**: a rule layer strips fillers and fixes tech-term casing; an optional local LLM merges repetitions and normalizes punctuation and numbers — always faithful to what you said.
 - **Works with your existing voice tools**: built-in presets for Doubao, WeType, Typeless, 闪电说, Wispr Flow, Superwhisper, AutoGLM, Claude Code and Codex, plus custom hotkeys.
 
-### Liquid Glass Design
+### Native, Lightweight Design
 
-The first voice-input app designed end-to-end in Liquid Glass. While you dictate, a floating capsule follows the flow — recording → transcribing → polishing — then slips away, never interrupting your work.
+The macOS app follows the Liquid Glass design language, while the Windows app uses Fluent 2. On both platforms, a floating capsule follows the flow — recording → transcribing → polishing — then slips away without interrupting your work.
 
 ## Models & Languages
 
 | Component | Languages | Best at | Size |
 |---|---|---|---|
-| **Qwen3-ASR · High accuracy** (recommended) | 30 languages + 22 Chinese dialects | Mixed Chinese-English, long dictation; 16GB+ Macs | ~840MB |
-| **SenseVoice · Lightweight** | Chinese, English, Cantonese, Japanese, Korean | Everyday dictation; 8GB Macs | ~220MB |
+| **Qwen3-ASR · High accuracy** (recommended) | 30 languages + 22 Chinese dialects | Mixed Chinese-English, long dictation; 16GB+ systems | ~840-990MB |
+| **SenseVoice · Lightweight** | Chinese, English, Cantonese, Japanese, Korean | Everyday dictation; 8GB systems | ~220-290MB |
 | **Qwen3-8B · Semantic polish** (optional) | Chinese-first, handles mixed Chinese-English | De-duplication, number formatting, sentence breaks | ~4.7GB |
 
 Models are selected and tuned for real dictation scenarios with local data and open datasets.
@@ -77,7 +77,7 @@ Get the latest build from [Releases](https://github.com/YuJonny/AI-Commander/rel
 | Platform | File | Capability |
 |---|---|---|
 | **macOS** (Apple silicon) | `AI.Commander_Mac_v2.1.dmg` | On-device voice input **＋** headset-key mapping |
-| **Windows** | `AI.Commander_Win.exe` | Headset-key mapping |
+| **Windows** (x64) | `AI.Commander_Win_v2.1.exe` | On-device voice input **＋** headset-key mapping |
 
 ### First launch on macOS
 
@@ -96,6 +96,7 @@ On first launch you'll be guided to grant **Accessibility** and **Microphone**, 
 - SmartScreen: click "More info → Run anyway".
 - Antivirus may flag the keyboard hook — add to the allowlist.
 - Single portable file, x64, Windows 10/11, no admin rights or .NET required.
+- If local voice input records silence, allow desktop apps to use the microphone in Windows Privacy settings.
 
 ## Common Questions
 
@@ -107,15 +108,15 @@ This also means the headset button no longer controls media while AI Commander i
 
 ### Will mapping the headset button to Fn for Typeless conflict with other shortcuts?
 
-No. Fn is Typeless's default voice hotkey. AI Commander simulates Fn only when you press the headset button; it does not change Fn's normal behavior or occupy other shortcuts. Select the Typeless preset directly, or use Custom only if you have changed Typeless's default hotkey.
+No. AI Commander maps Typeless's default `Fn` shortcut on macOS and `Right Alt` on Windows. It simulates that key only when you press the headset button and does not change the key's normal behavior. Use Custom only if you changed Typeless's default shortcut.
 
 ### Does WeType require an additional automation script?
 
-No. WeType for Mac provides a hands-free mode triggered by `Fn + Space`, and AI Commander's WeType preset maps directly to that official shortcut. Press the headset button once to start and once again to stop, with no need for Keyboard Maestro, BetterTouchTool, or another automation script.
+No. On macOS, AI Commander maps WeType's `Fn + Space` hands-free mode: press once to start and once again to stop. On Windows, it maps the official hold-to-talk `Ctrl + Win` shortcut. Neither requires an additional automation script.
 
 ### Does first-time setup require a lot of configuration?
 
-No. Open the app, follow the permission guide, and choose an input mode—there is no configuration file or script to install. Existing voice tools need no model download; local voice input only adds one on-demand speech model.
+No. Open the app and choose an input mode; macOS guides you through the required permissions on first launch. Existing voice tools need no model download, while local voice input only adds one on-demand speech model.
 
 ---
 
